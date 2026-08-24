@@ -82,7 +82,7 @@ function loadRound(r) {
   const cubeFirst = r % 2 === 1;
 
   a.innerHTML = `
-    <div class="prompt-box">🧊 Hãy chọn <b>KHỐI LẬP PHƯƠNG</b> nhé con! (Khối có 6 mặt đều là hình vuông)</div>
+    <div class="prompt-box">🧊 Hãy chọn <b>khối lập phương</b> nhé con! (Khối có 6 mặt đều là hình vuông)</div>
     <div class="blocks-stage" id="g2stage">
       <div class="block3d" id="b-left" style="cursor:pointer">
         ${cubeFirst ? render3DCube(110, 'Khối A') : render3DBox(150, 90, 70, 'Khối A')}
@@ -97,7 +97,7 @@ function loadRound(r) {
   document.getElementById('b-left').addEventListener('click', () => pick('left', cubeFirst ? 'cube' : 'box'));
   document.getElementById('b-right').addEventListener('click', () => pick('right', cubeFirst ? 'box' : 'cube'));
 
-  setChat('Hãy quan sát kỹ hai khối và bấm vào KHỐI LẬP PHƯƠNG nhé! Khối lập phương có 6 mặt đều là hình vuông bằng nhau đó!');
+  setChat('Hãy quan sát kỹ hai khối và bấm vào khối lập phương nhé! Khối lập phương có 6 mặt đều là hình vuông bằng nhau đó!');
 }
 
 function pick(side, type) {
@@ -116,7 +116,7 @@ function pick(side, type) {
 }
 
 function askReason() {
-  setChat('Con chọn đúng rồi! Giờ Cô Cú Thông Thái hỏi: Vì sao đó là KHỐI LẬP PHƯƠNG?');
+  setChat('Con chọn đúng rồi! Giờ Cô Cú thông thái hỏi: Vì sao đó là khối lập phương?');
   const a = document.getElementById('g2area');
   a.innerHTML += `
     <div class="prompt-box" style="margin-top:16px">❓ Vì sao đó là khối lập phương?</div>
@@ -126,7 +126,7 @@ function askReason() {
   const opts = [
     { t: 'Vì 6 mặt đều là hình vuông bằng nhau', good: true },
     { t: 'Vì các mặt là hình chữ nhật dài ngắn khác nhau', good: false },
-    { t: 'Vì nó có 3 đỉnh', good: false }
+    { t: 'Vì nó chỉ có 3 cạnh', good: false }
   ].sort(() => Math.random() - 0.5);
 
   const rs = document.getElementById('g2reasons');
@@ -161,7 +161,7 @@ function verify() {
         g2.round++;
         loadRound(g2.round);
       } else {
-        showResult(2, 3, 'Con đã phân biệt được khối lập phương và khối hộp chữ nhật! Cô Cú Thông Thái khen con giỏi!');
+        showResult(2, 3, 'Con đã phân biệt được khối lập phương và khối hộp chữ nhật! Cô Cú thông thái khen con giỏi!');
       }
     }, 800);
   });

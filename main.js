@@ -10,12 +10,13 @@ import { initG4 } from './games/game4-measure.js';
 import { initG5 } from './games/game5-clock.js';
 import { initG6 } from './games/game6-challenge.js';
 import { initG7 } from './games/game7-cube3d.js';
+import { initG8 } from './games/game8-tangram.js';
 
 /* ============ STATE & STORAGE ============ */
 const STORAGE_KEY = 'toan1_kydieu_state';
 export const state = {
   sound: true,
-  stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }
+  stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 }
 };
 
 export function saveState() {
@@ -52,6 +53,7 @@ function audioCtx() {
   return actx;
 }
 
+
 function tone(freq, dur, type, when, vol) {
   const c = audioCtx();
   if (!c) return;
@@ -82,7 +84,7 @@ export function snd(type) {
   }
 }
 
-/* ============ SPEECH SYNTHESIS (giọng NỮ Cô Cú Thông Thái) ============ */
+/* ============ SPEECH SYNTHESIS (giọng NỮ Cô Cú thông thái) ============ */
 let viVoice = null;
 let isMaleFallback = false;
 
@@ -175,7 +177,7 @@ const chatBubble = document.getElementById('chatBubble');
 const chatTextEl = document.getElementById('chatText');
 
 export function setChat(txt, doSpeak = true, onEnd = null) {
-  // Loại bỏ emoji ở cuối câu nói của Cô Cú Thông Thái
+  // Loại bỏ emoji ở cuối câu nói của Cô Cú thông thái
   const cleanText = String(txt)
     .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]+$/gu, '')
     .trim();
@@ -226,7 +228,7 @@ export function confetti(n = 80) {
 
 /* ============ SCREEN NAVIGATION ============ */
 let currentGame = null;
-const gameInits = { 1: initG1, 2: initG2, 3: initG3, 4: initG4, 5: initG5, 6: initG6, 7: initG7 };
+const gameInits = { 1: initG1, 2: initG2, 3: initG3, 4: initG4, 5: initG5, 6: initG6, 7: initG7, 8: initG8 };
 
 export function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -239,12 +241,14 @@ export function goHome() {
   showScreen('screen-home');
   renderCards();
   speak('Con muốn chơi trò nào nữa nào?');
+  stopBGM();
 }
 
 export function startGame(n) {
   currentGame = n;
   showScreen('screen-g' + n);
   if (gameInits[n]) gameInits[n]();
+  startBGM(n);
 }
 
 /* ============ ROUND PILLS ============ */
@@ -280,13 +284,14 @@ export function showResult(gid, stars, message) {
     <div class="action-row">
       <button class="big-btn btn-green" id="resultHome">🏠 Về nhà</button>
       <button class="big-btn btn-orange" id="resultReplay">🔄 Chơi lại</button>
-      ${gid < 7 ? `<button class="big-btn btn-purple" id="resultNext">▶ Trò tiếp</button>` : ''}
+      ${gid < 8 ? `<button class="big-btn btn-purple" id="resultNext">▶ Trò tiếp</button>` : ''}
     </div>
   `;
   showScreen('screen-result');
   confetti(120);
   snd('win');
   setChat('Chúc mừng con! Con đã hoàn thành tuyệt vời! Cô rất tự hào về con!');
+  stopBGM();
 
   document.getElementById('resultHome').addEventListener('click', goHome);
   document.getElementById('resultReplay').addEventListener('click', () => startGame(gid));
@@ -296,13 +301,14 @@ export function showResult(gid, stars, message) {
 
 /* ============ GAME CARDS (HOME) ============ */
 const GAME_META = [
-  { n: 1, ico: '🌲', name: 'Khu Vườn Hình Học', sub: 'Hình tròn, vuông, tam giác, chữ nhật', c: 'gc-1', max: 4 },
-  { n: 2, ico: '🧊', name: 'Lâu Đài Khối 3D', sub: 'Khối lập phương & hộp chữ nhật', c: 'gc-2', max: 3 },
-  { n: 3, ico: '🤖', name: 'Robot Dẫn Đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3', max: 3 },
-  { n: 4, ico: '📏', name: 'Phòng Đo Lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
-  { n: 5, ico: '🕐', name: 'Đồng Hồ Phiêu Lưu', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
-  { n: 6, ico: '🎯', name: 'Khối Lập Phương Thần Kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
-  { n: 7, ico: '🏆', name: 'Thử Thách Tổng Hợp', sub: 'Ôn tập tất cả nội dung', c: 'gc-7', max: 5 },
+  { n: 1, ico: '🌲', name: 'Khu vườn hình học', sub: 'Hình tròn, vuông, tam giác, chữ nhật', c: 'gc-1', max: 4 },
+  { n: 2, ico: '🧊', name: 'Lâu đài hình khối', sub: 'Khối lập phương & hộp chữ nhật', c: 'gc-2', max: 3 },
+  { n: 3, ico: '🤖', name: 'Robot dẫn đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3', max: 3 },
+  { n: 4, ico: '📏', name: 'Căn phòng đo lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
+  { n: 5, ico: '🕐', name: 'Cuộc dạo chơi của đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
+  { n: 6, ico: '🎯', name: 'Khối lập phương thần kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
+  { n: 7, ico: '🏆', name: 'Siêu thử thách', sub: 'Ôn tập tất cả nội dung', c: 'gc-7', max: 5 },
+  { n: 8, ico: '🧩', name: 'Xếp hình Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-8', max: 4 },
 ];
 
 function renderCards() {
@@ -341,7 +347,7 @@ function renderCards() {
 }
 
 /* ============ BACK BUTTONS ============ */
-for (let i = 1; i <= 7; i++) {
+for (let i = 1; i <= 8; i++) {
   const btn = document.getElementById('backBtn' + i);
   if (btn) btn.addEventListener('click', goHome);
 }
@@ -381,3 +387,65 @@ setTimeout(() => {
     speak('Chào con! Con muốn chơi trò gì hôm nay?');
   }
 }, 800);
+
+/* ============ BACKGROUND MUSIC (WebAudio API) ============ */
+let bgmInterval = null;
+let bgmGain = null;
+
+// Mỗi game có 1 giai điệu riêng — thể hiện tính chất của game
+const GAME_MELODIES = {
+  // Game 1: Khu vườn — nhẹ nhàng, trong trẻ, giống tiếng chim hót
+  1: { notes: [523,587,659,784,659,587,523,0,784,880,784,659,523,0], tempo: 280, type: 'sine', vol: 0.06 },
+  // Game 2: Lâu đài — trang nghiêm, huyền bí
+  2: { notes: [262,330,392,523,392,330,262,0,349,440,523,440,349,0], tempo: 350, type: 'triangle', vol: 0.05 },
+  // Game 3: Robot — điện tử, vui tươi
+  3: { notes: [440,0,523,0,659,0,784,0,880,784,659,523,440,0], tempo: 200, type: 'square', vol: 0.03 },
+  // Game 4: Đo lường — đều đặn, tò mò
+  4: { notes: [392,440,494,523,494,440,392,0,330,349,392,440,392,0], tempo: 320, type: 'sine', vol: 0.05 },
+  // Game 5: Đồng hồ — nhịp tick-tock, mềm mại
+  5: { notes: [523,0,392,0,523,0,392,0,659,587,523,494,523,0], tempo: 400, type: 'triangle', vol: 0.04 },
+  // Game 6: Khối 3D — huyền bí, ma thuật
+  6: { notes: [330,392,494,659,784,659,494,392,330,0,440,523,659,0], tempo: 340, type: 'sine', vol: 0.05 },
+  // Game 7: Siêu thử thách — sôi động, hào hứng
+  7: { notes: [523,659,784,880,784,659,523,659,784,1046,880,784,659,0], tempo: 220, type: 'triangle', vol: 0.05 },
+  // Game 8: Tangram — nhẹ nhàng, thư giãn kiểu zen
+  8: { notes: [392,494,587,494,392,0,330,392,494,587,494,392,330,0], tempo: 380, type: 'sine', vol: 0.04 },
+};
+
+function startBGM(gameNum) {
+  stopBGM();
+  const c = audioCtx();
+  if (!c || !state.sound) return;
+  const melody = GAME_MELODIES[gameNum];
+  if (!melody) return;
+
+  bgmGain = c.createGain();
+  bgmGain.gain.value = melody.vol;
+  bgmGain.connect(c.destination);
+
+  let noteIdx = 0;
+  bgmInterval = setInterval(() => {
+    if (!state.sound) { stopBGM(); return; }
+    const freq = melody.notes[noteIdx % melody.notes.length];
+    if (freq > 0) {
+      const osc = c.createOscillator();
+      const env = c.createGain();
+      osc.type = melody.type;
+      osc.frequency.value = freq;
+      const t = c.currentTime;
+      env.gain.setValueAtTime(0.0001, t);
+      env.gain.exponentialRampToValueAtTime(melody.vol, t + 0.03);
+      env.gain.exponentialRampToValueAtTime(0.0001, t + melody.tempo / 1000 * 0.9);
+      osc.connect(env);
+      env.connect(bgmGain);
+      osc.start(t);
+      osc.stop(t + melody.tempo / 1000);
+    }
+    noteIdx++;
+  }, melody.tempo);
+}
+
+export function stopBGM() {
+  if (bgmInterval) { clearInterval(bgmInterval); bgmInterval = null; }
+  if (bgmGain) { try { bgmGain.disconnect(); } catch(e) {} bgmGain = null; }
+}

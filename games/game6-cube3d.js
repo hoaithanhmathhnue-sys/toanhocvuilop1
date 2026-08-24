@@ -8,12 +8,12 @@ import { setChat, snd, makePills, showResult, confetti } from '../main.js';
 
 /* ============ FACE DATA ============ */
 const FACES = [
-  { key: 'front',  name: 'Mặt trước',     color: '#ef4444', hex: 0xef4444, icon: '🌟', colorName: 'đỏ' },
-  { key: 'back',   name: 'Mặt sau',       color: '#a855f7', hex: 0xa855f7, icon: '🎈', colorName: 'tím' },
-  { key: 'top',    name: 'Mặt trên',      color: '#3b82f6', hex: 0x3b82f6, icon: '☀️', colorName: 'xanh' },
-  { key: 'bottom', name: 'Mặt dưới',      color: '#f97316', hex: 0xf97316, icon: '🍂', colorName: 'cam' },
-  { key: 'right',  name: 'Mặt bên phải',  color: '#facc15', hex: 0xfacc15, icon: '⭐', colorName: 'vàng' },
-  { key: 'left',   name: 'Mặt bên trái',  color: '#ec4899', hex: 0xec4899, icon: '🌸', colorName: 'hồng' }
+  { key: 'front',  name: 'Mặt trước',     color: '#ff5555', hex: 0xff5555, icon: '🌟', colorName: 'đỏ' },
+  { key: 'back',   name: 'Mặt sau',       color: '#c084fc', hex: 0xc084fc, icon: '🎈', colorName: 'tím' },
+  { key: 'top',    name: 'Mặt trên',      color: '#60a5fa', hex: 0x60a5fa, icon: '☀️', colorName: 'xanh' },
+  { key: 'bottom', name: 'Mặt dưới',      color: '#fb923c', hex: 0xfb923c, icon: '🍂', colorName: 'cam' },
+  { key: 'right',  name: 'Mặt bên phải',  color: '#fde047', hex: 0xfde047, icon: '⭐', colorName: 'vàng' },
+  { key: 'left',   name: 'Mặt bên trái',  color: '#f472b6', hex: 0xf472b6, icon: '🌸', colorName: 'hồng' }
 ];
 
 let phase = 'explore'; // explore | net | challenge
@@ -40,7 +40,7 @@ function createThreeCube(container) {
 
   // Scene
   threeScene = new THREE.Scene();
-  threeScene.background = new THREE.Color(0x1e1b3a);
+  threeScene.background = new THREE.Color(0xffffff);
 
   // Camera
   threeCamera = new THREE.PerspectiveCamera(50, w / h, 0.1, 1000);
@@ -56,18 +56,18 @@ function createThreeCube(container) {
   threeRenderer.domElement.style.cursor = 'grab';
   container.appendChild(threeRenderer.domElement);
 
-  // Lighting
-  const ambient = new THREE.AmbientLight(0x606080, 0.6);
+  // Lighting — tối ưu cho nền trắng
+  const ambient = new THREE.AmbientLight(0xffffff, 0.75);
   threeScene.add(ambient);
-  const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
   dirLight.position.set(5, 8, 6);
   threeScene.add(dirLight);
-  const pointLight = new THREE.PointLight(0xffd166, 0.4, 20);
+  const pointLight = new THREE.PointLight(0xffd166, 0.3, 20);
   pointLight.position.set(-3, 3, 4);
   threeScene.add(pointLight);
 
-  // Grid
-  const grid = new THREE.GridHelper(6, 6, 0x334155, 0x1e293b);
+  // Grid — phù hợp nền trắng
+  const grid = new THREE.GridHelper(6, 6, 0xd1d5db, 0xe5e7eb);
   grid.position.y = -1.05;
   threeScene.add(grid);
 
@@ -78,9 +78,9 @@ function createThreeCube(container) {
     new THREE.MeshPhongMaterial({
       color: f.hex,
       transparent: true,
-      opacity: 0.92,
-      shininess: 80,
-      specular: 0x222222
+      opacity: 0.95,
+      shininess: 120,
+      specular: 0x444444
     })
   );
   // Three.js box face order: +X(right), -X(left), +Y(top), -Y(bottom), +Z(front), -Z(back)
@@ -91,7 +91,7 @@ function createThreeCube(container) {
 
   // Edge wireframe
   const edges = new THREE.EdgesGeometry(geometry);
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 2 });
   const wireframe = new THREE.LineSegments(edges, edgeMat);
   cubeMesh.add(wireframe);
 
@@ -188,16 +188,14 @@ function loadExplore() {
       <div class="g6-controls">
         <div class="info-card6">
           <div class="info-title6">📋 Đặc điểm Khối Lập Phương</div>
-          <div class="info-item6">🔢 <b>6</b> mặt — đều là hình vuông</div>
-          <div class="info-item6">📐 <b>12</b> cạnh — đều bằng nhau</div>
-          <div class="info-item6">📍 <b>8</b> đỉnh</div>
+          <div class="info-item6">🔢 <b>6</b> mặt — đều là hình vuông bằng nhau</div>
           <div class="info-item6">🔁 Mặt đỏ 🌟 ↔ Mặt tím 🎈</div>
           <div class="info-item6">🔁 Mặt xanh ☀️ ↔ Mặt cam 🍂</div>
           <div class="info-item6">🔁 Mặt vàng ⭐ ↔ Mặt hồng 🌸</div>
         </div>
         <div class="action-row" style="flex-direction:column;gap:8px;margin-top:12px">
           <button class="action-btn btn-green" id="g6net" style="width:100%">📦 Mở khối – khai triển</button>
-          <button class="action-btn btn-pink" id="g6challenge" style="width:100%">🎮 Thử thách Cô Cú Thông Thái</button>
+          <button class="action-btn btn-pink" id="g6challenge" style="width:100%">🎮 Thử thách Cô Cú thông thái</button>
         </div>
       </div>
     </div>
@@ -276,7 +274,7 @@ function loadNet() {
         snd('correct');
         pad.querySelectorAll('.num-choice').forEach(x => x.disabled = true);
         document.getElementById('g6netFb').innerHTML = `<div style="background:#d1fae5;border-radius:16px;padding:14px;font-weight:700;color:#065f46;text-align:center">✅ Đúng! 6 mặt đều là hình vuông bằng nhau!</div>`;
-        setChat('Chính xác! Khối lập phương có 6 mặt, 12 cạnh, 8 đỉnh. Tất cả 6 mặt đều là hình vuông bằng nhau!');
+        setChat('Chính xác! Khối lập phương có 6 mặt. Tất cả 6 mặt đều là hình vuông bằng nhau!');
         setTimeout(() => {
           const a2 = document.getElementById('g6area');
           a2.innerHTML += `<div class="action-row"><button class="action-btn btn-purple" id="g6backExplore">🧊 Xoay khối 3D</button><button class="action-btn btn-pink" id="g6toChal">🎮 Thử thách</button></div>`;
@@ -442,6 +440,6 @@ function nextChalStep() {
   } else {
     destroyThree();
     const stars = Object.keys(earnedStars).length;
-    showResult(6, Math.min(4, Math.ceil(stars / 3)), 'Con đã hoàn thành Thử thách Khối Lập Phương! Cô Cú Thông Thái tự hào lắm! 🏆');
+    showResult(6, Math.min(4, Math.ceil(stars / 3)), 'Con đã hoàn thành Thử thách Khối Lập Phương! Cô Cú thông thái tự hào lắm! 🏆');
   }
 }

@@ -1,15 +1,34 @@
 /* ================================================================
    GAME 1: KHU VƯỜN HÌNH HỌC
    Nhận dạng hình phẳng — ngẫu nhiên hóa mỗi lần chơi
+   Thêm tam giác SVG đa dạng (cân, đều, nhọn, vuông)
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
 const SHAPES = {
-  circle: { name: 'hình tròn', color: '#ffd166', desc: 'Đồ vật có đường cong khép kín, không có góc nên là hình tròn.' },
-  square: { name: 'hình vuông', color: '#9be0ff', desc: 'Đồ vật có 4 cạnh bằng nhau và 4 góc vuông nên là hình vuông.' },
-  triangle: { name: 'hình tam giác', color: '#a5f0b0', desc: 'Đồ vật có 3 cạnh và 3 đỉnh nên là hình tam giác.' },
+  circle: { name: 'hình tròn', color: '#ffd166', desc: 'Đồ vật tròn xoe, không có cạnh nào nên là hình tròn.' },
+  square: { name: 'hình vuông', color: '#9be0ff', desc: 'Đồ vật có 4 cạnh bằng nhau nên là hình vuông.' },
+  triangle: { name: 'hình tam giác', color: '#a5f0b0', desc: 'Đồ vật có 3 cạnh nên là hình tam giác.' },
   rectangle: { name: 'hình chữ nhật', color: '#ffb3d1', desc: 'Đồ vật có 2 cạnh dài bằng nhau và 2 cạnh ngắn bằng nhau nên là hình chữ nhật.' }
 };
+
+/* SVG tam giác đa dạng */
+function triSVG(points, color, size) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 60 60"><polygon points="${points}" fill="${color}" stroke="${color}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+
+const TRI_VARIANTS = [
+  { id: 'tri-deu-do',    label: 'Tam giác đều đỏ',    svg: () => triSVG('30,4 4,56 56,56', '#ef4444', 52), shape: 'triangle' },
+  { id: 'tri-deu-xanh',  label: 'Tam giác đều xanh',  svg: () => triSVG('30,6 6,54 54,54', '#3b82f6', 44), shape: 'triangle' },
+  { id: 'tri-can-vang',  label: 'Tam giác cân vàng',   svg: () => triSVG('30,2 8,58 52,58', '#f59e0b', 48), shape: 'triangle' },
+  { id: 'tri-can-tim',   label: 'Tam giác cân tím',    svg: () => triSVG('30,4 10,56 50,56', '#a855f7', 40), shape: 'triangle' },
+  { id: 'tri-nhon-cam',  label: 'Tam giác nhọn cam',   svg: () => triSVG('30,2 18,58 42,58', '#f97316', 38), shape: 'triangle' },
+  { id: 'tri-nhon-hong', label: 'Tam giác nhọn hồng',  svg: () => triSVG('30,3 20,55 40,55', '#ec4899', 34), shape: 'triangle' },
+  { id: 'tri-vuong-lc',  label: 'Tam giác vuông xanh lá', svg: () => triSVG('4,56 4,4 56,56', '#22c55e', 46), shape: 'triangle' },
+  { id: 'tri-vuong-navy',label: 'Tam giác vuông xanh đậm', svg: () => triSVG('6,54 6,6 54,54', '#1e40af', 42), shape: 'triangle' },
+  { id: 'tri-to-do',     label: 'Tam giác to đỏ',      svg: () => triSVG('30,2 2,58 58,58', '#dc2626', 56), shape: 'triangle' },
+  { id: 'tri-nho-xanh',  label: 'Tam giác nhỏ xanh',   svg: () => triSVG('30,10 14,50 46,50', '#06b6d4', 32), shape: 'triangle' },
+];
 
 /* Pool đồ vật lớn — random chọn mỗi lần */
 const OBJ_POOL = {
@@ -54,24 +73,24 @@ const OBJ_POOL = {
 
 const REASONS = {
   circle: [
-    { t: 'Vì nó tròn xoe, có đường cong khép kín, không có góc', good: true },
+    { t: 'Vì nó tròn xoe, không có cạnh nào', good: true },
     { t: 'Vì nó có 4 cạnh bằng nhau', good: false },
-    { t: 'Vì nó có 3 đỉnh', good: false }
+    { t: 'Vì nó có 3 cạnh', good: false }
   ],
   square: [
-    { t: 'Vì nó có 4 cạnh bằng nhau và 4 góc vuông', good: true },
-    { t: 'Vì nó tròn, không có góc', good: false },
+    { t: 'Vì nó có 4 cạnh bằng nhau', good: true },
+    { t: 'Vì nó tròn, không có cạnh', good: false },
     { t: 'Vì nó có 3 cạnh', good: false }
   ],
   triangle: [
-    { t: 'Vì nó có 3 cạnh và 3 đỉnh', good: true },
+    { t: 'Vì nó có 3 cạnh', good: true },
     { t: 'Vì nó có 4 cạnh', good: false },
     { t: 'Vì nó tròn xoe', good: false }
   ],
   rectangle: [
     { t: 'Vì nó có 2 cạnh dài và 2 cạnh ngắn', good: true },
-    { t: 'Vì nó có 3 đỉnh', good: false },
-    { t: 'Vì nó tròn, không góc', good: false }
+    { t: 'Vì nó chỉ có 3 cạnh', good: false },
+    { t: 'Vì nó tròn, không có cạnh', good: false }
   ]
 };
 
@@ -99,9 +118,19 @@ let g1 = { round: 1, target: 'circle', found: [], roundCfg: [], totalRounds: 4, 
 function buildRounds() {
   const order = shuffle(['circle', 'square', 'triangle', 'rectangle']);
   return order.map(shape => {
+    if (shape === 'triangle') {
+      // Vòng tam giác: mix emoji + SVG tam giác đa dạng
+      const emojiTargets = shuffle(OBJ_POOL.triangle).slice(0, 2);
+      const svgTargets = shuffle(TRI_VARIANTS).slice(0, 3);
+      const targets = [
+        ...emojiTargets.map(t => ({ ...t, isSVG: false })),
+        ...svgTargets.map(t => ({ id: t.id, label: t.label, svgFn: t.svg, isSVG: true }))
+      ];
+      return { shape, targets };
+    }
     const pool = OBJ_POOL[shape];
     const chosen = shuffle(pool).slice(0, 3);
-    return { shape, targets: chosen };
+    return { shape, targets: chosen.map(t => ({ ...t, isSVG: false })) };
   });
 }
 
@@ -120,7 +149,7 @@ function buildObjects(roundCfg) {
     const existing = allObjs.filter(o => o.shape === shape).length;
     if (existing < 2) {
       const extra = shuffle(OBJ_POOL[shape]).slice(0, 2 - existing);
-      extra.forEach(e => allObjs.push({ ...e, shape }));
+      extra.forEach(e => allObjs.push({ ...e, shape, isSVG: false }));
     }
   });
 
@@ -164,7 +193,13 @@ function loadRound(r) {
     d.id = 'obj-' + o.id;
     d.style.left = o.x + '%';
     d.style.top = o.y + '%';
-    d.innerHTML = `<span style="font-size:44px">${o.emoji}</span><span class="lbl">${o.label}</span>`;
+
+    if (o.isSVG && o.svgFn) {
+      // SVG tam giác đa dạng
+      d.innerHTML = `<span style="display:inline-block">${o.svgFn()}</span><span class="lbl">${o.label}</span>`;
+    } else {
+      d.innerHTML = `<span style="font-size:44px">${o.emoji}</span><span class="lbl">${o.label}</span>`;
+    }
     d.addEventListener('click', () => handleClick(o, d, cfg));
     forest.appendChild(d);
   });
@@ -190,7 +225,7 @@ function handleClick(obj, el, cfg) {
     void el.offsetWidth;
     el.classList.add('shake-it');
     setTimeout(() => el.classList.remove('shake-it'), 500);
-    setChat(`Con thử nhìn kỹ ${obj.label} nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} – giống hay khác? Con chọn lại lần nữa xem nào!`);
+    setChat(`Con thử nhìn kỹ ${obj.label} nhé: nó có mấy cạnh? Trông nó tròn hay thẳng? Hãy so sánh với ${SHAPES[g1.target].name} – giống hay khác? Con chọn lại lần nữa xem nào!`);
   }
 }
 
@@ -225,7 +260,7 @@ function handleReason(btn, opt) {
     btn.classList.add('wrong');
     snd('wrong');
     setTimeout(() => btn.classList.remove('wrong'), 600);
-    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con sửa lại lần nữa xem nào!`);
+    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Trông nó tròn hay thẳng? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con sửa lại lần nữa xem nào!`);
   }
 }
 
@@ -237,7 +272,7 @@ function verify() {
         g1.round++;
         loadRound(g1.round);
       } else {
-        showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú Thông Thái tự hào quá!');
+        showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú thông thái tự hào quá!');
       }
     }, 800);
   });

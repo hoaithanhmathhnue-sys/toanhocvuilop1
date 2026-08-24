@@ -1,8 +1,43 @@
 /* ================================================================
    GAME 3: ROBOT DẪN ĐƯỜNG
    Ngẫu nhiên hóa vị trí robot & ngôi sao mỗi lần chơi
+   Robot SVG dễ thương, câu hỏi không in hoa nhấn mạnh
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
+
+/* SVG Robot ngộ nghĩnh — phù hợp học sinh lớp 1 */
+function robotSVG(size = 40) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 60 60">
+    <!-- Ăng-ten -->
+    <line x1="30" y1="2" x2="30" y2="12" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="30" cy="3" r="4" fill="#fbbf24"/>
+    <!-- Đầu -->
+    <rect x="12" y="12" width="36" height="28" rx="10" fill="#60a5fa"/>
+    <rect x="14" y="14" width="32" height="24" rx="8" fill="#93c5fd"/>
+    <!-- Mắt -->
+    <ellipse cx="22" cy="24" rx="6" ry="7" fill="#fff"/>
+    <ellipse cx="38" cy="24" rx="6" ry="7" fill="#fff"/>
+    <circle cx="23" cy="25" r="3.5" fill="#1e3a5f"/>
+    <circle cx="39" cy="25" r="3.5" fill="#1e3a5f"/>
+    <circle cx="24.5" cy="23.5" r="1.2" fill="#fff"/>
+    <circle cx="40.5" cy="23.5" r="1.2" fill="#fff"/>
+    <!-- Má hồng -->
+    <ellipse cx="14" cy="30" rx="4" ry="2.5" fill="#fca5a5" opacity="0.7"/>
+    <ellipse cx="46" cy="30" rx="4" ry="2.5" fill="#fca5a5" opacity="0.7"/>
+    <!-- Miệng cười -->
+    <path d="M23 33 Q30 40 37 33" stroke="#1e3a5f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <!-- Thân -->
+    <rect x="18" y="42" width="24" height="12" rx="4" fill="#60a5fa"/>
+    <rect x="24" y="44" width="4" height="4" rx="1" fill="#fbbf24"/>
+    <rect x="32" y="44" width="4" height="4" rx="1" fill="#34d399"/>
+    <!-- Tay -->
+    <rect x="6" y="44" width="10" height="5" rx="3" fill="#93c5fd"/>
+    <rect x="44" y="44" width="10" height="5" rx="3" fill="#93c5fd"/>
+    <!-- Chân -->
+    <rect x="20" y="54" width="8" height="5" rx="2" fill="#3b82f6"/>
+    <rect x="32" y="54" width="8" height="5" rx="2" fill="#3b82f6"/>
+  </svg>`;
+}
 
 let g3 = { round: 1, robot: [0, 0], star: [2, 2], steps: 4, moved: 0, cmd: [], levels: [] };
 
@@ -40,7 +75,7 @@ function loadRound(r) {
 
   const a = document.getElementById('g3area');
   a.innerHTML = `
-    <div class="prompt-box">🤖 Hãy điều khiển rô-bốt tới ngôi sao ⭐! (tối đa ${L.steps} bước)</div>
+    <div class="prompt-box">${robotSVG(28)} Hãy điều khiển rô-bốt tới ngôi sao ⭐! (tối đa ${L.steps} bước)</div>
     <div id="g3grid" class="grid3"></div>
     <div class="steps-info" id="g3steps">Bước còn lại: <b>${L.steps}</b></div>
     <div class="dir-btns">
@@ -72,7 +107,7 @@ function render() {
       const c = document.createElement('div');
       c.className = 'cell';
       if (i === g3.robot[0] && j === g3.robot[1]) {
-        c.innerHTML = '🤖';
+        c.innerHTML = robotSVG(36);
       } else if (i === g3.star[0] && j === g3.star[1]) {
         c.className = 'cell star-cell';
         c.innerHTML = '⭐';
@@ -84,7 +119,7 @@ function render() {
 
 function askExpression(L) {
   const relCol = L.star[1] - L.robot[1];
-  const q2 = relCol < 0 ? 'TRÁI' : (relCol > 0 ? 'PHẢI' : 'GIỮA');
+  const q2 = relCol < 0 ? 'trái' : (relCol > 0 ? 'phải' : 'giữa');
 
   const ex = document.getElementById('g3express');
   ex.innerHTML = `
@@ -93,9 +128,9 @@ function askExpression(L) {
   `;
 
   const opts = [
-    { t: '⭐ Bên TRÁI', g: q2 === 'TRÁI' },
-    { t: '⭐ Bên PHẢI', g: q2 === 'PHẢI' },
-    { t: '⭐ Ở GIỮA', g: q2 === 'GIỮA' }
+    { t: '⭐ Bên trái', g: q2 === 'trái' },
+    { t: '⭐ Bên phải', g: q2 === 'phải' },
+    { t: '⭐ Ở giữa', g: q2 === 'giữa' }
   ];
 
   const rs = document.getElementById('g3q');
@@ -119,7 +154,7 @@ function askExpression(L) {
     rs.appendChild(b);
   });
 
-  setChat('Trước khi điều khiển, Cô Cú Thông Thái hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt?');
+  setChat('Trước khi điều khiển, Cô Cú thông thái hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt?');
 }
 
 function move(dir) {
@@ -169,7 +204,7 @@ function win() {
         g3.round++;
         loadRound(g3.round);
       } else {
-        showResult(3, 3, 'Con đã chỉ đường cho rô-bốt đến đúng ngôi sao! Cô Cú Thông Thái rất tự hào!');
+        showResult(3, 3, 'Con đã chỉ đường cho rô-bốt đến đúng ngôi sao! Cô Cú thông thái rất tự hào!');
       }
     }, 800);
   });
