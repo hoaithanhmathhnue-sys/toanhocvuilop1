@@ -1,0 +1,15 @@
+{
+  "name": "toan1-game",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Trò chơi Toán học Kỳ Diệu cho học sinh Lớp 1 - Hình học & Đo lường",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
+  }
+}
