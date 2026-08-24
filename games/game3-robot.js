@@ -108,12 +108,12 @@ function askExpression(L) {
         b.classList.add('correct');
         snd('correct');
         rs.querySelectorAll('.reason-btn').forEach(x => { x.disabled = true; });
-        setChat(`Đúng rồi! Ngôi sao ở bên ${q2} của rô-bốt. Bây giờ con hãy điều khiển rô-bốt tới đó nhé! 🚀`);
+        setChat(`Chính xác! Ngôi sao ở bên ${q2} của rô-bốt. Con giỏi quá! Bây giờ hãy điều khiển rô-bốt tới đó và nói cho bạn nghe nhé! 🚀`);
       } else {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 600);
-        setChat('Con nhìn kỹ lại xem, ngôi sao đang ở bên nào so với rô-bốt nhỉ? 👀');
+        setChat('Con thử nhìn kỹ rô-bốt và ngôi sao nhé: Ngôi sao đang ở phía nào so với rô-bốt? Hãy so sánh bên trái, bên phải và ở giữa – Con chọn lại lần nữa xem nào! 💡');
       }
     });
     rs.appendChild(b);
@@ -163,7 +163,7 @@ function win() {
   snd('win');
   const cmdNames = { up: 'Lên', down: 'Xuống', left: 'Trái', right: 'Phải' };
   const chain = g3.cmd.map(c => cmdNames[c]).join(' → ');
-  setChat(`Hoan hô! Rô-bốt đã đến ngôi sao! 🎉 Con đã dùng: ${chain}! Thật tài giỏi! 🌟`);
+  setChat(`Chính xác! Rô-bốt đã đến ngôi sao theo chuỗi đường đi: ${chain}. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn các bước đi này nhé! ✨`);
 
   setTimeout(() => {
     if (g3.round < 3) {

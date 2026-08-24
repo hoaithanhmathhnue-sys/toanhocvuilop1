@@ -111,7 +111,7 @@ function pick(side, type) {
     const el = document.getElementById('b-' + side);
     el.classList.add('wrongsel');
     setTimeout(() => el.classList.remove('wrongsel'), 600);
-    setChat('Đó là khối hộp chữ nhật con ạ — các mặt của nó là hình chữ nhật, không bằng nhau. Con nhìn kỹ lại nhé! 🤔');
+    setChat('Con thử nhìn kỹ khối này nhé: các mặt của nó là hình gì, có bằng nhau không? Hãy so sánh với khối lập phương 6 mặt vuông bằng nhau – giống hay khác? Con chọn lại lần nữa xem nào! 💡');
   }
 }
 
@@ -149,12 +149,12 @@ function handleReason(btn, opt) {
     btn.classList.add('wrong');
     snd('wrong');
     setTimeout(() => btn.classList.remove('wrong'), 600);
-    setChat('Chưa đúng con ạ. Khối lập phương có 6 mặt đều là hình vuông bằng nhau đó! Con chọn lại nhé. 💡');
+    setChat('Con thử nhìn kỹ khối lập phương nhé: các mặt của nó có bằng nhau không? Hãy so sánh các đáp án và sửa lại lần nữa xem nào! 💡');
   }
 }
 
 function verify() {
-  setChat('Đúng rồi! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Khối hộp chữ nhật thì các mặt là hình chữ nhật, không bằng nhau. Cô Cú Thông Thái cùng con đếm: 1, 2, 3, 4, 5, 6 — 6 mặt nhé! 🎉');
+  setChat('Chính xác! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé! ✨');
   setTimeout(() => {
     g2.done.push(g2.round);
     if (g2.round < 3) {

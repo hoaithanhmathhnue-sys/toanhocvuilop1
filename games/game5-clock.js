@@ -92,11 +92,11 @@ function setHour(d) {
 function checkClock() {
   if (g5.hour === g5.target) {
     snd('win');
-    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Thật tuyệt vời! 🎉`);
-    setTimeout(() => loadDays(), 2200);
+    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé! 🎉`);
+    setTimeout(() => loadDays(), 2500);
   } else {
     snd('wrong');
-    setChat(`Chưa đúng con ạ. ${g5.target} giờ đúng nghĩa là kim ngắn chỉ số ${g5.target} và kim dài chỉ số 12. Con hãy chỉnh lại nhé! 🔄`);
+    setChat(`Con thử nhìn kỹ kim ngắn và kim dài nhé: Kim ngắn chỉ số mấy, kim dài chỉ số mấy? Hãy so sánh với ${g5.target} giờ đúng – giống hay khác? Con chỉnh lại lần nữa xem nào! 🔄`);
   }
 }
 
@@ -134,7 +134,7 @@ function loadDay(i) {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 500);
-        setChat('Con nhớ lại xem, một tuần có: Hai, Ba, Tư, Năm, Sáu, Bảy, Chủ Nhật. Con thử lại nhé! 📅');
+        setChat('Con thử nhớ lại thứ tự các ngày trong tuần nhé: Thứ Hai, Thứ Ba, Thứ Tư, Thứ Năm, Thứ Sáu, Thứ Bảy, Chủ Nhật. Hãy so sánh và chọn lại lần nữa xem nào! 📅');
       }
     });
     pad.appendChild(b);
@@ -146,7 +146,7 @@ function loadDay(i) {
 }
 
 function dayVerify(q, i) {
-  setChat(`Đúng rồi! ${q.answer} đấy con. Một tuần có 7 ngày: Thứ Hai, Thứ Ba, Thứ Tư, Thứ Năm, Thứ Sáu, Thứ Bảy, Chủ Nhật. 🌈`);
+  setChat(`Chính xác! ${q.answer} đấy con. Một tuần có 7 ngày khép kín nối tiếp nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn thứ này nhé! 🌈`);
   setTimeout(() => {
     if (i === 0) {
       loadDay(1);

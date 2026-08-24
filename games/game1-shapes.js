@@ -5,10 +5,10 @@
 import { setChat, snd, makePills, showResult } from '../main.js';
 
 const SHAPES = {
-  circle: { name: 'hình tròn', color: '#ffd166', desc: 'Hình tròn tròn xoe, không có góc nào cả.' },
-  square: { name: 'hình vuông', color: '#9be0ff', desc: 'Hình vuông có 4 cạnh bằng nhau và 4 góc vuông.' },
-  triangle: { name: 'hình tam giác', color: '#a5f0b0', desc: 'Hình tam giác có 3 cạnh và 3 đỉnh.' },
-  rectangle: { name: 'hình chữ nhật', color: '#ffb3d1', desc: 'Hình chữ nhật có 2 cạnh dài bằng nhau và 2 cạnh ngắn bằng nhau.' }
+  circle: { name: 'hình tròn', color: '#ffd166', desc: 'Đồ vật có đường cong khép kín, không có góc nên là hình tròn.' },
+  square: { name: 'hình vuông', color: '#9be0ff', desc: 'Đồ vật có 4 cạnh bằng nhau và 4 góc vuông nên là hình vuông.' },
+  triangle: { name: 'hình tam giác', color: '#a5f0b0', desc: 'Đồ vật có 3 cạnh và 3 đỉnh nên là hình tam giác.' },
+  rectangle: { name: 'hình chữ nhật', color: '#ffb3d1', desc: 'Đồ vật có 2 cạnh dài bằng nhau và 2 cạnh ngắn bằng nhau nên là hình chữ nhật.' }
 };
 
 /* Pool đồ vật lớn — random chọn mỗi lần */
@@ -54,7 +54,7 @@ const OBJ_POOL = {
 
 const REASONS = {
   circle: [
-    { t: 'Vì nó tròn xoe, không có góc', good: true },
+    { t: 'Vì nó tròn xoe, có đường cong khép kín, không có góc', good: true },
     { t: 'Vì nó có 4 cạnh bằng nhau', good: false },
     { t: 'Vì nó có 3 đỉnh', good: false }
   ],
@@ -190,7 +190,7 @@ function handleClick(obj, el, cfg) {
     void el.offsetWidth;
     el.classList.add('shake-it');
     setTimeout(() => el.classList.remove('shake-it'), 500);
-    setChat(`Ồ, vật đó là ${SHAPES[obj.shape].name} mà. Con thử nhìn kỹ xem, ${SHAPES[g1.target].name} trông thế nào nhé? 👀`);
+    setChat(`Con thử nhìn kỹ ${obj.label} nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} – giống hay khác? Con chọn lại lần nữa xem nào! 💡`);
   }
 }
 
@@ -225,13 +225,13 @@ function handleReason(btn, opt) {
     btn.classList.add('wrong');
     snd('wrong');
     setTimeout(() => btn.classList.remove('wrong'), 600);
-    setChat(`Hmm, chưa đúng đâu con! ${SHAPES[g1.target].desc} Con chọn lại xem nào? 💡`);
+    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con sửa lại lần nữa xem nào! 💡`);
   }
 }
 
 function verify() {
   const desc = SHAPES[g1.target].desc;
-  setChat(`Chính xác! ${desc} Con làm rất tốt! ✨`);
+  setChat(`Chính xác! ${desc} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé! ✨`);
   setTimeout(() => {
     if (g1.round < g1.totalRounds) {
       g1.round++;
@@ -239,5 +239,5 @@ function verify() {
     } else {
       showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú Thông Thái tự hào quá!');
     }
-  }, 2200);
+  }, 2500);
 }
