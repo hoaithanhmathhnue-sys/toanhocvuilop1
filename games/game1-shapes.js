@@ -19,7 +19,7 @@ const OBJ_POOL = {
     { id: 'moon', emoji: '🌕', label: 'Trăng tròn' },
     { id: 'cookie', emoji: '🍪', label: 'Bánh quy' },
     { id: 'clock', emoji: '🕐', label: 'Đồng hồ' },
-    { id: 'coin', emoji: '🪙', label: 'Đồng xu' },
+    { id: 'coin', emoji: '💿', label: 'Đĩa CD' },
     { id: 'pizza', emoji: '🍕', label: 'Pizza' },
     { id: 'watermelon', emoji: '🍉', label: 'Dưa hấu' }
   ],
