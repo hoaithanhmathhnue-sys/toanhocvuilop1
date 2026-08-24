@@ -1,6 +1,6 @@
 /* ================================================================
    GAME 6: KHỐI LẬP PHƯƠNG THẦN KỲ (Bài 15)
-   Three.js 3D cube — xoay chuột, 6 mặt màu, đếm mặt, khai triển
+   Three.js 3D cube — xoay chuột tự do, 6 mặt màu, đếm mặt, khai triển
    Theo hướng dẫn SKILL-MINH HOA-BAI-TAP + SKILL-MO-PHONG
    Pattern: Trải nghiệm → Biểu đạt → Kiểm chứng
    ================================================================ */
@@ -10,22 +10,38 @@ import { setChat, snd, makePills, showResult, confetti } from '../main.js';
 const FACES = [
   { key: 'front',  name: 'Mặt trước',     color: '#ff5555', hex: 0xff5555, icon: '🌟', colorName: 'đỏ' },
   { key: 'back',   name: 'Mặt sau',       color: '#c084fc', hex: 0xc084fc, icon: '🎈', colorName: 'tím' },
-  { key: 'top',    name: 'Mặt trên',      color: '#60a5fa', hex: 0x60a5fa, icon: '☀️', colorName: 'xanh' },
+  { key: 'top',    name: 'Mặt trên',      color: '#60a5fa', hex: 0x60a5fa, icon: '☀️', colorName: 'xanh lam' },
   { key: 'bottom', name: 'Mặt dưới',      color: '#fb923c', hex: 0xfb923c, icon: '🍂', colorName: 'cam' },
   { key: 'right',  name: 'Mặt bên phải',  color: '#fde047', hex: 0xfde047, icon: '⭐', colorName: 'vàng' },
   { key: 'left',   name: 'Mặt bên trái',  color: '#4ade80', hex: 0x4ade80, icon: '🍀', colorName: 'xanh lá' }
 ];
 
 let phase = 'explore'; // explore | net | challenge
-let chalRound = 0, chalQ = 0, attempts = 0, earnedStars = {};
+let chalQ = 0, attempts = 0, earnedStars = {};
 let threeScene = null, threeCamera = null, threeRenderer = null, cubeMesh = null, controls = null;
 let animId = null;
 
-const ROUNDS = [
-  { label: 'SANG PHẢI 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt bên phải bây giờ là màu gì?', 'Mặt trên vẫn là màu gì?'] },
-  { label: 'LÊN 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt trên bây giờ là màu gì?', 'Mặt bên phải vẫn là màu gì?'] },
-  { label: 'SANG TRÁI 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt bên trái bây giờ là màu gì?', 'Mặt trên vẫn là màu gì?'] },
-  { label: 'XUỐNG 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt dưới bây giờ là màu gì?', 'Mặt bên phải vẫn là màu gì?'] }
+const CHALLENGE_QUESTIONS = [
+  {
+    q: 'Xoay mặt đỏ sang bên trái thì em sẽ nhìn thấy màu gì?',
+    ansIdx: 4, // màu vàng
+    hint: 'Mặt đỏ ở phía trước. Con dùng chuột xoay khối sang trái xem mặt bên phải (vàng) sẽ chạy ra đâu nhé!'
+  },
+  {
+    q: 'Xoay mặt trái sang phải thì em thấy màu gì?',
+    ansIdx: 1, // màu tím
+    hint: 'Mặt trái là mặt màu xanh lá. Con hãy dùng chuột xoay khối 3D để xem mặt phía sau (tím) sẽ xuất hiện ở đâu nhé!'
+  },
+  {
+    q: 'Xoay mặt màu vàng xuống thì em thấy màu gì?',
+    ansIdx: 2, // màu xanh lam
+    hint: 'Mặt vàng ở bên phải. Con dùng chuột xoay mặt vàng xuống dưới xem mặt màu xanh lam ở trên chạy ra đâu nhé!'
+  },
+  {
+    q: 'Xoay mặt màu xanh lá cây lên thì em thấy màu gì?',
+    ansIdx: 3, // màu cam
+    hint: 'Mặt xanh lá cây ở bên trái. Con dùng chuột xoay mặt xanh lá cây lên trên xem mặt màu cam ở dưới hiện ra nhé!'
+  }
 ];
 
 function shuffle(a) { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
@@ -110,7 +126,7 @@ function createThreeCube(container) {
     cubeMesh.add(sprite);
   });
 
-  // OrbitControls
+  // OrbitControls — Luôn cho phép xoay tự do để học sinh quan sát!
   controls = new THREE.OrbitControls(threeCamera, threeRenderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
@@ -118,6 +134,7 @@ function createThreeCube(container) {
   controls.minDistance = 3;
   controls.maxDistance = 10;
   controls.enablePan = false;
+  controls.enableRotate = true; // Cho phép xoay tự do
   controls.autoRotate = false;
   controls.autoRotateSpeed = 2;
 
@@ -129,7 +146,6 @@ function createThreeCube(container) {
   }
   animate();
 
-  // Enable auto-rotate for explore mode
   if (phase === 'explore') {
     controls.autoRotate = true;
   }
@@ -201,7 +217,7 @@ function loadExplore() {
           <div class="info-item6">🔢 <b>6</b> mặt — đều là hình vuông bằng nhau</div>
           <div class="info-item6">🔁 Mặt đỏ 🌟 ↔ Mặt tím 🎈</div>
           <div class="info-item6">🔁 Mặt xanh ☀️ ↔ Mặt cam 🍂</div>
-          <div class="info-item6">🔁 Mặt vàng ⭐ ↔ Mặt hồng 🌸</div>
+          <div class="info-item6">🔁 Mặt vàng ⭐ ↔ Mặt xanh lá 🍀</div>
         </div>
         <div class="action-row" style="flex-direction:column;gap:8px;margin-top:12px">
           <button class="action-btn btn-green" id="g6net" style="width:100%">📦 Mở khối – khai triển</button>
@@ -220,7 +236,7 @@ function loadExplore() {
   document.getElementById('g6net').addEventListener('click', loadNet);
   document.getElementById('g6challenge').addEventListener('click', startChallenge);
 
-  setChat('Chào con! Đây là khối lập phương 3D! Con hãy dùng chuột kéo để xoay khối, dùng cuộn chuột để zoom. Quan sát 6 mặt với 6 màu khác nhau nhé!');
+  setChat('Chào con! Đây là khối lập phương 3D! Con hãy dùng chuột kéo để xoay khối tự do, dùng cuộn chuột để zoom. Quan sát 6 mặt với 6 màu khác nhau nhé!');
 }
 
 /* ============ LOAD THREE.JS CDN ============ */
@@ -251,19 +267,19 @@ function loadNet() {
     <div class="net-cross">
       <div class="net-row">
         <div class="net-empty"></div>
-        <div class="net-sq" style="background:#3b82f6">☀️<br><small>Trên</small></div>
+        <div class="net-sq" style="background:#60a5fa">☀️<br><small>Trên</small></div>
         <div class="net-empty"></div>
         <div class="net-empty"></div>
       </div>
       <div class="net-row">
-        <div class="net-sq" style="background:#ec4899">🌸<br><small>Trái</small></div>
-        <div class="net-sq" style="background:#ef4444">🌟<br><small>Trước</small></div>
-        <div class="net-sq" style="background:#facc15;color:#5b4a00">⭐<br><small>Phải</small></div>
-        <div class="net-sq" style="background:#a855f7">🎈<br><small>Sau</small></div>
+        <div class="net-sq" style="background:#4ade80;color:#052e16">🍀<br><small>Trái</small></div>
+        <div class="net-sq" style="background:#ff5555">🌟<br><small>Trước</small></div>
+        <div class="net-sq" style="background:#fde047;color:#5b4a00">⭐<br><small>Phải</small></div>
+        <div class="net-sq" style="background:#c084fc">🎈<br><small>Sau</small></div>
       </div>
       <div class="net-row">
         <div class="net-empty"></div>
-        <div class="net-sq" style="background:#f97316">🍂<br><small>Dưới</small></div>
+        <div class="net-sq" style="background:#fb923c">🍂<br><small>Dưới</small></div>
         <div class="net-empty"></div>
         <div class="net-empty"></div>
       </div>
@@ -308,31 +324,30 @@ function loadNet() {
 function startChallenge() {
   destroyThree();
   phase = 'challenge';
-  chalRound = 0;
+  chalQ = 0;
   earnedStars = {};
-  loadChalRound(0);
+  loadChalQ(0);
 }
 
-function loadChalRound(ri) {
-  chalRound = ri; chalQ = 0; attempts = 0;
-  makePills('g6pills', 4, ri + 1, Object.keys(earnedStars).map(Number));
+function loadChalQ(qi) {
+  chalQ = qi;
+  attempts = 0;
+  makePills('g6pills', 4, qi + 1, Object.keys(earnedStars).map(Number));
 
-  const r = ROUNDS[ri];
+  const cQ = CHALLENGE_QUESTIONS[qi];
   const a = document.getElementById('g6area');
   a.innerHTML = `
-    <div class="prompt-box">🎮 Thử thách ${ri + 1}/4: Con xoay khối trong đầu nhé — Nếu quay <b>${r.label}</b> thì...</div>
+    <div class="prompt-box">🎮 Thử thách ${qi + 1}/4: <b>${cQ.q}</b></div>
     <div class="g6-layout">
       <div class="g6-center">
-        <div id="g6threeContainer" style="width:100%;min-height:260px;display:flex;justify-content:center;align-items:center"></div>
-        <div class="note-sm">👆 Ban đầu: Trước=đỏ🌟, Trên=xanh☀️, Phải=vàng⭐, Trái=xanh lá🍀</div>
+        <div id="g6threeContainer" style="width:100%;min-height:270px;display:flex;justify-content:center;align-items:center"></div>
+        <div class="note-sm">🖐️ Con hãy kéo chuột để xoay khối 3D tự do và kiểm tra nhé!</div>
       </div>
       <div class="g6-controls">
         <div class="info-card6" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
-          <div class="info-title6" style="color:#92400e">🧠 Hãy tưởng tượng!</div>
+          <div class="info-title6" style="color:#92400e">💡 Hướng dẫn xoay khối</div>
           <div style="font-size:0.9rem;color:#78350f;font-weight:600">
-            Nếu quay <b>${r.label}</b>:<br>
-            Mặt nào sẽ ra trước?<br>
-            Mặt nào vẫn giữ nguyên?
+            Dùng chuột/ngón tay xoay khối 3D theo câu hỏi để tìm mặt xuất hiện nhé!
           </div>
         </div>
         <div id="g6chalQArea" style="margin-top:12px"></div>
@@ -340,100 +355,71 @@ function loadChalRound(ri) {
     </div>
   `;
 
-  // Show static cube (initial position, no rotate)
+  // Init Three.js 3D cube with free rotation enabled
   loadThreeJS(() => {
     const container = document.getElementById('g6threeContainer');
     if (container) {
       createThreeCube(container);
       if (controls) {
         controls.autoRotate = false;
-        controls.enableRotate = false; // Khóa xoay — giữ cố định để HS nhận biết mặt
+        controls.enableRotate = true; // Cho phép xoay tự do
       }
     }
   });
 
-  setTimeout(() => askChalQ(ri, 0), 800);
-}
-
-function askChalQ(ri, qi) {
-  chalQ = qi; attempts = 0;
-  const r = ROUNDS[ri];
-
-  // Determine correct answers based on rotation
-  const answers = getRotationAnswers(ri);
-  const correctColor = answers[qi];
+  // Prepare 4 choices: 1 correct + 3 random wrong options
+  const correctIdx = cQ.ansIdx;
+  const allIdx = [0, 1, 2, 3, 4, 5];
+  const wrongIdxs = shuffle(allIdx.filter(i => i !== correctIdx));
+  const opts = shuffle([correctIdx, wrongIdxs[0], wrongIdxs[1], wrongIdxs[2]]);
 
   const qArea = document.getElementById('g6chalQArea');
-  const qText = r.qs[qi];
-
-  // Build 4 color choices
-  const allColors = FACES.map(f => f.colorName);
-  let opts = [correctColor];
-  const wrongs = shuffle(allColors.filter(c => c !== correctColor));
-  opts.push(wrongs[0], wrongs[1]);
-  opts = shuffle(opts);
-
   qArea.innerHTML = `
-    <div class="prompt-box" style="font-size:0.95rem">❓ Câu ${qi+1}/3: ${qText}</div>
+    <div class="prompt-box" style="font-size:0.95rem">❓ Hãy chọn màu con nhìn thấy:</div>
     <div class="reason-grid" id="g6choices"></div>
     <div id="g6chalFb" style="margin-top:8px"></div>
   `;
 
   const grid = document.getElementById('g6choices');
-  opts.forEach(c => {
-    const fData = FACES.find(f => f.colorName === c);
+  opts.forEach(idx => {
+    const f = FACES[idx];
     const b = document.createElement('button');
     b.className = 'reason-btn';
-    b.style.background = fData.color;
-    b.style.color = c === 'vàng' ? '#5b4a00' : '#fff';
-    b.style.borderColor = fData.color;
-    b.style.minWidth = '100px';
+    b.style.background = f.color;
+    b.style.color = f.colorName === 'vàng' ? '#5b4a00' : '#fff';
+    b.style.borderColor = f.color;
+    b.style.minWidth = '110px';
     b.style.textAlign = 'center';
-    b.innerHTML = `${fData.icon} Màu ${c}`;
-    b.addEventListener('click', () => handleChalAnswer(c, correctColor, qi, b));
+    b.innerHTML = `${f.icon} Màu ${f.colorName}`;
+    b.addEventListener('click', () => handleChalAnswer(idx, correctIdx, qi, b));
     grid.appendChild(b);
   });
 
-  setChat(`${qText} Con nghĩ kỹ rồi chọn nhé!`);
+  setChat(`${cQ.q} Con hãy thử xoay khối 3D để kiểm tra rồi chọn đáp án nhé!`);
 }
 
-function getRotationAnswers(ri) {
-  // Returns [front, second-face, third-face] after one rotation
-  // Initial: front=đỏ, back=tím, top=xanh, bottom=cam, right=vàng, left=xanh lá
-  //
-  // SANG PHẢI (Y+90°): front←left, right←front, back←right, left←back
-  //   → front=xanh lá, right=đỏ, top=xanh (không đổi)
-  //
-  // LÊN (X-90°): front←bottom, top←front, back←top, bottom←back
-  //   → front=cam, top=đỏ, right=vàng (không đổi)
-  //
-  // SANG TRÁI (Y-90°): front←right, left←front, back←left, right←back
-  //   → front=vàng, left=đỏ, top=xanh (không đổi)
-  //
-  // XUỐNG (X+90°): front←top, bottom←front, back←bottom, top←back
-  //   → front=xanh, bottom=đỏ, right=vàng (không đổi)
-  switch(ri) {
-    case 0: return ['xanh lá', 'đỏ', 'xanh'];   // SANG PHẢI
-    case 1: return ['cam', 'đỏ', 'vàng'];        // LÊN
-    case 2: return ['vàng', 'đỏ', 'xanh'];       // SANG TRÁI
-    case 3: return ['xanh', 'đỏ', 'vàng'];       // XUỐNG
-    default: return ['đỏ', 'xanh', 'vàng'];
-  }
-}
-
-function handleChalAnswer(chosen, correct, qi, btn) {
+function handleChalAnswer(chosenIdx, correctIdx, qi, btn) {
   const allBtns = document.querySelectorAll('#g6choices .reason-btn');
   const fb = document.getElementById('g6chalFb');
+  const correctFace = FACES[correctIdx];
+  const cQ = CHALLENGE_QUESTIONS[qi];
 
-  if (chosen === correct) {
-    earnedStars[`${chalRound}-${qi}`] = true;
+  if (chosenIdx === correctIdx) {
+    earnedStars[qi] = true;
     btn.style.outline = '4px solid #22c55e';
     snd('correct');
     confetti(30);
     allBtns.forEach(x => x.disabled = true);
     fb.innerHTML = `<div style="background:#d1fae5;border-radius:14px;padding:12px;font-weight:700;color:#065f46;text-align:center">✅ Chính xác! Giỏi lắm! 🌟</div>`;
-    setChat('Chính xác! Mặt tiếp theo xuất hiện đúng như con tưởng tượng. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn màu này nhé!', true, () => {
-      setTimeout(() => nextChalStep(), 800);
+    setChat('Chính xác! Con quan sát khối 3D rất tốt. Giỏi lắm!', true, () => {
+      setTimeout(() => {
+        if (qi + 1 < CHALLENGE_QUESTIONS.length) {
+          loadChalQ(qi + 1);
+        } else {
+          destroyThree();
+          showResult(6, 4, 'Con đã hoàn thành xuất sắc Thử thách Khối Lập Phương! Cô Cú thông thái rất tự hào! 🏆');
+        }
+      }, 1200);
     });
   } else {
     attempts++;
@@ -442,26 +428,20 @@ function handleChalAnswer(chosen, correct, qi, btn) {
     btn.disabled = true;
     if (attempts >= 2) {
       allBtns.forEach(x => x.disabled = true);
-      const correctFace = FACES.find(f => f.colorName === correct);
-      fb.innerHTML = `<div style="background:#fef3c7;border-radius:14px;padding:12px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án: ${correctFace.icon} Màu ${correct}</div>`;
-      setChat(`Đáp án đúng là màu ${correct}. Con thử quan sát kỹ lại vị trí 6 mặt của khối lập phương nhé!`, true, () => {
-        setTimeout(() => nextChalStep(), 800);
+      fb.innerHTML = `<div style="background:#fef3c7;border-radius:14px;padding:12px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án đúng: ${correctFace.icon} Màu ${correctFace.colorName}</div>`;
+      setChat(`Đáp án đúng là màu ${correctFace.colorName}. Con tiếp tục thử thách tiếp theo nhé!`, true, () => {
+        setTimeout(() => {
+          if (qi + 1 < CHALLENGE_QUESTIONS.length) {
+            loadChalQ(qi + 1);
+          } else {
+            destroyThree();
+            const stars = Object.keys(earnedStars).length;
+            showResult(6, Math.max(1, stars), 'Con đã hoàn thành Thử thách Khối Lập Phương! 🏆');
+          }
+        }, 1500);
       });
     } else {
-      setChat('Con thử nhìn kỹ khối này nhé: khi xoay theo hướng đó thì mặt nào sẽ xuất hiện ở phía trước? Hãy so sánh các màu và thử chọn lại lần nữa xem nào!');
+      setChat(`${cQ.hint} Hãy thử chọn lại lần nữa xem nào!`);
     }
-  }
-}
-
-function nextChalStep() {
-  chalQ++;
-  if (chalQ < 3) {
-    askChalQ(chalRound, chalQ);
-  } else if (chalRound + 1 < 4) {
-    loadChalRound(chalRound + 1);
-  } else {
-    destroyThree();
-    const stars = Object.keys(earnedStars).length;
-    showResult(6, Math.min(4, Math.ceil(stars / 3)), 'Con đã hoàn thành Thử thách Khối Lập Phương! Cô Cú thông thái tự hào lắm! 🏆');
   }
 }
