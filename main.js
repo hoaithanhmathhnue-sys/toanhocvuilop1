@@ -82,27 +82,58 @@ export function snd(type) {
   }
 }
 
-/* ============ SPEECH SYNTHESIS (giọng NỮ) ============ */
+/* ============ SPEECH SYNTHESIS (giọng NỮ Cô Cú) ============ */
 let viVoice = null;
+let isMaleFallback = false;
+
 function loadVoices() {
-  const vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-  const viVoices = vs.filter(v => v.lang && v.lang.toLowerCase().startsWith('vi'));
-  // Ưu tiên giọng nữ: tìm theo keyword
-  const femaleKeywords = ['female', 'hoaimy', 'linh', 'woman', 'nữ', 'girl', 'chi'];
-  const femaleVoice = viVoices.find(v =>
-    femaleKeywords.some(kw => v.name.toLowerCase().includes(kw))
-  );
-  // Nếu không tìm thấy giọng nữ rõ ràng, chọn giọng Google (thường là nữ)
-  const googleVoice = viVoices.find(v => v.name.toLowerCase().includes('google'));
-  viVoice = femaleVoice || googleVoice || viVoices[0] || null;
+  if (!window.speechSynthesis) return;
+  const vs = speechSynthesis.getVoices();
+  if (!vs.length) return;
+
+  const viVoices = vs.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith('vi'));
+  
+  const femaleKeywords = ['hoaimy', 'linh', 'female', 'woman', 'nữ', 'girl', 'chi', 'hương', 'mai', 'lan', 'google'];
+  const maleKeywords = ['microsoft an', 'microsoft nam', ' male', 'male ', 'boy'];
+
+  // 1. Ưu tiên 1: Tìm giọng Việt nữ rõ ràng (Microsoft HoaiMy, Linh, Google tiếng Việt...)
+  let selected = viVoices.find(v => {
+    const name = v.name.toLowerCase();
+    return femaleKeywords.some(kw => name.includes(kw));
+  });
+
+  // 2. Ưu tiên 2: Tìm giọng Việt KHÔNG thuộc danh sách giọng Nam
+  if (!selected) {
+    selected = viVoices.find(v => {
+      const name = v.name.toLowerCase();
+      return !maleKeywords.some(kw => name.includes(kw));
+    });
+  }
+
+  // 3. Nếu hệ thống chỉ có duy nhất giọng Nam (Microsoft An), dùng nó nhưng bật cờ ép pitch cao
+  if (!selected && viVoices.length > 0) {
+    selected = viVoices[0];
+    isMaleFallback = true;
+  } else {
+    isMaleFallback = false;
+  }
+
+  viVoice = selected || null;
 }
-if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+
+if ('speechSynthesis' in window) {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
 
 export function speak(text) {
   if (!state.sound || !('speechSynthesis' in window)) return;
-  try { window.speechSynthesis.cancel(); } catch (e) { /* */ }
+  try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
   const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]*>/g, ''));
-  u.lang = 'vi-VN'; u.rate = 1.25; u.pitch = 1.4; // rate nhanh hơn để theo kịp thao tác
+  u.lang = 'vi-VN';
+  u.rate = 1.2;
+  // Nếu là giọng Nam bắt buộc (Microsoft An), nâng pitch lên 1.65 để chuyển thành giọng Nữ thân thiện
+  u.pitch = isMaleFallback ? 1.65 : 1.4;
   if (viVoice) u.voice = viVoice;
   window.speechSynthesis.speak(u);
 }
