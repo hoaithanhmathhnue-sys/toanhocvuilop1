@@ -5,24 +5,41 @@
 import { setChat, snd, makePills, showResult, confetti } from '../main.js';
 
 const QUESTIONS = [
-  // Hình phẳng
+  // === Hình phẳng ===
   { cat: '🌲 Hình học', q: 'Hình nào có 3 cạnh và 3 đỉnh?', opts: ['Hình tam giác', 'Hình vuông', 'Hình tròn'], ans: 0, explain: 'Hình tam giác có 3 cạnh và 3 đỉnh!' },
   { cat: '🌲 Hình học', q: 'Hình nào KHÔNG có góc?', opts: ['Hình tròn', 'Hình vuông', 'Hình chữ nhật'], ans: 0, explain: 'Hình tròn tròn xoe, không có góc nào cả!' },
   { cat: '🌲 Hình học', q: 'Hình vuông có mấy cạnh bằng nhau?', opts: ['4 cạnh', '3 cạnh', '2 cạnh'], ans: 0, explain: 'Hình vuông có 4 cạnh bằng nhau và 4 góc vuông!' },
-  // Khối 3D
+  { cat: '🌲 Hình học', q: 'Hình chữ nhật có bao nhiêu góc vuông?', opts: ['4 góc', '3 góc', '2 góc'], ans: 0, explain: 'Hình chữ nhật có 4 góc vuông!' },
+  { cat: '🌲 Hình học', q: 'Mặt trời giống hình gì nhất?', opts: ['Hình tròn', 'Hình vuông', 'Hình tam giác'], ans: 0, explain: 'Mặt trời tròn xoe nên giống hình tròn!' },
+  { cat: '🌲 Hình học', q: 'Cửa sổ lớp học thường giống hình gì?', opts: ['Hình vuông', 'Hình tròn', 'Hình tam giác'], ans: 0, explain: 'Cửa sổ lớp học thường là hình vuông hoặc chữ nhật!' },
+  { cat: '🌲 Hình học', q: 'Mái nhà giống hình gì?', opts: ['Hình tam giác', 'Hình tròn', 'Hình chữ nhật'], ans: 0, explain: 'Mái nhà có dạng tam giác!' },
+  { cat: '🌲 Hình học', q: 'Hình chữ nhật khác hình vuông ở điểm nào?', opts: ['2 cạnh dài 2 cạnh ngắn', 'Có 3 cạnh', 'Không có góc'], ans: 0, explain: 'Hình chữ nhật có 2 cạnh dài và 2 cạnh ngắn!' },
+  // === Khối 3D ===
   { cat: '🧊 Khối 3D', q: 'Khối lập phương có mấy mặt?', opts: ['6 mặt', '4 mặt', '8 mặt'], ans: 0, explain: 'Khối lập phương có 6 mặt, tất cả đều là hình vuông!' },
   { cat: '🧊 Khối 3D', q: 'Các mặt của khối lập phương đều là hình gì?', opts: ['Hình vuông', 'Hình tròn', 'Hình tam giác'], ans: 0, explain: 'Khối lập phương có 6 mặt đều là hình vuông bằng nhau!' },
   { cat: '🧊 Khối 3D', q: 'Khối hộp chữ nhật khác khối lập phương ở điểm nào?', opts: ['Các mặt là hình chữ nhật, không bằng nhau', 'Có 4 mặt', 'Không có đỉnh'], ans: 0, explain: 'Khối hộp chữ nhật có các mặt là hình chữ nhật, kích thước khác nhau!' },
-  // Vị trí
+  { cat: '🧊 Khối 3D', q: 'Khối lập phương có mấy đỉnh?', opts: ['8 đỉnh', '6 đỉnh', '4 đỉnh'], ans: 0, explain: 'Khối lập phương có 8 đỉnh!' },
+  { cat: '🧊 Khối 3D', q: 'Khối lập phương có mấy cạnh?', opts: ['12 cạnh', '8 cạnh', '6 cạnh'], ans: 0, explain: 'Khối lập phương có 12 cạnh bằng nhau!' },
+  { cat: '🧊 Khối 3D', q: 'Viên xúc xắc giống khối gì?', opts: ['Khối lập phương', 'Khối hộp chữ nhật', 'Hình cầu'], ans: 0, explain: 'Viên xúc xắc là khối lập phương vì 6 mặt đều là hình vuông!' },
+  // === Vị trí ===
   { cat: '🤖 Vị trí', q: 'Nếu rô-bốt đang ở góc trên bên trái, nó cần đi hướng nào để sang phải?', opts: ['Sang phải ➡', 'Lên trên ⬆', 'Xuống dưới ⬇'], ans: 0, explain: 'Để sang phải, rô-bốt phải đi theo hướng ➡!' },
   { cat: '🤖 Vị trí', q: 'Con mèo đứng TRÊN bàn. Vậy con mèo ở vị trí nào so với bàn?', opts: ['Ở trên', 'Ở dưới', 'Ở giữa'], ans: 0, explain: 'Con mèo đứng trên bàn nghĩa là nó ở vị trí phía trên!' },
-  // Đo lường
+  { cat: '🤖 Vị trí', q: 'Con cá bơi DƯỚI nước. Con cá ở vị trí nào so với mặt nước?', opts: ['Ở dưới', 'Ở trên', 'Bên phải'], ans: 0, explain: 'Con cá bơi dưới nước nghĩa là nó ở bên dưới mặt nước!' },
+  { cat: '🤖 Vị trí', q: 'Bạn An ngồi GIỮA Bình và Chi. An ở vị trí nào?', opts: ['Ở giữa', 'Bên trái', 'Bên phải'], ans: 0, explain: 'An ngồi giữa nghĩa là An ở vị trí chính giữa hai bạn!' },
+  { cat: '🤖 Vị trí', q: 'Muốn đi từ tầng 1 lên tầng 2, con phải đi hướng nào?', opts: ['Lên trên ⬆', 'Sang phải ➡', 'Xuống dưới ⬇'], ans: 0, explain: 'Tầng 2 ở trên tầng 1, nên con phải đi lên!' },
+  // === Đo lường ===
   { cat: '📏 Đo lường', q: 'Khi đo bằng thước, vạch nào phải trùng với đầu vật?', opts: ['Vạch số 0', 'Vạch số 5', 'Vạch cuối cùng'], ans: 0, explain: 'Khi đo, ta luôn đặt vạch số 0 trùng với đầu vật cần đo!' },
-  { cat: '📏 Đo lường', q: 'Cây bút dài 7 cm. Số 7 ta đọc ở đâu?', opts: ['Ở vạch cuối trùng đuôi bút', 'Ở vạch giữa thước', 'Ở vạch số 0'], ans: 0, explain: 'Ta đọc số ở vạch cuối cùng mà đuôi bút trùng vào, đó chính là 7 cm!' },
-  // Đồng hồ & ngày
+  { cat: '📏 Đo lường', q: 'Cây bút dài 7 cm. Số 7 ta đọc ở đâu?', opts: ['Ở vạch cuối trùng đuôi bút', 'Ở vạch giữa thước', 'Ở vạch số 0'], ans: 0, explain: 'Ta đọc số ở vạch cuối cùng mà đuôi bút trùng vào!' },
+  { cat: '📏 Đo lường', q: 'Đơn vị đo độ dài nhỏ nhất con học là gì?', opts: ['Xăng-ti-mét (cm)', 'Ki-lô-mét (km)', 'Mét (m)'], ans: 0, explain: 'Lớp 1 con học đơn vị cm - xăng-ti-mét!' },
+  { cat: '📏 Đo lường', q: 'Vật nào dài hơn: bút chì hay cục tẩy?', opts: ['Bút chì', 'Cục tẩy', 'Bằng nhau'], ans: 0, explain: 'Bút chì thường dài hơn cục tẩy!' },
+  // === Đồng hồ & ngày ===
   { cat: '🕐 Đồng hồ', q: '3 giờ đúng: kim ngắn chỉ số mấy?', opts: ['Số 3', 'Số 12', 'Số 6'], ans: 0, explain: '3 giờ đúng: kim ngắn chỉ số 3, kim dài chỉ số 12!' },
-  { cat: '🕐 Đồng hồ', q: 'Sau Thứ Sáu là thứ mấy?', opts: ['Thứ Bảy', 'Thứ Tư', 'Chủ Nhật'], ans: 0, explain: 'Sau Thứ Sáu là Thứ Bảy! Rồi sau đó là Chủ Nhật.' },
+  { cat: '🕐 Đồng hồ', q: 'Sau Thứ Sáu là thứ mấy?', opts: ['Thứ Bảy', 'Thứ Tư', 'Chủ Nhật'], ans: 0, explain: 'Sau Thứ Sáu là Thứ Bảy!' },
   { cat: '🕐 Đồng hồ', q: 'Một tuần có bao nhiêu ngày?', opts: ['7 ngày', '5 ngày', '10 ngày'], ans: 0, explain: 'Một tuần có 7 ngày: Hai, Ba, Tư, Năm, Sáu, Bảy, Chủ Nhật!' },
+  { cat: '🕐 Đồng hồ', q: '6 giờ đúng: kim ngắn chỉ số mấy?', opts: ['Số 6', 'Số 12', 'Số 3'], ans: 0, explain: '6 giờ đúng: kim ngắn chỉ số 6, kim dài chỉ số 12!' },
+  { cat: '🕐 Đồng hồ', q: 'Kim nào NGẮN hơn trên đồng hồ?', opts: ['Kim giờ', 'Kim phút', 'Bằng nhau'], ans: 0, explain: 'Kim giờ (kim ngắn) luôn ngắn hơn kim phút (kim dài)!' },
+  { cat: '🕐 Đồng hồ', q: 'Ngày đầu tiên trong tuần là?', opts: ['Thứ Hai', 'Chủ Nhật', 'Thứ Ba'], ans: 0, explain: 'Tuần bắt đầu từ Thứ Hai!' },
+  { cat: '🕐 Đồng hồ', q: '12 giờ trưa: kim ngắn chỉ số mấy?', opts: ['Số 12', 'Số 6', 'Số 1'], ans: 0, explain: '12 giờ: kim ngắn chỉ số 12, kim dài cũng chỉ số 12!' },
 ];
 
 let g7 = { qIdx: 0, score: 0, questions: [], total: 5 };

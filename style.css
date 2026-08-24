@@ -377,85 +377,55 @@ header {
 .cube-face small { font-size: 0.6rem; opacity: 0.85; }
 .cube3d { transition: transform 0.5s ease; }
 
-/* ---------- GAME 6: CUBE 3D INTERACTIVE ---------- */
+/* ---------- GAME 6: THREE.JS CUBE 3D ---------- */
 .g6-layout {
   display: flex; gap: 20px; flex-wrap: wrap;
   justify-content: center; align-items: flex-start;
 }
-.g6-center { flex: 1; min-width: 240px; }
-.g6-controls { min-width: 220px; }
+.g6-center { flex: 1; min-width: 260px; max-width: 420px; }
+.g6-controls { min-width: 240px; max-width: 320px; }
 
-.cube-scene {
-  width: 220px; height: 220px; margin: 10px auto;
-  perspective: 600px;
-  cursor: grab; touch-action: none;
+.face-legend {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px;
 }
-.cube3d-interactive {
-  width: 120px; height: 120px;
-  transform-style: preserve-3d;
-  transform: rotateX(0deg) rotateY(0deg);
-  transition: transform 0.35s ease;
-  position: relative;
-  margin: 50px auto;
+.face-tag {
+  padding: 4px 10px; border-radius: 20px; font-size: 0.75rem;
+  font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
-.cube3d-interactive .cf-front  { position:absolute;top:0;left:0;width:120px;height:120px;background:#ef4444;transform:translateZ(60px); }
-.cube3d-interactive .cf-back   { position:absolute;top:0;left:0;width:120px;height:120px;background:#a855f7;transform:rotateY(180deg) translateZ(60px); }
-.cube3d-interactive .cf-top    { position:absolute;top:0;left:0;width:120px;height:120px;background:#3b82f6;transform:rotateX(90deg) translateZ(60px); }
-.cube3d-interactive .cf-bottom { position:absolute;top:0;left:0;width:120px;height:120px;background:#f97316;transform:rotateX(-90deg) translateZ(60px); }
-.cube3d-interactive .cf-right  { position:absolute;top:0;left:0;width:120px;height:120px;background:#facc15;color:#5b4a00;transform:rotateY(90deg) translateZ(60px); }
-.cube3d-interactive .cf-left   { position:absolute;top:0;left:0;width:120px;height:120px;background:#ec4899;transform:rotateY(-90deg) translateZ(60px); }
 
-.see-table {
+.info-card6 {
   background: var(--glass-bg); backdrop-filter: blur(6px);
-  border-radius: var(--radius-md); padding: 14px;
-  box-shadow: var(--glass-shadow); margin-top: 12px;
+  border-radius: var(--radius-md); padding: 16px;
+  box-shadow: var(--glass-shadow);
+  border: 2px solid var(--glass-border);
 }
-.see-grid6 {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+.info-title6 {
+  font-weight: 800; font-size: 1rem; color: var(--purple-700);
+  margin-bottom: 8px;
 }
-.see-cell6 {
-  border-radius: 12px; padding: 10px 8px;
-  text-align: center; font-weight: 700; font-size: 0.8rem;
-  color: #fff; min-height: 60px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+.info-item6 {
+  font-size: 0.88rem; color: var(--text-primary); font-weight: 600;
+  padding: 3px 0;
 }
 
-.arrow-grid6 {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+/* Net cross (khai triển hình chữ thập) */
+.net-cross {
+  max-width: 340px; margin: 16px auto;
 }
-.rot-btn6 {
-  border: none; border-radius: var(--radius-md);
-  padding: 12px; font-size: 1rem; font-weight: 800;
-  background: linear-gradient(135deg, #e9d5ff, #d4b5f7);
-  color: #5b2d90; cursor: pointer;
-  box-shadow: 0 4px 0 #c9a0e8;
-  transition: transform 0.1s;
+.net-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
+  margin-bottom: 5px;
 }
-.rot-btn6:active { transform: translateY(3px); box-shadow: 0 1px 0 #c9a0e8; }
-.rot-btn6:disabled { opacity: 0.35; cursor: not-allowed; }
-.rot-btn6 small { font-size: 0.65rem; }
-.rb-highlight { background: linear-gradient(135deg, #ffd166, #ffb703) !important; color: #6d4a00 !important; box-shadow: 0 4px 0 #d99b00 !important; animation: pulse-glow 1s infinite; }
-@keyframes pulse-glow { 0%,100%{box-shadow:0 4px 0 #d99b00;} 50%{box-shadow:0 4px 12px #ffd166;} }
-
-/* Net grid (khai triển) */
-.net-grid6 {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 6px; max-width: 360px; margin: 16px auto;
-}
-.net-cell6 {
+.net-sq {
   aspect-ratio: 1; border-radius: 10px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  font-size: 1.2rem; font-weight: 800; color: #fff;
+  font-size: 1.4rem; font-weight: 800; color: #fff;
   border: 3px solid rgba(255,255,255,0.5);
   text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  animation: fadeSlideIn 0.5s ease-out;
 }
-.net-cell6 small { font-size: 0.6rem; }
-.nc-back   { grid-column: 2; grid-row: 1; }
-.nc-left   { grid-column: 1; grid-row: 2; }
-.nc-front  { grid-column: 2; grid-row: 2; }
-.nc-right  { grid-column: 3; grid-row: 2; }
-.nc-top    { grid-column: 4; grid-row: 2; }
-.nc-bottom { grid-column: 2; grid-row: 3; }
+.net-sq small { font-size: 0.65rem; opacity: 0.9; }
+.net-empty { aspect-ratio: 1; }
 
 /* ---------- GAME 3: ROBOT GRID ---------- */
 .grid3 {
@@ -544,19 +514,9 @@ header {
   .reason-btn { padding: 12px 14px; font-size: 0.95rem; }
   .forest { min-height: 260px; }
   .g6-layout { flex-direction: column; align-items: center; }
-  .cube-scene { width: 180px; height: 180px; }
-  .cube3d-interactive { width: 100px; height: 100px; margin: 40px auto; }
-  .cube3d-interactive .cf-front, .cube3d-interactive .cf-back,
-  .cube3d-interactive .cf-top, .cube3d-interactive .cf-bottom,
-  .cube3d-interactive .cf-right, .cube3d-interactive .cf-left {
-    width: 100px; height: 100px;
-  }
-  .cube3d-interactive .cf-front  { transform: translateZ(50px); }
-  .cube3d-interactive .cf-back   { transform: rotateY(180deg) translateZ(50px); }
-  .cube3d-interactive .cf-top    { transform: rotateX(90deg) translateZ(50px); }
-  .cube3d-interactive .cf-bottom { transform: rotateX(-90deg) translateZ(50px); }
-  .cube3d-interactive .cf-right  { transform: rotateY(90deg) translateZ(50px); }
-  .cube3d-interactive .cf-left   { transform: rotateY(-90deg) translateZ(50px); }
+  .g6-center { max-width: 100%; }
+  .g6-controls { max-width: 100%; width: 100%; }
+  .net-cross { max-width: 280px; }
 }
 
 @media (max-width: 380px) {

@@ -1,24 +1,36 @@
 /* ================================================================
    GAME 4: PHÒNG ĐO LƯỜNG
-   Đo độ dài (cm) — kéo thước, ước lượng, kiểm chứng
+   Đo độ dài — pool đồ vật lớn, random 3 mỗi lần chơi
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
-let g4 = { round: 1, PX: 22, objLeft: 70 };
+let g4 = { round: 1, PX: 22, objLeft: 70, items: [] };
 
-const ITEMS = [
+/* Pool đồ vật lớn — random chọn 3 */
+const ITEM_POOL = [
   { name: 'Cái bút chì', cm: 8, emoji: '✏️', color: '#f5b301' },
   { name: 'Cục tẩy', cm: 4, emoji: '🧽', color: '#ff9f5a' },
-  { name: 'Bàn chải', cm: 11, emoji: '🪥', color: '#5b9cf5' }
+  { name: 'Bàn chải', cm: 11, emoji: '🪥', color: '#5b9cf5' },
+  { name: 'Chiếc lược', cm: 9, emoji: '💇', color: '#ec4899' },
+  { name: 'Cây kẹo mút', cm: 6, emoji: '🍭', color: '#a855f7' },
+  { name: 'Cây thước', cm: 12, emoji: '📏', color: '#22c55e' },
+  { name: 'Cái muỗng', cm: 7, emoji: '🥄', color: '#64748b' },
+  { name: 'Lá cờ', cm: 5, emoji: '🏳️', color: '#3b82f6' },
+  { name: 'Chiếc đũa', cm: 10, emoji: '🥢', color: '#b45309' },
+  { name: 'Cái kéo', cm: 13, emoji: '✂️', color: '#dc2626' },
+  { name: 'Dây buộc tóc', cm: 3, emoji: '🎀', color: '#f472b6' }
 ];
+
+function shuffle(a) { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
 
 export function initG4() {
   g4.round = 1;
+  g4.items = shuffle(ITEM_POOL).slice(0, 3);
   loadRound(1);
 }
 
 function loadRound(r) {
-  const it = ITEMS[r - 1];
+  const it = g4.items[r - 1];
   makePills('g4pills', 3, r, []);
 
   const a = document.getElementById('g4area');
@@ -32,7 +44,6 @@ function loadRound(r) {
   const scene = document.getElementById('mscene');
   const len = it.cm * g4.PX;
 
-  // Object to measure
   const obj = document.createElement('div');
   obj.className = 'm-object';
   obj.style.left = g4.objLeft + 'px';
@@ -41,7 +52,6 @@ function loadRound(r) {
   obj.innerHTML = `<span style="font-size:26px">${it.emoji}</span>`;
   scene.appendChild(obj);
 
-  // Ruler
   const ruler = document.createElement('div');
   ruler.className = 'ruler';
   ruler.id = 'ruler';
@@ -58,8 +68,7 @@ function loadRound(r) {
   ruler.innerHTML = ticks;
   scene.appendChild(ruler);
 
-  // Random offset
-  const startX = g4.objLeft + Math.round(Math.random() * 80 - 40);
+  const startX = g4.objLeft + Math.round(Math.random() * 100 - 50);
   ruler.style.left = Math.max(10, Math.min(500, startX)) + 'px';
 
   makeDraggable(ruler, it);
@@ -74,16 +83,16 @@ function predict(it) {
   `;
 
   const correct = it.cm;
-  let opts = [correct, correct + (correct === 11 ? 1 : 3), correct - (correct === 4 ? 1 : 2)];
-  opts = [...new Set(opts)].filter(x => x > 0);
-  while (opts.length < 3) {
-    const v = correct + opts.length;
-    if (v > 0 && !opts.includes(v)) opts.push(v);
+  let opts = new Set([correct]);
+  while (opts.size < 3) {
+    const diff = Math.random() > 0.5 ? Math.ceil(Math.random() * 3) : -Math.ceil(Math.random() * 3);
+    const v = correct + diff;
+    if (v > 0 && v <= 15) opts.add(v);
   }
-  opts.sort(() => Math.random() - 0.5);
+  const shuffled = shuffle([...opts]);
 
   const pad = document.getElementById('g4p');
-  opts.forEach(v => {
+  shuffled.forEach(v => {
     const b = document.createElement('button');
     b.className = 'num-choice';
     b.textContent = v + ' cm';
@@ -152,16 +161,16 @@ function readResult(it) {
   `);
 
   const correct = it.cm;
-  let opts = [correct, correct + (correct === 11 ? 1 : 2), correct - (correct === 4 ? 1 : 3)];
-  opts = [...new Set(opts)].filter(x => x > 0);
-  while (opts.length < 3) {
-    const v = correct + opts.length;
-    if (v > 0 && !opts.includes(v)) opts.push(v);
+  let opts = new Set([correct]);
+  while (opts.size < 3) {
+    const diff = Math.random() > 0.5 ? Math.ceil(Math.random() * 3) : -Math.ceil(Math.random() * 3);
+    const v = correct + diff;
+    if (v > 0 && v <= 15) opts.add(v);
   }
-  opts.sort(() => Math.random() - 0.5);
+  const shuffled = shuffle([...opts]);
 
   const pad = document.getElementById('g4r');
-  opts.forEach(v => {
+  shuffled.forEach(v => {
     const b = document.createElement('button');
     b.className = 'num-choice';
     b.textContent = v + ' cm';
@@ -183,7 +192,7 @@ function readResult(it) {
 }
 
 function verify(it) {
-  setChat(`Chính xác! ${it.name} dài ${it.cm} cm. Cô cùng con đếm vạch nhé: vạch cuối cùng chỉ số ${it.cm}. Con thật giỏi! 📏✨`);
+  setChat(`Chính xác! ${it.name} dài ${it.cm} cm. Con thật giỏi! 📏✨`);
   setTimeout(() => {
     if (g4.round < 3) {
       g4.round++;

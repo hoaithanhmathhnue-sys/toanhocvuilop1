@@ -1,24 +1,36 @@
 /* ================================================================
    GAME 3: ROBOT DẪN ĐƯỜNG
-   Điều khiển robot trên lưới 3×3 — vị trí, định hướng không gian
+   Ngẫu nhiên hóa vị trí robot & ngôi sao mỗi lần chơi
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
-let g3 = { round: 1, robot: [0, 0], star: [2, 2], steps: 4, moved: 0, cmd: [] };
+let g3 = { round: 1, robot: [0, 0], star: [2, 2], steps: 4, moved: 0, cmd: [], levels: [] };
 
-const LEVELS = [
-  { robot: [0, 0], star: [2, 2], steps: 4, desc: 'góc trên bên trái' },
-  { robot: [2, 0], star: [0, 2], steps: 4, desc: 'góc dưới bên trái' },
-  { robot: [1, 2], star: [1, 0], steps: 4, desc: 'giữa bên phải' }
-];
+/* Pool vị trí lớn — random 3 level mỗi lần chơi */
+function genLevels() {
+  const combos = [
+    [[0, 0], [2, 2]], [[2, 0], [0, 2]], [[0, 2], [2, 0]], [[2, 2], [0, 0]],
+    [[0, 1], [2, 1]], [[1, 0], [1, 2]], [[0, 0], [2, 0]], [[2, 2], [0, 2]],
+    [[1, 0], [2, 2]], [[0, 2], [2, 1]], [[2, 1], [0, 0]], [[1, 2], [1, 0]],
+    [[0, 0], [1, 2]], [[2, 0], [1, 2]], [[1, 1], [0, 0]], [[1, 1], [2, 2]]
+  ];
+  const picked = shuffle(combos).slice(0, 3);
+  return picked.map(([r, s]) => {
+    const dist = Math.abs(r[0] - s[0]) + Math.abs(r[1] - s[1]);
+    return { robot: r, star: s, steps: dist + 1 + Math.floor(Math.random() * 2) };
+  });
+}
+
+function shuffle(a) { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
 
 export function initG3() {
   g3.round = 1;
+  g3.levels = genLevels();
   loadRound(1);
 }
 
 function loadRound(r) {
-  const L = LEVELS[r - 1];
+  const L = g3.levels[r - 1];
   g3.robot = [...L.robot];
   g3.star = [...L.star];
   g3.steps = L.steps;
@@ -71,7 +83,6 @@ function render() {
 }
 
 function askExpression(L) {
-  const relRow = L.star[0] - L.robot[0];
   const relCol = L.star[1] - L.robot[1];
   const q2 = relCol < 0 ? 'TRÁI' : (relCol > 0 ? 'PHẢI' : 'GIỮA');
 
@@ -88,7 +99,7 @@ function askExpression(L) {
   ];
 
   const rs = document.getElementById('g3q');
-  opts.forEach(o => {
+  shuffle(opts).forEach(o => {
     const b = document.createElement('button');
     b.className = 'reason-btn';
     b.textContent = o.t;
@@ -108,7 +119,7 @@ function askExpression(L) {
     rs.appendChild(b);
   });
 
-  setChat(`Trước khi điều khiển, cô hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt? Con hãy nhìn thật kỹ! 🧭`);
+  setChat('Trước khi điều khiển, cô hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt? 🧭');
 }
 
 function move(dir) {

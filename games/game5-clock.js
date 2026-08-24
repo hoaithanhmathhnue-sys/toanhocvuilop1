@@ -1,10 +1,12 @@
 /* ================================================================
    GAME 5: ĐỒNG HỒ PHIÊU LƯU
-   Xem giờ đúng & các ngày trong tuần
+   Xem giờ & ngày trong tuần — random mỗi lần chơi
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
-let g5 = { phase: 'clock', hour: 12, target: 7, dayIdx: 0 };
+let g5 = { phase: 'clock', hour: 12, target: 7, dayQs: [] };
+
+function shuffle(a) { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
 
 function clockSVG(h) {
   const ha = (h % 12) * 30;
@@ -28,9 +30,31 @@ function clockSVG(h) {
   </svg>`;
 }
 
+/* Pool câu hỏi giờ */
+const HOUR_POOL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+/* Pool câu hỏi ngày */
+const DAYS = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
+const DAY_Q_POOL = [
+  ...DAYS.map((d, i) => ({
+    today: d,
+    ask: 'NGÀY MAI',
+    answer: DAYS[(i + 1) % 7],
+    wrongs: shuffle(DAYS.filter((_, j) => j !== (i + 1) % 7)).slice(0, 2)
+  })),
+  ...DAYS.map((d, i) => ({
+    today: d,
+    ask: 'HÔM QUA',
+    answer: DAYS[(i + 6) % 7],
+    wrongs: shuffle(DAYS.filter((_, j) => j !== (i + 6) % 7)).slice(0, 2)
+  }))
+];
+
 export function initG5() {
   g5.phase = 'clock';
   g5.hour = 12;
+  g5.target = shuffle(HOUR_POOL)[0];
+  g5.dayQs = shuffle(DAY_Q_POOL).slice(0, 2);
   loadClock();
 }
 
@@ -41,7 +65,7 @@ function loadClock() {
 
   const a = document.getElementById('g5area');
   a.innerHTML = `
-    <div class="prompt-box">🕐 Hãy chỉnh đồng hồ chỉ đúng <b>7 GIỜ</b>! (Kim ngắn chỉ số 7, kim dài chỉ số 12)</div>
+    <div class="prompt-box">🕐 Hãy chỉnh đồng hồ chỉ đúng <b>${g5.target} GIỜ</b>! (Kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12)</div>
     <div class="clock-wrap" id="clockBox">${clockSVG(g5.hour)}</div>
     <div class="clock-btns">
       <button class="action-btn btn-green" id="hourMinus">⏪ Bớt 1 giờ</button>
@@ -56,7 +80,7 @@ function loadClock() {
   document.getElementById('hourPlus').addEventListener('click', () => setHour(1));
   document.getElementById('checkClock').addEventListener('click', checkClock);
 
-  setChat('Hãy bấm nút để xoay kim đồng hồ cho đúng 7 giờ con nhé! Kim ngắn chỉ số 7, kim dài chỉ số 12. 🕐');
+  setChat(`Hãy bấm nút để xoay kim đồng hồ cho đúng ${g5.target} giờ con nhé! Kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. 🕐`);
 }
 
 function setHour(d) {
@@ -68,43 +92,30 @@ function setHour(d) {
 function checkClock() {
   if (g5.hour === g5.target) {
     snd('win');
-    setChat('Chính xác! 7 giờ đúng: kim ngắn chỉ số 7, kim dài chỉ số 12. Thật tuyệt vời! 🎉');
+    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Thật tuyệt vời! 🎉`);
     setTimeout(() => loadDays(), 2200);
   } else {
     snd('wrong');
-    setChat('Chưa đúng con ạ. 7 giờ đúng nghĩa là kim ngắn chỉ số 7 và kim dài chỉ số 12. Con hãy chỉnh lại nhé! 🔄');
+    setChat(`Chưa đúng con ạ. ${g5.target} giờ đúng nghĩa là kim ngắn chỉ số ${g5.target} và kim dài chỉ số 12. Con hãy chỉnh lại nhé! 🔄`);
   }
 }
 
 function loadDays() {
   g5.phase = 'days';
-  g5.dayIdx = 0;
-  makePills('g5pills', 3, 2, []);
   loadDay(0);
 }
 
 function loadDay(i) {
-  const a = document.getElementById('g5area');
-  if (i === 0) {
-    a.innerHTML = `
-      <div class="prompt-box">📅 Hôm nay là <b>Thứ Ba</b>. Vậy NGÀY MAI là thứ mấy?</div>
-      <div class="choice-pad" id="g5d"></div>
-    `;
-    makeDayOptions(['Thứ Tư', 'Thứ Năm', 'Thứ Hai'], 'Thứ Tư');
-  } else {
-    a.innerHTML = `
-      <div class="prompt-box">📅 Hôm nay là <b>Thứ Ba</b>. Vậy HÔM QUA là thứ mấy?</div>
-      <div class="choice-pad" id="g5d"></div>
-    `;
-    makeDayOptions(['Thứ Hai', 'Thứ Tư', 'Chủ Nhật'], 'Thứ Hai');
-  }
-  setChat(i === 0
-    ? 'Hôm nay là Thứ Ba. Con hãy đoán xem NGÀY MAI là thứ mấy nhé! 📅'
-    : 'Giỏi lắm! Bây giờ cô hỏi: HÔM QUA là thứ mấy? 📅');
-}
+  const q = g5.dayQs[i];
+  makePills('g5pills', 3, i + 2, [1]);
 
-function makeDayOptions(opts, correct) {
-  opts.sort(() => Math.random() - 0.5);
+  const a = document.getElementById('g5area');
+  a.innerHTML = `
+    <div class="prompt-box">📅 Hôm nay là <b>${q.today}</b>. Vậy <b>${q.ask}</b> là thứ mấy?</div>
+    <div class="choice-pad" id="g5d"></div>
+  `;
+
+  const opts = shuffle([q.answer, ...q.wrongs]);
   const pad = document.getElementById('g5d');
   opts.forEach(o => {
     const b = document.createElement('button');
@@ -114,11 +125,11 @@ function makeDayOptions(opts, correct) {
     b.style.borderRadius = '20px';
     b.textContent = o;
     b.addEventListener('click', () => {
-      if (o === correct) {
+      if (o === q.answer) {
         b.classList.add('correct');
         snd('correct');
         pad.querySelectorAll('.num-choice').forEach(x => { x.disabled = true; });
-        dayVerify(correct);
+        dayVerify(q, i);
       } else {
         b.classList.add('wrong');
         snd('wrong');
@@ -128,13 +139,16 @@ function makeDayOptions(opts, correct) {
     });
     pad.appendChild(b);
   });
+
+  setChat(i === 0
+    ? `Hôm nay là ${q.today}. Con hãy đoán xem ${q.ask} là thứ mấy nhé! 📅`
+    : `Giỏi lắm! Bây giờ cô hỏi: ${q.ask} là thứ mấy? 📅`);
 }
 
-function dayVerify(correct) {
-  setChat(`Đúng rồi! ${correct} đấy con. Một tuần có 7 ngày: Thứ Hai, Thứ Ba, Thứ Tư, Thứ Năm, Thứ Sáu, Thứ Bảy, Chủ Nhật. Con nhớ thật giỏi! 🌈`);
+function dayVerify(q, i) {
+  setChat(`Đúng rồi! ${q.answer} đấy con. Một tuần có 7 ngày: Thứ Hai, Thứ Ba, Thứ Tư, Thứ Năm, Thứ Sáu, Thứ Bảy, Chủ Nhật. 🌈`);
   setTimeout(() => {
-    if (g5.dayIdx === 0) {
-      g5.dayIdx = 1;
+    if (i === 0) {
       loadDay(1);
     } else {
       showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cô Cú vỗ tay khen con! 👏');
