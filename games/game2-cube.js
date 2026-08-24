@@ -1,30 +1,70 @@
 /* ================================================================
    GAME 2: LÂU ĐÀI KHỐI 3D
-   Khối lập phương & hộp chữ nhật — xoay, quan sát, phân biệt
+   Khối lập phương & hộp chữ nhật — CSS 3D thật sự
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
-let g2 = { round: 1, target: 'cube', done: [] };
+let g2 = { round: 1, done: [] };
 
-function cubeSVG(w, label) {
-  const s = w * 0.5;
-  return `<svg viewBox="0 0 ${4*s} ${3*s}" width="${w*1.6}">
-    <polygon points="${2*s},0 ${4*s},${s} ${2*s},${2*s} 0,${s}" fill="#8fd6ff" stroke="#3b82c4" stroke-width="2"/>
-    <polygon points="${s},${s} ${3*s},${s} ${3*s},${2.6*s} ${s},${2.6*s}" fill="#a3e0ff" stroke="#3b82c4" stroke-width="2"/>
-    <polygon points="${s},${s} 0,${1.5*s} 0,${2.1*s} ${s},${2.6*s}" fill="#6fb9ee" stroke="#3b82c4" stroke-width="2"/>
-    <text x="${2*s}" y="${1.5*s}" text-anchor="middle" font-size="${s*0.45}" font-weight="bold" fill="#14437a">${label}</text>
-  </svg>`;
+// CSS 3D cube (6 mặt vuông bằng nhau)
+function render3DCube(size, label, colors) {
+  const h = size / 2;
+  const c = colors || { front: '#ef4444', back: '#a855f7', top: '#3b82f6', bottom: '#f97316', right: '#facc15', left: '#ec4899' };
+  return `
+    <div style="perspective:600px;width:${size+40}px;height:${size+40}px;margin:0 auto">
+      <div class="cube3d" style="width:${size}px;height:${size}px;transform-style:preserve-3d;transform:rotateX(-20deg) rotateY(30deg);margin:${h/2}px auto;position:relative">
+        <div class="cube-face" style="transform:translateZ(${h}px);background:${c.front};width:${size}px;height:${size}px">
+          <span>🌟</span><small>Trước</small>
+        </div>
+        <div class="cube-face" style="transform:rotateY(180deg) translateZ(${h}px);background:${c.back};width:${size}px;height:${size}px">
+          <span>🎈</span><small>Sau</small>
+        </div>
+        <div class="cube-face" style="transform:rotateX(90deg) translateZ(${h}px);background:${c.top};width:${size}px;height:${size}px">
+          <span>☀️</span><small>Trên</small>
+        </div>
+        <div class="cube-face" style="transform:rotateX(-90deg) translateZ(${h}px);background:${c.bottom};width:${size}px;height:${size}px">
+          <span>🍂</span><small>Dưới</small>
+        </div>
+        <div class="cube-face" style="transform:rotateY(90deg) translateZ(${h}px);background:${c.right};width:${size}px;height:${size}px">
+          <span>⭐</span><small>Phải</small>
+        </div>
+        <div class="cube-face" style="transform:rotateY(-90deg) translateZ(${h}px);background:${c.left};width:${size}px;height:${size}px">
+          <span>🌸</span><small>Trái</small>
+        </div>
+      </div>
+      <div style="text-align:center;font-weight:800;color:#6d4a00;margin-top:8px;font-size:1.1rem">${label}</div>
+    </div>
+  `;
 }
 
-function boxSVG(w, label) {
-  const s = w * 0.5;
-  return `<svg viewBox="0 0 ${6*s} ${2.6*s}" width="${w*2.4}">
-    <polygon points="${s},0 ${3*s},${s} ${5*s},${s} ${3*s},0" fill="#ffc46b" stroke="#b8791a" stroke-width="2"/>
-    <polygon points="${3*s},${s} ${5*s},${s} ${5*s},${2*s} ${3*s},${2*s}" fill="#ffd999" stroke="#b8791a" stroke-width="2"/>
-    <polygon points="${3*s},${s} ${3*s},${2*s} ${s},${2*s} ${s},${s}" fill="#ffb347" stroke="#b8791a" stroke-width="2"/>
-    <polygon points="${s},${s} 0,${1.4*s} 0,${1.6*s} ${s},${2*s}" fill="#e89b3c" stroke="#b8791a" stroke-width="2"/>
-    <text x="${3*s}" y="${1.4*s}" text-anchor="middle" font-size="${s*0.4}" font-weight="bold" fill="#7a4a0a">${label}</text>
-  </svg>`;
+// CSS 3D hộp chữ nhật (dài hơn, mặt chữ nhật)
+function render3DBox(sizeW, sizeH, sizeD, label) {
+  const hw = sizeW / 2, hh = sizeH / 2, hd = sizeD / 2;
+  return `
+    <div style="perspective:600px;width:${sizeW+60}px;height:${sizeH+60}px;margin:0 auto">
+      <div class="cube3d" style="width:${sizeW}px;height:${sizeH}px;transform-style:preserve-3d;transform:rotateX(-20deg) rotateY(30deg);margin:${hh/2}px auto;position:relative">
+        <div class="cube-face box-face" style="transform:translateZ(${hd}px);width:${sizeW}px;height:${sizeH}px;background:#ffc46b">
+          <span>📦</span><small>Trước</small>
+        </div>
+        <div class="cube-face box-face" style="transform:rotateY(180deg) translateZ(${hd}px);width:${sizeW}px;height:${sizeH}px;background:#e89b3c">
+          <span>📦</span><small>Sau</small>
+        </div>
+        <div class="cube-face box-face" style="transform:rotateX(90deg) translateZ(${hh}px);width:${sizeW}px;height:${sizeD}px;background:#ffd999;margin-top:${(sizeH-sizeD)/2}px">
+          <span>📦</span><small>Trên</small>
+        </div>
+        <div class="cube-face box-face" style="transform:rotateX(-90deg) translateZ(${hh}px);width:${sizeW}px;height:${sizeD}px;background:#d4860a;margin-top:${(sizeH-sizeD)/2}px">
+          <small>Dưới</small>
+        </div>
+        <div class="cube-face box-face" style="transform:rotateY(90deg) translateZ(${hw}px);width:${sizeD}px;height:${sizeH}px;background:#ffb347;margin-left:${(sizeW-sizeD)/2}px">
+          <small>Phải</small>
+        </div>
+        <div class="cube-face box-face" style="transform:rotateY(-90deg) translateZ(${hw}px);width:${sizeD}px;height:${sizeH}px;background:#e09530;margin-left:${(sizeW-sizeD)/2}px">
+          <small>Trái</small>
+        </div>
+      </div>
+      <div style="text-align:center;font-weight:800;color:#6d4a00;margin-top:8px;font-size:1.1rem">${label}</div>
+    </div>
+  `;
 }
 
 export function initG2() {
@@ -36,33 +76,32 @@ export function initG2() {
 function loadRound(r) {
   makePills('g2pills', 3, r, g2.done);
 
-  let leftType, rightType;
-  if (r === 1) { leftType = 'cube'; rightType = 'box'; }
-  else if (r === 2) { leftType = 'box'; rightType = 'cube'; }
-  else { leftType = 'cube'; rightType = 'box'; }
-
-  g2.target = 'cube';
-
   const a = document.getElementById('g2area');
+
+  // Alternate left/right positions
+  const cubeFirst = r % 2 === 1;
+
   a.innerHTML = `
-    <div class="prompt-box">🏰 Hãy chọn <b>KHỐI LẬP PHƯƠNG</b> nhé con!</div>
+    <div class="prompt-box">🧊 Hãy chọn <b>KHỐI LẬP PHƯƠNG</b> nhé con! (Khối có 6 mặt đều là hình vuông)</div>
     <div class="blocks-stage" id="g2stage">
-      <div class="block3d" id="b-left"><div id="bl-svg"></div><div class="bname">Khối A</div></div>
-      <div class="block3d" id="b-right"><div id="br-svg"></div><div class="bname">Khối B</div></div>
+      <div class="block3d" id="b-left" style="cursor:pointer">
+        ${cubeFirst ? render3DCube(110, 'Khối A') : render3DBox(150, 90, 70, 'Khối A')}
+      </div>
+      <div class="block3d" id="b-right" style="cursor:pointer">
+        ${cubeFirst ? render3DBox(150, 90, 70, 'Khối B') : render3DCube(110, 'Khối B')}
+      </div>
     </div>
+    <div class="note-sm">💡 Khối lập phương: 6 mặt đều là hình vuông bằng nhau</div>
   `;
 
-  document.getElementById('bl-svg').innerHTML = leftType === 'cube' ? cubeSVG(100, 'Khối A') : boxSVG(100, 'Khối A');
-  document.getElementById('br-svg').innerHTML = rightType === 'cube' ? cubeSVG(100, 'Khối B') : boxSVG(100, 'Khối B');
+  document.getElementById('b-left').addEventListener('click', () => pick('left', cubeFirst ? 'cube' : 'box'));
+  document.getElementById('b-right').addEventListener('click', () => pick('right', cubeFirst ? 'box' : 'cube'));
 
-  document.getElementById('b-left').addEventListener('click', () => pick('left', leftType));
-  document.getElementById('b-right').addEventListener('click', () => pick('right', rightType));
-
-  setChat('Hãy quan sát hai khối và bấm vào KHỐI LẬP PHƯƠNG nhé! Khối lập phương có 6 mặt đều là hình vuông đó! 🧊');
+  setChat('Hãy quan sát kỹ hai khối và bấm vào KHỐI LẬP PHƯƠNG nhé! Khối lập phương có 6 mặt đều là hình vuông bằng nhau đó! 🧊');
 }
 
 function pick(side, type) {
-  if (type === g2.target) {
+  if (type === 'cube') {
     snd('correct');
     document.getElementById('b-' + side).classList.add('done');
     document.querySelectorAll('#g2stage .block3d').forEach(x => { x.style.pointerEvents = 'none'; });
@@ -72,7 +111,7 @@ function pick(side, type) {
     const el = document.getElementById('b-' + side);
     el.classList.add('wrongsel');
     setTimeout(() => el.classList.remove('wrongsel'), 600);
-    setChat('Đó là khối hộp chữ nhật con ạ. Con thử nhìn kỹ xem: khối nào có 6 mặt đều là hình vuông nhỉ? 🤔');
+    setChat('Đó là khối hộp chữ nhật con ạ — các mặt của nó là hình chữ nhật, không bằng nhau. Con nhìn kỹ lại nhé! 🤔');
   }
 }
 
@@ -80,7 +119,7 @@ function askReason() {
   setChat('Con chọn đúng rồi! Giờ cô hỏi: Vì sao đó là KHỐI LẬP PHƯƠNG? 🤔');
   const a = document.getElementById('g2area');
   a.innerHTML += `
-    <div class="prompt-box">❓ Vì sao đó là khối lập phương?</div>
+    <div class="prompt-box" style="margin-top:16px">❓ Vì sao đó là khối lập phương?</div>
     <div class="reason-grid" id="g2reasons"></div>
   `;
 
@@ -115,7 +154,7 @@ function handleReason(btn, opt) {
 }
 
 function verify() {
-  setChat('Đúng rồi! Khối lập phương có 6 mặt đều là hình vuông. Khối hộp chữ nhật thì các mặt là hình chữ nhật. Cô cùng con đếm: 1, 2, 3, 4, 5, 6 — 6 mặt nhé! 🎉');
+  setChat('Đúng rồi! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Khối hộp chữ nhật thì các mặt là hình chữ nhật, không bằng nhau. Cô cùng con đếm: 1, 2, 3, 4, 5, 6 — 6 mặt nhé! 🎉');
   setTimeout(() => {
     g2.done.push(g2.round);
     if (g2.round < 3) {

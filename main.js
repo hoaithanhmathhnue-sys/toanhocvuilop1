@@ -9,12 +9,13 @@ import { initG3 } from './games/game3-robot.js';
 import { initG4 } from './games/game4-measure.js';
 import { initG5 } from './games/game5-clock.js';
 import { initG6 } from './games/game6-challenge.js';
+import { initG7 } from './games/game7-cube3d.js';
 
 /* ============ STATE & STORAGE ============ */
 const STORAGE_KEY = 'toan1_kydieu_state';
 export const state = {
   sound: true,
-  stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
+  stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }
 };
 
 export function saveState() {
@@ -81,11 +82,19 @@ export function snd(type) {
   }
 }
 
-/* ============ SPEECH SYNTHESIS ============ */
+/* ============ SPEECH SYNTHESIS (giọng NỮ) ============ */
 let viVoice = null;
 function loadVoices() {
   const vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-  viVoice = vs.find(v => v.lang && v.lang.toLowerCase().startsWith('vi')) || null;
+  const viVoices = vs.filter(v => v.lang && v.lang.toLowerCase().startsWith('vi'));
+  // Ưu tiên giọng nữ: tìm theo keyword
+  const femaleKeywords = ['female', 'hoaimy', 'linh', 'woman', 'nữ', 'girl', 'chi'];
+  const femaleVoice = viVoices.find(v =>
+    femaleKeywords.some(kw => v.name.toLowerCase().includes(kw))
+  );
+  // Nếu không tìm thấy giọng nữ rõ ràng, chọn giọng Google (thường là nữ)
+  const googleVoice = viVoices.find(v => v.name.toLowerCase().includes('google'));
+  viVoice = femaleVoice || googleVoice || viVoices[0] || null;
 }
 if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 
@@ -93,7 +102,7 @@ export function speak(text) {
   if (!state.sound || !('speechSynthesis' in window)) return;
   try { window.speechSynthesis.cancel(); } catch (e) { /* */ }
   const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]*>/g, ''));
-  u.lang = 'vi-VN'; u.rate = 0.92; u.pitch = 1.1;
+  u.lang = 'vi-VN'; u.rate = 0.92; u.pitch = 1.4; // pitch cao = giọng nữ
   if (viVoice) u.voice = viVoice;
   window.speechSynthesis.speak(u);
 }
@@ -146,7 +155,7 @@ export function confetti(n = 80) {
 
 /* ============ SCREEN NAVIGATION ============ */
 let currentGame = null;
-const gameInits = { 1: initG1, 2: initG2, 3: initG3, 4: initG4, 5: initG5, 6: initG6 };
+const gameInits = { 1: initG1, 2: initG2, 3: initG3, 4: initG4, 5: initG5, 6: initG6, 7: initG7 };
 
 export function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -200,7 +209,7 @@ export function showResult(gid, stars, message) {
     <div class="action-row">
       <button class="big-btn btn-green" id="resultHome">🏠 Về nhà</button>
       <button class="big-btn btn-orange" id="resultReplay">🔄 Chơi lại</button>
-      ${gid < 6 ? `<button class="big-btn btn-purple" id="resultNext">▶ Trò tiếp</button>` : ''}
+      ${gid < 7 ? `<button class="big-btn btn-purple" id="resultNext">▶ Trò tiếp</button>` : ''}
     </div>
   `;
   showScreen('screen-result');
@@ -217,11 +226,12 @@ export function showResult(gid, stars, message) {
 /* ============ GAME CARDS (HOME) ============ */
 const GAME_META = [
   { n: 1, ico: '🌲', name: 'Khu Vườn Hình Học', sub: 'Hình tròn, vuông, tam giác, chữ nhật', c: 'gc-1', max: 4 },
-  { n: 2, ico: '🏰', name: 'Lâu Đài Khối 3D', sub: 'Khối lập phương & hộp chữ nhật', c: 'gc-2', max: 3 },
+  { n: 2, ico: '🧊', name: 'Lâu Đài Khối 3D', sub: 'Khối lập phương & hộp chữ nhật', c: 'gc-2', max: 3 },
   { n: 3, ico: '🤖', name: 'Robot Dẫn Đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3', max: 3 },
   { n: 4, ico: '📏', name: 'Phòng Đo Lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
   { n: 5, ico: '🕐', name: 'Đồng Hồ Phiêu Lưu', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
-  { n: 6, ico: '🏆', name: 'Thử Thách Tổng Hợp', sub: 'Ôn tập tất cả nội dung', c: 'gc-6', max: 5 },
+  { n: 6, ico: '🎯', name: 'Khối Lập Phương Thần Kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
+  { n: 7, ico: '🏆', name: 'Thử Thách Tổng Hợp', sub: 'Ôn tập tất cả nội dung', c: 'gc-7', max: 5 },
 ];
 
 function renderCards() {
@@ -260,7 +270,7 @@ function renderCards() {
 }
 
 /* ============ BACK BUTTONS ============ */
-for (let i = 1; i <= 6; i++) {
+for (let i = 1; i <= 7; i++) {
   const btn = document.getElementById('backBtn' + i);
   if (btn) btn.addEventListener('click', goHome);
 }

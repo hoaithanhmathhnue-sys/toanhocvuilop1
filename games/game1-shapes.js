@@ -15,8 +15,8 @@ const SHAPES = {
 const OBJECTS = [
   { id: 'sun', shape: 'circle', emoji: '🌞', label: 'Mặt trời', x: 14, y: 8 },
   { id: 'ball', shape: 'circle', emoji: '⚽', label: 'Quả bóng', x: 72, y: 52 },
-  { id: 'moon', shape: 'circle', emoji: '🌙', label: 'Trăng', x: 82, y: 8 },
-  { id: 'window', shape: 'square', emoji: '🪟', label: 'Cửa sổ', x: 58, y: 30 },
+  { id: 'moon', shape: 'circle', emoji: '🌕', label: 'Trăng tròn', x: 82, y: 8 },
+  { id: 'window', shape: 'square', emoji: '🟦', label: 'Cửa sổ', x: 58, y: 30 },
   { id: 'gift', shape: 'square', emoji: '🎁', label: 'Hộp quà', x: 44, y: 58 },
   { id: 'tree', shape: 'triangle', emoji: '🌲', label: 'Cây thông', x: 26, y: 36 },
   { id: 'roof', shape: 'triangle', emoji: '🔺', label: 'Mái nhà', x: 50, y: 14 },

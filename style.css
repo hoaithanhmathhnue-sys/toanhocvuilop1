@@ -193,7 +193,8 @@ header {
 .gc-3 { border-color: #4ade80; } .gc-3::before { background: linear-gradient(90deg, #4ade80, #22d3ee); }
 .gc-4 { border-color: #f472b6; } .gc-4::before { background: linear-gradient(90deg, #f472b6, #fb923c); }
 .gc-5 { border-color: #a78bfa; } .gc-5::before { background: linear-gradient(90deg, #a78bfa, #818cf8); }
-.gc-6 { border-color: #fbbf24; } .gc-6::before { background: linear-gradient(90deg, #fbbf24, #f97316); }
+.gc-6 { border-color: #ef4444; } .gc-6::before { background: linear-gradient(90deg, #ef4444, #f97316); }
+.gc-7 { border-color: #fbbf24; } .gc-7::before { background: linear-gradient(90deg, #fbbf24, #f97316); }
 
 /* ---------- NOTE PANEL ---------- */
 .note-toggle {
@@ -362,6 +363,99 @@ header {
 .block3d.done { filter: drop-shadow(0 0 14px gold); }
 .block3d .bname { text-align: center; font-weight: 800; color: #6d4a00; margin-top: 6px; }
 
+/* ---------- CSS 3D CUBE FACES (Game 2 + 6) ---------- */
+.cube-face {
+  position: absolute; top: 0; left: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 3px solid rgba(255,255,255,0.6);
+  border-radius: 6px;
+  font-size: 1.4rem; font-weight: 800;
+  backface-visibility: visible;
+  color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.cube-face small { font-size: 0.6rem; opacity: 0.85; }
+.cube3d { transition: transform 0.5s ease; }
+
+/* ---------- GAME 6: CUBE 3D INTERACTIVE ---------- */
+.g6-layout {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  justify-content: center; align-items: flex-start;
+}
+.g6-center { flex: 1; min-width: 240px; }
+.g6-controls { min-width: 220px; }
+
+.cube-scene {
+  width: 220px; height: 220px; margin: 10px auto;
+  perspective: 600px;
+  cursor: grab; touch-action: none;
+}
+.cube3d-interactive {
+  width: 120px; height: 120px;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform 0.35s ease;
+  position: relative;
+  margin: 50px auto;
+}
+.cube3d-interactive .cf-front  { position:absolute;top:0;left:0;width:120px;height:120px;background:#ef4444;transform:translateZ(60px); }
+.cube3d-interactive .cf-back   { position:absolute;top:0;left:0;width:120px;height:120px;background:#a855f7;transform:rotateY(180deg) translateZ(60px); }
+.cube3d-interactive .cf-top    { position:absolute;top:0;left:0;width:120px;height:120px;background:#3b82f6;transform:rotateX(90deg) translateZ(60px); }
+.cube3d-interactive .cf-bottom { position:absolute;top:0;left:0;width:120px;height:120px;background:#f97316;transform:rotateX(-90deg) translateZ(60px); }
+.cube3d-interactive .cf-right  { position:absolute;top:0;left:0;width:120px;height:120px;background:#facc15;color:#5b4a00;transform:rotateY(90deg) translateZ(60px); }
+.cube3d-interactive .cf-left   { position:absolute;top:0;left:0;width:120px;height:120px;background:#ec4899;transform:rotateY(-90deg) translateZ(60px); }
+
+.see-table {
+  background: var(--glass-bg); backdrop-filter: blur(6px);
+  border-radius: var(--radius-md); padding: 14px;
+  box-shadow: var(--glass-shadow); margin-top: 12px;
+}
+.see-grid6 {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.see-cell6 {
+  border-radius: 12px; padding: 10px 8px;
+  text-align: center; font-weight: 700; font-size: 0.8rem;
+  color: #fff; min-height: 60px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.arrow-grid6 {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+}
+.rot-btn6 {
+  border: none; border-radius: var(--radius-md);
+  padding: 12px; font-size: 1rem; font-weight: 800;
+  background: linear-gradient(135deg, #e9d5ff, #d4b5f7);
+  color: #5b2d90; cursor: pointer;
+  box-shadow: 0 4px 0 #c9a0e8;
+  transition: transform 0.1s;
+}
+.rot-btn6:active { transform: translateY(3px); box-shadow: 0 1px 0 #c9a0e8; }
+.rot-btn6:disabled { opacity: 0.35; cursor: not-allowed; }
+.rot-btn6 small { font-size: 0.65rem; }
+.rb-highlight { background: linear-gradient(135deg, #ffd166, #ffb703) !important; color: #6d4a00 !important; box-shadow: 0 4px 0 #d99b00 !important; animation: pulse-glow 1s infinite; }
+@keyframes pulse-glow { 0%,100%{box-shadow:0 4px 0 #d99b00;} 50%{box-shadow:0 4px 12px #ffd166;} }
+
+/* Net grid (khai triển) */
+.net-grid6 {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 6px; max-width: 360px; margin: 16px auto;
+}
+.net-cell6 {
+  aspect-ratio: 1; border-radius: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 1.2rem; font-weight: 800; color: #fff;
+  border: 3px solid rgba(255,255,255,0.5);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.net-cell6 small { font-size: 0.6rem; }
+.nc-back   { grid-column: 2; grid-row: 1; }
+.nc-left   { grid-column: 1; grid-row: 2; }
+.nc-front  { grid-column: 2; grid-row: 2; }
+.nc-right  { grid-column: 3; grid-row: 2; }
+.nc-top    { grid-column: 4; grid-row: 2; }
+.nc-bottom { grid-column: 2; grid-row: 3; }
+
 /* ---------- GAME 3: ROBOT GRID ---------- */
 .grid3 {
   display: grid; grid-template-columns: repeat(3, 1fr);
@@ -448,6 +542,20 @@ header {
   .action-btn { padding: 12px 18px; font-size: 1rem; }
   .reason-btn { padding: 12px 14px; font-size: 0.95rem; }
   .forest { min-height: 260px; }
+  .g6-layout { flex-direction: column; align-items: center; }
+  .cube-scene { width: 180px; height: 180px; }
+  .cube3d-interactive { width: 100px; height: 100px; margin: 40px auto; }
+  .cube3d-interactive .cf-front, .cube3d-interactive .cf-back,
+  .cube3d-interactive .cf-top, .cube3d-interactive .cf-bottom,
+  .cube3d-interactive .cf-right, .cube3d-interactive .cf-left {
+    width: 100px; height: 100px;
+  }
+  .cube3d-interactive .cf-front  { transform: translateZ(50px); }
+  .cube3d-interactive .cf-back   { transform: rotateY(180deg) translateZ(50px); }
+  .cube3d-interactive .cf-top    { transform: rotateX(90deg) translateZ(50px); }
+  .cube3d-interactive .cf-bottom { transform: rotateX(-90deg) translateZ(50px); }
+  .cube3d-interactive .cf-right  { transform: rotateY(90deg) translateZ(50px); }
+  .cube3d-interactive .cf-left   { transform: rotateY(-90deg) translateZ(50px); }
 }
 
 @media (max-width: 380px) {
