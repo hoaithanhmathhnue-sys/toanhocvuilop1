@@ -92,6 +92,17 @@ function loadQuestion(idx) {
 function handleAnswer(btn, chosen, correct, qData) {
   const allBtns = document.querySelectorAll('#g7opts .reason-btn');
 
+  const nextStep = () => {
+    setTimeout(() => {
+      if (g7.qIdx + 1 < g7.total) {
+        g7.qIdx++;
+        loadQuestion(g7.qIdx);
+      } else {
+        finishChallenge();
+      }
+    }, 800);
+  };
+
   if (chosen === correct) {
     btn.classList.add('correct');
     snd('correct');
@@ -101,7 +112,7 @@ function handleAnswer(btn, chosen, correct, qData) {
 
     const fb = document.getElementById('g7feedback');
     fb.innerHTML = `<div style="background:#d1fae5;border-radius:16px;padding:14px;font-weight:700;color:#065f46;text-align:center">✅ Chính xác! ${qData.explain}</div>`;
-    setChat(`Chính xác! ${qData.explain} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn đáp án này nhé!`);
+    setChat(`Chính xác! ${qData.explain} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn đáp án này nhé!`, true, nextStep);
   } else {
     btn.classList.add('wrong');
     snd('wrong');
@@ -110,17 +121,8 @@ function handleAnswer(btn, chosen, correct, qData) {
 
     const fb = document.getElementById('g7feedback');
     fb.innerHTML = `<div style="background:#fef3c7;border-radius:16px;padding:14px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án đúng là: ${correct}. ${qData.explain}</div>`;
-    setChat(`Con thử đọc kỹ câu hỏi nhé: "${qData.q}" Đáp án đúng là "${correct}". ${qData.explain} Hãy nhớ để trả lời tốt hơn ở câu tiếp theo nhé!`);
+    setChat(`Con thử đọc kỹ câu hỏi nhé: "${qData.q}" Đáp án đúng là "${correct}". ${qData.explain} Hãy nhớ để trả lời tốt hơn ở câu tiếp theo nhé!`, true, nextStep);
   }
-
-  setTimeout(() => {
-    if (g7.qIdx + 1 < g7.total) {
-      g7.qIdx++;
-      loadQuestion(g7.qIdx);
-    } else {
-      finishChallenge();
-    }
-  }, 2800);
 }
 
 function finishChallenge() {

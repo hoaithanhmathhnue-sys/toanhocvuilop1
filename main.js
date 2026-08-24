@@ -126,21 +126,47 @@ if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = loadVoices;
 }
 
-export function speak(text) {
-  if (!state.sound || !('speechSynthesis' in window)) return;
-  try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
-  // Loại bỏ tất cả icon/emoji để tránh việc trình đọc giọng nói (TTS) đọc tên của các icon đó
+export function speak(text, onEnd = null) {
   const cleanText = String(text)
     .replace(/<[^>]*>/g, '')
     .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]/gu, '')
     .trim();
-  if (!cleanText) return;
+
+  // Ước tính thời gian đọc (ms): khoảng 90ms mỗi ký tự + 1000ms buffer, tối thiểu 3500ms
+  const estimatedMs = Math.max(3500, Math.ceil(cleanText.length * 90) + 1000);
+
+  if (!state.sound || !('speechSynthesis' in window)) {
+    if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 4000));
+    return;
+  }
+
+  try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+  if (!cleanText) {
+    if (onEnd) onEnd();
+    return;
+  }
+
   const u = new SpeechSynthesisUtterance(cleanText);
   u.lang = 'vi-VN';
   u.rate = 1.2;
   // Nếu là giọng Nam bắt buộc (Microsoft An), nâng pitch lên 1.65 để chuyển thành giọng Nữ thân thiện
   u.pitch = isMaleFallback ? 1.65 : 1.4;
   if (viVoice) u.voice = viVoice;
+
+  if (onEnd) {
+    let called = false;
+    const triggerEnd = () => {
+      if (!called) {
+        called = true;
+        onEnd();
+      }
+    };
+    u.onend = triggerEnd;
+    u.onerror = triggerEnd;
+    // Timer dự phòng đảm bảo luôn chuyển tiếp ngay cả khi trình duyệt không bắn sự kiện onend
+    setTimeout(triggerEnd, estimatedMs + 1000);
+  }
+
   window.speechSynthesis.speak(u);
 }
 
@@ -148,14 +174,18 @@ export function speak(text) {
 const chatBubble = document.getElementById('chatBubble');
 const chatTextEl = document.getElementById('chatText');
 
-export function setChat(txt, doSpeak = true) {
+export function setChat(txt, doSpeak = true, onEnd = null) {
   // Loại bỏ emoji ở cuối câu nói của Cô Cú Thông Thái
   const cleanText = String(txt)
     .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]+$/gu, '')
     .trim();
   chatTextEl.textContent = cleanText;
   chatBubble.classList.add('show');
-  if (doSpeak) speak(cleanText);
+  if (doSpeak) {
+    speak(cleanText, onEnd);
+  } else if (onEnd) {
+    onEnd();
+  }
 }
 
 export function hideChat() {

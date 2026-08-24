@@ -412,8 +412,9 @@ function handleChalAnswer(chosen, correct, qi, btn) {
     confetti(30);
     allBtns.forEach(x => x.disabled = true);
     fb.innerHTML = `<div style="background:#d1fae5;border-radius:14px;padding:12px;font-weight:700;color:#065f46;text-align:center">✅ Chính xác! Giỏi lắm! 🌟</div>`;
-    setChat('Chính xác! Mặt tiếp theo xuất hiện đúng như con tưởng tượng. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn màu này nhé!');
-    setTimeout(() => nextChalStep(), 2000);
+    setChat('Chính xác! Mặt tiếp theo xuất hiện đúng như con tưởng tượng. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn màu này nhé!', true, () => {
+      setTimeout(() => nextChalStep(), 800);
+    });
   } else {
     attempts++;
     snd('wrong');
@@ -423,8 +424,9 @@ function handleChalAnswer(chosen, correct, qi, btn) {
       allBtns.forEach(x => x.disabled = true);
       const correctFace = FACES.find(f => f.colorName === correct);
       fb.innerHTML = `<div style="background:#fef3c7;border-radius:14px;padding:12px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án: ${correctFace.icon} Màu ${correct}</div>`;
-      setChat(`Đáp án đúng là màu ${correct}. Con thử quan sát kỹ lại vị trí 6 mặt của khối lập phương nhé!`);
-      setTimeout(() => nextChalStep(), 2500);
+      setChat(`Đáp án đúng là màu ${correct}. Con thử quan sát kỹ lại vị trí 6 mặt của khối lập phương nhé!`, true, () => {
+        setTimeout(() => nextChalStep(), 800);
+      });
     } else {
       setChat('Con thử nhìn kỹ khối này nhé: khi xoay theo hướng đó thì mặt nào sẽ xuất hiện ở phía trước? Hãy so sánh các màu và thử chọn lại lần nữa xem nào!');
     }

@@ -154,14 +154,15 @@ function handleReason(btn, opt) {
 }
 
 function verify() {
-  setChat('Chính xác! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!');
-  setTimeout(() => {
-    g2.done.push(g2.round);
-    if (g2.round < 3) {
-      g2.round++;
-      loadRound(g2.round);
-    } else {
-      showResult(2, 3, 'Con đã phân biệt được khối lập phương và khối hộp chữ nhật! Cô Cú Thông Thái khen con giỏi!');
-    }
-  }, 3000);
+  setChat('Chính xác! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!', true, () => {
+    setTimeout(() => {
+      g2.done.push(g2.round);
+      if (g2.round < 3) {
+        g2.round++;
+        loadRound(g2.round);
+      } else {
+        showResult(2, 3, 'Con đã phân biệt được khối lập phương và khối hộp chữ nhật! Cô Cú Thông Thái khen con giỏi!');
+      }
+    }, 800);
+  });
 }

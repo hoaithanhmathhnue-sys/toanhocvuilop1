@@ -92,8 +92,9 @@ function setHour(d) {
 function checkClock() {
   if (g5.hour === g5.target) {
     snd('win');
-    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`);
-    setTimeout(() => loadDays(), 2500);
+    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`, true, () => {
+      setTimeout(() => loadDays(), 800);
+    });
   } else {
     snd('wrong');
     setChat(`Con thử nhìn kỹ kim ngắn và kim dài nhé: Kim ngắn chỉ số mấy, kim dài chỉ số mấy? Hãy so sánh với ${g5.target} giờ đúng – giống hay khác? Con chỉnh lại lần nữa xem nào!`);
@@ -146,12 +147,13 @@ function loadDay(i) {
 }
 
 function dayVerify(q, i) {
-  setChat(`Chính xác! ${q.answer} đấy con. Một tuần có 7 ngày khép kín nối tiếp nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn thứ này nhé!`);
-  setTimeout(() => {
-    if (i === 0) {
-      loadDay(1);
-    } else {
-      showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cô Cú Thông Thái vỗ tay khen con!');
-    }
-  }, 2800);
+  setChat(`Chính xác! ${q.answer} đấy con. Một tuần có 7 ngày khép kín nối tiếp nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn thứ này nhé!`, true, () => {
+    setTimeout(() => {
+      if (i === 0) {
+        loadDay(1);
+      } else {
+        showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cô Cú Thông Thái vỗ tay khen con!');
+      }
+    }, 800);
+  });
 }

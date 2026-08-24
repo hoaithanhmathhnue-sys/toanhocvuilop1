@@ -163,14 +163,14 @@ function win() {
   snd('win');
   const cmdNames = { up: 'Lên', down: 'Xuống', left: 'Trái', right: 'Phải' };
   const chain = g3.cmd.map(c => cmdNames[c]).join(' → ');
-  setChat(`Chính xác! Rô-bốt đã đến ngôi sao theo chuỗi đường đi: ${chain}. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn các bước đi này nhé!`);
-
-  setTimeout(() => {
-    if (g3.round < 3) {
-      g3.round++;
-      loadRound(g3.round);
-    } else {
-      showResult(3, 3, 'Con đã chỉ đường cho rô-bốt đến đúng ngôi sao! Cô Cú Thông Thái rất tự hào!');
-    }
-  }, 3000);
+  setChat(`Chính xác! Rô-bốt đã đến ngôi sao theo chuỗi đường đi: ${chain}. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn các bước đi này nhé!`, true, () => {
+    setTimeout(() => {
+      if (g3.round < 3) {
+        g3.round++;
+        loadRound(g3.round);
+      } else {
+        showResult(3, 3, 'Con đã chỉ đường cho rô-bốt đến đúng ngôi sao! Cô Cú Thông Thái rất tự hào!');
+      }
+    }, 800);
+  });
 }

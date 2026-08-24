@@ -231,13 +231,14 @@ function handleReason(btn, opt) {
 
 function verify() {
   const desc = SHAPES[g1.target].desc;
-  setChat(`Chính xác! ${desc} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`);
-  setTimeout(() => {
-    if (g1.round < g1.totalRounds) {
-      g1.round++;
-      loadRound(g1.round);
-    } else {
-      showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú Thông Thái tự hào quá!');
-    }
-  }, 2500);
+  setChat(`Chính xác! ${desc} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`, true, () => {
+    setTimeout(() => {
+      if (g1.round < g1.totalRounds) {
+        g1.round++;
+        loadRound(g1.round);
+      } else {
+        showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú Thông Thái tự hào quá!');
+      }
+    }, 800);
+  });
 }

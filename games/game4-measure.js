@@ -193,13 +193,14 @@ function readResult(it) {
 }
 
 function verify(it) {
-  setChat(`Chính xác! Vạch số 0 trùng với một đầu, đầu kia chỉ vạch số ${it.cm} nên ${it.name} dài ${it.cm} cm. Con giỏi quá! Bây giờ hãy nói cho bạn nghe cách con đo nhé!`);
-  setTimeout(() => {
-    if (g4.round < 3) {
-      g4.round++;
-      loadRound(g4.round);
-    } else {
-      showResult(4, 3, 'Con đã dùng Thước Thần Kỳ đo được 3 đồ vật thật chính xác! Tuyệt vời!');
-    }
-  }, 3000);
+  setChat(`Chính xác! Vạch số 0 trùng với một đầu, đầu kia chỉ vạch số ${it.cm} nên ${it.name} dài ${it.cm} cm. Con giỏi quá! Bây giờ hãy nói cho bạn nghe cách con đo nhé!`, true, () => {
+    setTimeout(() => {
+      if (g4.round < 3) {
+        g4.round++;
+        loadRound(g4.round);
+      } else {
+        showResult(4, 3, 'Con đã dùng Thước Thần Kỳ đo được 3 đồ vật thật chính xác! Tuyệt vời!');
+      }
+    }, 800);
+  });
 }
