@@ -118,8 +118,37 @@ function render() {
 }
 
 function askExpression(L) {
-  const relCol = L.star[1] - L.robot[1];
-  const q2 = relCol < 0 ? 'trái' : (relCol > 0 ? 'phải' : 'giữa');
+  const relRow = L.star[0] - L.robot[0]; // >0 = dưới, <0 = trên
+  const relCol = L.star[1] - L.robot[1]; // >0 = phải, <0 = trái
+
+  // Xác định hướng chính (ưu tiên hướng có khoảng cách lớn hơn)
+  let answer;
+  if (relRow === 0 && relCol === 0) {
+    answer = 'giữa';
+  } else if (Math.abs(relRow) > Math.abs(relCol)) {
+    answer = relRow > 0 ? 'dưới' : 'trên';
+  } else if (Math.abs(relCol) > Math.abs(relRow)) {
+    answer = relCol > 0 ? 'phải' : 'trái';
+  } else {
+    // Bằng nhau — chọn hướng dọc
+    answer = relRow > 0 ? 'dưới' : 'trên';
+  }
+
+  const labelMap = {
+    'trái': '⭐ Bên trái',
+    'phải': '⭐ Bên phải',
+    'trên': '⭐ Bên trên',
+    'dưới': '⭐ Bên dưới',
+    'giữa': '⭐ Ở giữa'
+  };
+
+  // Tạo 4 lựa chọn: đáp án đúng + 3 đáp án sai (random)
+  const allDirs = ['trái', 'phải', 'trên', 'dưới', 'giữa'];
+  const wrongs = shuffle(allDirs.filter(d => d !== answer)).slice(0, 3);
+  const opts = shuffle([
+    { t: labelMap[answer], g: true },
+    ...wrongs.map(d => ({ t: labelMap[d], g: false }))
+  ]);
 
   const ex = document.getElementById('g3express');
   ex.innerHTML = `
@@ -127,14 +156,8 @@ function askExpression(L) {
     <div class="reason-grid" id="g3q"></div>
   `;
 
-  const opts = [
-    { t: '⭐ Bên trái', g: q2 === 'trái' },
-    { t: '⭐ Bên phải', g: q2 === 'phải' },
-    { t: '⭐ Ở giữa', g: q2 === 'giữa' }
-  ];
-
   const rs = document.getElementById('g3q');
-  shuffle(opts).forEach(o => {
+  opts.forEach(o => {
     const b = document.createElement('button');
     b.className = 'reason-btn';
     b.textContent = o.t;
@@ -143,12 +166,12 @@ function askExpression(L) {
         b.classList.add('correct');
         snd('correct');
         rs.querySelectorAll('.reason-btn').forEach(x => { x.disabled = true; });
-        setChat(`Chính xác! Ngôi sao ở bên ${q2} của rô-bốt. Con giỏi quá! Bây giờ hãy điều khiển rô-bốt tới đó và nói cho bạn nghe nhé!`);
+        setChat(`Chính xác! Ngôi sao ở ${labelMap[answer].replace('⭐ ', '').toLowerCase()} rô-bốt. Con giỏi quá! Bây giờ hãy điều khiển rô-bốt tới đó nhé!`);
       } else {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 600);
-        setChat('Con thử nhìn kỹ rô-bốt và ngôi sao nhé: Ngôi sao đang ở phía nào so với rô-bốt? Hãy so sánh bên trái, bên phải và ở giữa – Con chọn lại lần nữa xem nào!');
+        setChat('Con thử nhìn kỹ rô-bốt và ngôi sao nhé: ngôi sao đang ở phía nào so với rô-bốt? Hãy so sánh rồi chọn lại lần nữa xem nào!');
       }
     });
     rs.appendChild(b);

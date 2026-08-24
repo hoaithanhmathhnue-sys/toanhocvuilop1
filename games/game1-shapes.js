@@ -103,10 +103,10 @@ function randomPositions(count) {
   for (let i = 0; i < count; i++) {
     let x, y, tries = 0;
     do {
-      x = 8 + Math.random() * 78;
-      y = 8 + Math.random() * 65;
+      x = 6 + Math.random() * 82;
+      y = 6 + Math.random() * 60;
       tries++;
-    } while (tries < 50 && used.some(p => Math.abs(p.x - x) < 14 && Math.abs(p.y - y) < 18));
+    } while (tries < 120 && used.some(p => Math.abs(p.x - x) < 18 && Math.abs(p.y - y) < 25));
     used.push({ x, y });
     positions.push({ x: Math.round(x), y: Math.round(y) });
   }
