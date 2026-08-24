@@ -106,7 +106,7 @@ function predict(it) {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 500);
-        setChat('Con hãy kéo thước ra và đo thử xem sao nhé! Cú Thông Thái tin con sẽ tìm ra! 💪');
+        setChat('Con hãy kéo thước ra và đo thử xem sao nhé! Cô Cú Thông Thái tin con sẽ tìm ra! 💪');
       }
     });
     pad.appendChild(b);

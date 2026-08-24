@@ -142,7 +142,7 @@ function loadDay(i) {
 
   setChat(i === 0
     ? `Hôm nay là ${q.today}. Con hãy đoán xem ${q.ask} là thứ mấy nhé! 📅`
-    : `Giỏi lắm! Bây giờ Cú Thông Thái hỏi: ${q.ask} là thứ mấy? 📅`);
+    : `Giỏi lắm! Bây giờ Cô Cú Thông Thái hỏi: ${q.ask} là thứ mấy? 📅`);
 }
 
 function dayVerify(q, i) {
@@ -151,7 +151,7 @@ function dayVerify(q, i) {
     if (i === 0) {
       loadDay(1);
     } else {
-      showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cú Thông Thái vỗ tay khen con! 👏');
+      showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cô Cú Thông Thái vỗ tay khen con! 👏');
     }
   }, 2800);
 }

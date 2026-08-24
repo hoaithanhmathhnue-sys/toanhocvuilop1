@@ -116,7 +116,7 @@ function pick(side, type) {
 }
 
 function askReason() {
-  setChat('Con chọn đúng rồi! Giờ Cú Thông Thái hỏi: Vì sao đó là KHỐI LẬP PHƯƠNG? 🤔');
+  setChat('Con chọn đúng rồi! Giờ Cô Cú Thông Thái hỏi: Vì sao đó là KHỐI LẬP PHƯƠNG? 🤔');
   const a = document.getElementById('g2area');
   a.innerHTML += `
     <div class="prompt-box" style="margin-top:16px">❓ Vì sao đó là khối lập phương?</div>
@@ -154,14 +154,14 @@ function handleReason(btn, opt) {
 }
 
 function verify() {
-  setChat('Đúng rồi! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Khối hộp chữ nhật thì các mặt là hình chữ nhật, không bằng nhau. Cú Thông Thái cùng con đếm: 1, 2, 3, 4, 5, 6 — 6 mặt nhé! 🎉');
+  setChat('Đúng rồi! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Khối hộp chữ nhật thì các mặt là hình chữ nhật, không bằng nhau. Cô Cú Thông Thái cùng con đếm: 1, 2, 3, 4, 5, 6 — 6 mặt nhé! 🎉');
   setTimeout(() => {
     g2.done.push(g2.round);
     if (g2.round < 3) {
       g2.round++;
       loadRound(g2.round);
     } else {
-      showResult(2, 3, 'Con đã phân biệt được khối lập phương và khối hộp chữ nhật! Cú Thông Thái khen con giỏi!');
+      showResult(2, 3, 'Con đã phân biệt được khối lập phương và khối hộp chữ nhật! Cô Cú Thông Thái khen con giỏi!');
     }
   }, 3000);
 }

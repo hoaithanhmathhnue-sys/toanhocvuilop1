@@ -197,7 +197,7 @@ function loadExplore() {
         </div>
         <div class="action-row" style="flex-direction:column;gap:8px;margin-top:12px">
           <button class="action-btn btn-green" id="g6net" style="width:100%">📦 Mở khối – khai triển</button>
-          <button class="action-btn btn-pink" id="g6challenge" style="width:100%">🎮 Thử thách Cú Thông Thái</button>
+          <button class="action-btn btn-pink" id="g6challenge" style="width:100%">🎮 Thử thách Cô Cú Thông Thái</button>
         </div>
       </div>
     </div>
@@ -440,6 +440,6 @@ function nextChalStep() {
   } else {
     destroyThree();
     const stars = Object.keys(earnedStars).length;
-    showResult(6, Math.min(4, Math.ceil(stars / 3)), 'Con đã hoàn thành Thử thách Khối Lập Phương! Cú Thông Thái tự hào lắm! 🏆');
+    showResult(6, Math.min(4, Math.ceil(stars / 3)), 'Con đã hoàn thành Thử thách Khối Lập Phương! Cô Cú Thông Thái tự hào lắm! 🏆');
   }
 }

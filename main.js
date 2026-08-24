@@ -82,7 +82,7 @@ export function snd(type) {
   }
 }
 
-/* ============ SPEECH SYNTHESIS (giọng NỮ Cú Thông Thái) ============ */
+/* ============ SPEECH SYNTHESIS (giọng NỮ Cô Cú Thông Thái) ============ */
 let viVoice = null;
 let isMaleFallback = false;
 

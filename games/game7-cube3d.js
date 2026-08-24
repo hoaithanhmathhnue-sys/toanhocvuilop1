@@ -126,11 +126,11 @@ function handleAnswer(btn, chosen, correct, qData) {
 function finishChallenge() {
   const stars = Math.min(5, g7.score);
   const msgs = [
-    'Con cố gắng thêm nhé! Cú Thông Thái tin con sẽ làm được! 💪',
+    'Con cố gắng thêm nhé! Cô Cú Thông Thái tin con sẽ làm được! 💪',
     'Tốt lắm! Con đã cố gắng rồi! 👍',
-    'Khá giỏi đó con! Cú Thông Thái khen! 🌟',
+    'Khá giỏi đó con! Cô Cú Thông Thái khen! 🌟',
     'Xuất sắc! Con trả lời rất tốt! 🎉',
-    'Hoàn hảo! Con đúng hết tất cả! Cú Thông Thái tự hào lắm! 🏆',
+    'Hoàn hảo! Con đúng hết tất cả! Cô Cú Thông Thái tự hào lắm! 🏆',
     'Siêu giỏi! Con là ngôi sao sáng nhất! 🌟🏆'
   ];
 
