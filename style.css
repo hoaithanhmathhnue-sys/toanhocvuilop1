@@ -197,8 +197,8 @@ header {
 .gc-4 { border-color: #f472b6; } .gc-4::before { background: linear-gradient(90deg, #f472b6, #fb923c); }
 .gc-5 { border-color: #a78bfa; } .gc-5::before { background: linear-gradient(90deg, #a78bfa, #818cf8); }
 .gc-6 { border-color: #ef4444; } .gc-6::before { background: linear-gradient(90deg, #ef4444, #f97316); }
-.gc-7 { border-color: #fbbf24; } .gc-7::before { background: linear-gradient(90deg, #fbbf24, #f97316); }
-.gc-8 { border-color: #14b8a6; } .gc-8::before { background: linear-gradient(90deg, #14b8a6, #06b6d4); }
+.gc-7 { border-color: #14b8a6; } .gc-7::before { background: linear-gradient(90deg, #14b8a6, #06b6d4); }
+.gc-8 { border-color: #fbbf24; } .gc-8::before { background: linear-gradient(90deg, #fbbf24, #f97316); }
 
 /* ---------- TANGRAM GAME (SVG-based) ---------- */
 .tg-layout {

@@ -95,17 +95,17 @@ function createThreeCube(container) {
   const wireframe = new THREE.LineSegments(edges, edgeMat);
   cubeMesh.add(wireframe);
 
-  // Face labels (sprites)
+  // Face labels (sprites) — icon + tên mặt
   const labelData = [
-    { text: '🌟', pos: [0, 0, 1.08] },   // front
-    { text: '🎈', pos: [0, 0, -1.08] },  // back
-    { text: '☀️', pos: [0, 1.08, 0] },   // top
-    { text: '🍂', pos: [0, -1.08, 0] },  // bottom
-    { text: '⭐', pos: [1.08, 0, 0] },   // right
-    { text: '🍀', pos: [-1.08, 0, 0] }   // left
+    { text: '🌟', name: 'TRƯỚC', pos: [0, 0, 1.08] },
+    { text: '🎈', name: 'SAU',   pos: [0, 0, -1.08] },
+    { text: '☀️', name: 'TRÊN',  pos: [0, 1.08, 0] },
+    { text: '🍂', name: 'DƯỚI', pos: [0, -1.08, 0] },
+    { text: '⭐', name: 'PHẢI', pos: [1.08, 0, 0] },
+    { text: '🍀', name: 'TRÁI', pos: [-1.08, 0, 0] }
   ];
   labelData.forEach(l => {
-    const sprite = createSpriteLabel(l.text);
+    const sprite = createSpriteLabel(l.text, l.name);
     sprite.position.set(...l.pos);
     cubeMesh.add(sprite);
   });
@@ -135,18 +135,28 @@ function createThreeCube(container) {
   }
 }
 
-function createSpriteLabel(text) {
+function createSpriteLabel(icon, name) {
   const canvas = document.createElement('canvas');
-  canvas.width = 128; canvas.height = 128;
+  canvas.width = 256; canvas.height = 256;
   const ctx = canvas.getContext('2d');
-  ctx.font = '64px serif';
+  // Icon
+  ctx.font = '80px serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(text, 64, 64);
+  ctx.fillText(icon, 128, name ? 90 : 128);
+  // Face name text
+  if (name) {
+    ctx.font = 'bold 42px sans-serif';
+    ctx.fillStyle = '#333';
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 6;
+    ctx.strokeText(name, 128, 185);
+    ctx.fillText(name, 128, 185);
+  }
   const texture = new THREE.CanvasTexture(canvas);
   const mat = new THREE.SpriteMaterial({ map: texture, transparent: true });
   const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(0.6, 0.6, 0.6);
+  sprite.scale.set(0.9, 0.9, 0.9);
   return sprite;
 }
 
@@ -337,7 +347,7 @@ function loadChalRound(ri) {
       createThreeCube(container);
       if (controls) {
         controls.autoRotate = false;
-        controls.enableRotate = true;
+        controls.enableRotate = false; // Khóa xoay — giữ cố định để HS nhận biết mặt
       }
     }
   });

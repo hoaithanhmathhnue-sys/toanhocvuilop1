@@ -96,9 +96,9 @@ function loadPuzzle(idx) {
   g8.drag = null;
   const puz = PUZZLES[g8.order[idx]];
   g8.total = puz.pieces.length;
-  makePills('g8pills', 3, idx+1, []);
+  makePills('g7pills', 3, idx+1, []);
 
-  const area = document.getElementById('g8area');
+  const area = document.getElementById('g7area');
   const shuffled = shuffle([...puz.pieces]);
 
   /* Build tray HTML */
@@ -248,7 +248,7 @@ function puzzleComplete() {
           setChat(`Chính xác! Con đã dùng các hình tam giác và hình chữ nhật để ghép thành ${puz.name}. Con giỏi quá!`, true, () => {
             setTimeout(() => {
               if (g8.round < 2) loadPuzzle(g8.round + 1);
-              else showResult(8, 4, 'Con đã ghép xong tất cả các hình! Cô Cú thông thái rất tự hào!');
+              else showResult(7, 4, 'Con đã ghép xong tất cả các hình! Cô Cú thông thái rất tự hào!');
             }, 800);
           });
         } else {

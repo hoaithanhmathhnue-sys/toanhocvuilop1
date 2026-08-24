@@ -68,9 +68,9 @@ export function initG7() {
 
 function loadQuestion(idx) {
   const qData = g7.questions[idx];
-  makePills('g7pills', g7.total, idx + 1, []);
+  makePills('g8pills', g7.total, idx + 1, []);
 
-  const a = document.getElementById('g7area');
+  const a = document.getElementById('g8area');
   const origCorrect = qData.opts[qData.ans];
   const shuffledOpts = shuffle(qData.opts);
 
@@ -142,5 +142,5 @@ function finishChallenge() {
     'Siêu giỏi! Con là ngôi sao sáng nhất!'
   ];
 
-  showResult(7, stars, `Con trả lời đúng ${g7.score}/${g7.total} câu! ${msgs[Math.min(g7.score, 5)]}`);
+  showResult(8, stars, `Con trả lời đúng ${g7.score}/${g7.total} câu! ${msgs[Math.min(g7.score, 5)]}`);
 }

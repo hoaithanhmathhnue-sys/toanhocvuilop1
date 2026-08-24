@@ -9,8 +9,8 @@ import { initG3 } from './games/game3-robot.js';
 import { initG4 } from './games/game4-measure.js';
 import { initG5 } from './games/game5-clock.js';
 import { initG6 } from './games/game6-challenge.js';
-import { initG7 } from './games/game7-cube3d.js';
-import { initG8 } from './games/game8-tangram.js';
+import { initG8 as initG7 } from './games/game8-tangram.js';
+import { initG7 as initG8 } from './games/game7-cube3d.js';
 
 /* ============ STATE & STORAGE ============ */
 const STORAGE_KEY = 'toan1_kydieu_state';
@@ -307,8 +307,8 @@ const GAME_META = [
   { n: 4, ico: '📏', name: 'Căn phòng đo lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
   { n: 5, ico: '🕐', name: 'Cuộc dạo chơi của đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
   { n: 6, ico: '🎯', name: 'Khối lập phương thần kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
-  { n: 7, ico: '🏆', name: 'Siêu thử thách', sub: 'Ôn tập tất cả nội dung', c: 'gc-7', max: 5 },
-  { n: 8, ico: '🧩', name: 'Xếp hình Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-8', max: 4 },
+  { n: 7, ico: '🧩', name: 'Xếp hình Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-7', max: 4 },
+  { n: 8, ico: '🏆', name: 'Siêu thử thách', sub: 'Ôn tập tất cả nội dung', c: 'gc-8', max: 5 },
 ];
 
 function renderCards() {
@@ -406,10 +406,10 @@ const GAME_MELODIES = {
   5: { notes: [523,0,392,0,523,0,392,0,659,587,523,494,523,0], tempo: 400, type: 'triangle', vol: 0.04 },
   // Game 6: Khối 3D — huyền bí, ma thuật
   6: { notes: [330,392,494,659,784,659,494,392,330,0,440,523,659,0], tempo: 340, type: 'sine', vol: 0.05 },
-  // Game 7: Siêu thử thách — sôi động, hào hứng
-  7: { notes: [523,659,784,880,784,659,523,659,784,1046,880,784,659,0], tempo: 220, type: 'triangle', vol: 0.05 },
-  // Game 8: Tangram — nhẹ nhàng, thư giãn kiểu zen
-  8: { notes: [392,494,587,494,392,0,330,392,494,587,494,392,330,0], tempo: 380, type: 'sine', vol: 0.04 },
+  // Game 7: Tangram — nhẹ nhàng, thư giãn kiểu zen
+  7: { notes: [392,494,587,494,392,0,330,392,494,587,494,392,330,0], tempo: 380, type: 'sine', vol: 0.04 },
+  // Game 8: Siêu thử thách — sôi động, hào hứng
+  8: { notes: [523,659,784,880,784,659,523,659,784,1046,880,784,659,0], tempo: 220, type: 'triangle', vol: 0.05 },
 };
 
 function startBGM(gameNum) {
