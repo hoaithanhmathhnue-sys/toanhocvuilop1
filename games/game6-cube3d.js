@@ -13,7 +13,7 @@ const FACES = [
   { key: 'top',    name: 'Mặt trên',      color: '#60a5fa', hex: 0x60a5fa, icon: '☀️', colorName: 'xanh' },
   { key: 'bottom', name: 'Mặt dưới',      color: '#fb923c', hex: 0xfb923c, icon: '🍂', colorName: 'cam' },
   { key: 'right',  name: 'Mặt bên phải',  color: '#fde047', hex: 0xfde047, icon: '⭐', colorName: 'vàng' },
-  { key: 'left',   name: 'Mặt bên trái',  color: '#f472b6', hex: 0xf472b6, icon: '🌸', colorName: 'hồng' }
+  { key: 'left',   name: 'Mặt bên trái',  color: '#4ade80', hex: 0x4ade80, icon: '🍀', colorName: 'xanh lá' }
 ];
 
 let phase = 'explore'; // explore | net | challenge
@@ -22,10 +22,10 @@ let threeScene = null, threeCamera = null, threeRenderer = null, cubeMesh = null
 let animId = null;
 
 const ROUNDS = [
-  { label: 'SANG PHẢI 1 lần', qs: ['Mặt trước bây giờ là gì?', 'Mặt phải bây giờ là gì?', 'Mặt trên vẫn là gì?'] },
-  { label: 'LÊN 1 lần', qs: ['Mặt trước bây giờ là gì?', 'Mặt trên bây giờ là gì?', 'Mặt phải vẫn là gì?'] },
-  { label: 'SANG TRÁI 1 lần', qs: ['Mặt trước bây giờ là gì?', 'Mặt trái bây giờ là gì?', 'Mặt trên vẫn là gì?'] },
-  { label: 'XUỐNG 1 lần', qs: ['Mặt trước bây giờ là gì?', 'Mặt dưới bây giờ là gì?', 'Mặt phải vẫn là gì?'] }
+  { label: 'SANG PHẢI 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt bên phải bây giờ là màu gì?', 'Mặt trên vẫn là màu gì?'] },
+  { label: 'LÊN 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt trên bây giờ là màu gì?', 'Mặt bên phải vẫn là màu gì?'] },
+  { label: 'SANG TRÁI 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt bên trái bây giờ là màu gì?', 'Mặt trên vẫn là màu gì?'] },
+  { label: 'XUỐNG 1 lần', qs: ['Mặt trước bây giờ là màu gì?', 'Mặt dưới bây giờ là màu gì?', 'Mặt bên phải vẫn là màu gì?'] }
 ];
 
 function shuffle(a) { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
@@ -102,7 +102,7 @@ function createThreeCube(container) {
     { text: '☀️', pos: [0, 1.08, 0] },   // top
     { text: '🍂', pos: [0, -1.08, 0] },  // bottom
     { text: '⭐', pos: [1.08, 0, 0] },   // right
-    { text: '🌸', pos: [-1.08, 0, 0] }   // left
+    { text: '🍀', pos: [-1.08, 0, 0] }   // left
   ];
   labelData.forEach(l => {
     const sprite = createSpriteLabel(l.text);
@@ -314,7 +314,7 @@ function loadChalRound(ri) {
     <div class="g6-layout">
       <div class="g6-center">
         <div id="g6threeContainer" style="width:100%;min-height:260px;display:flex;justify-content:center;align-items:center"></div>
-        <div class="note-sm">👆 Ban đầu: Trước=đỏ🌟, Trên=xanh☀️, Phải=vàng⭐</div>
+        <div class="note-sm">👆 Ban đầu: Trước=đỏ🌟, Trên=xanh☀️, Phải=vàng⭐, Trái=xanh lá🍀</div>
       </div>
       <div class="g6-controls">
         <div class="info-card6" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
@@ -388,13 +388,25 @@ function askChalQ(ri, qi) {
 }
 
 function getRotationAnswers(ri) {
-  // Returns [front color, second color, third color] after rotation
-  // Initial: front=đỏ, back=tím, top=xanh, bottom=cam, right=vàng, left=hồng
+  // Returns [front, second-face, third-face] after one rotation
+  // Initial: front=đỏ, back=tím, top=xanh, bottom=cam, right=vàng, left=xanh lá
+  //
+  // SANG PHẢI (Y+90°): front←left, right←front, back←right, left←back
+  //   → front=xanh lá, right=đỏ, top=xanh (không đổi)
+  //
+  // LÊN (X-90°): front←bottom, top←front, back←top, bottom←back
+  //   → front=cam, top=đỏ, right=vàng (không đổi)
+  //
+  // SANG TRÁI (Y-90°): front←right, left←front, back←left, right←back
+  //   → front=vàng, left=đỏ, top=xanh (không đổi)
+  //
+  // XUỐNG (X+90°): front←top, bottom←front, back←bottom, top←back
+  //   → front=xanh, bottom=đỏ, right=vàng (không đổi)
   switch(ri) {
-    case 0: return ['vàng', 'tím', 'xanh'];     // right → front=vàng (was right), right=tím (was back), top=xanh (unchanged)
-    case 1: return ['xanh', 'tím', 'vàng'];      // up → front=xanh (was top), top=tím (was back), right=vàng (unchanged)
-    case 2: return ['hồng', 'đỏ', 'xanh'];       // left → front=hồng (was left), left=đỏ (was front... wait actually left's result), top=xanh (unchanged)
-    case 3: return ['cam', 'đỏ', 'vàng'];         // down → front=cam (was bottom), bottom=đỏ... wait
+    case 0: return ['xanh lá', 'đỏ', 'xanh'];   // SANG PHẢI
+    case 1: return ['cam', 'đỏ', 'vàng'];        // LÊN
+    case 2: return ['vàng', 'đỏ', 'xanh'];       // SANG TRÁI
+    case 3: return ['xanh', 'đỏ', 'vàng'];       // XUỐNG
     default: return ['đỏ', 'xanh', 'vàng'];
   }
 }
