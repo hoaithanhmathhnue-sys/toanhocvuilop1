@@ -64,6 +64,7 @@
 
 /* ---------- RESET & BASE ---------- */
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+button, input, select, textarea { font-family: inherit; font-size: inherit; }
 html, body { margin: 0; padding: 0; height: 100%; }
 body {
   font-family: var(--font-main);

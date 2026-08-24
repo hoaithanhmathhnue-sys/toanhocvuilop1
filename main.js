@@ -238,7 +238,7 @@ function renderCards() {
   const g = document.getElementById('gameGrid');
   g.innerHTML = '';
   GAME_META.forEach((m, idx) => {
-    const locked = idx > 0 && !completed(GAME_META[idx - 1].n);
+    const locked = false; // Mở khóa tất cả
     const d = document.createElement('div');
     d.className = 'game-card ' + m.c + (locked ? ' locked' : '');
 
