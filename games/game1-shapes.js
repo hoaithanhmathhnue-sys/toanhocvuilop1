@@ -169,7 +169,7 @@ function loadRound(r) {
     forest.appendChild(d);
   });
 
-  setChat(`Hãy nhìn thật kỹ và chạm vào tất cả các ${shapeName} trong khu vườn nhé con! 🖐️`);
+  setChat(`Hãy nhìn thật kỹ và chạm vào tất cả các ${shapeName} trong khu vườn nhé con!`);
 }
 
 function handleClick(obj, el, cfg) {
@@ -190,13 +190,13 @@ function handleClick(obj, el, cfg) {
     void el.offsetWidth;
     el.classList.add('shake-it');
     setTimeout(() => el.classList.remove('shake-it'), 500);
-    setChat(`Con thử nhìn kỹ ${obj.label} nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} – giống hay khác? Con chọn lại lần nữa xem nào! 💡`);
+    setChat(`Con thử nhìn kỹ ${obj.label} nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} – giống hay khác? Con chọn lại lần nữa xem nào!`);
   }
 }
 
 function allFound() {
   snd('win');
-  setChat(`Con giỏi quá! Con đã tìm đủ các ${SHAPES[g1.target].name}! Bây giờ cô hỏi con nhé: Vì sao con biết đây là ${SHAPES[g1.target].name}? 🤔`);
+  setChat(`Con giỏi quá! Con đã tìm đủ các ${SHAPES[g1.target].name}! Bây giờ cô hỏi con nhé: Vì sao con biết đây là ${SHAPES[g1.target].name}?`);
 
   const a = document.getElementById('g1area');
   a.innerHTML += `
@@ -225,13 +225,13 @@ function handleReason(btn, opt) {
     btn.classList.add('wrong');
     snd('wrong');
     setTimeout(() => btn.classList.remove('wrong'), 600);
-    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con sửa lại lần nữa xem nào! 💡`);
+    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Có góc không? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con sửa lại lần nữa xem nào!`);
   }
 }
 
 function verify() {
   const desc = SHAPES[g1.target].desc;
-  setChat(`Chính xác! ${desc} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé! ✨`);
+  setChat(`Chính xác! ${desc} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`);
   setTimeout(() => {
     if (g1.round < g1.totalRounds) {
       g1.round++;

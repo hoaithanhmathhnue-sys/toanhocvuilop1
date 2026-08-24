@@ -212,7 +212,7 @@ function loadExplore() {
   document.getElementById('g6net').addEventListener('click', loadNet);
   document.getElementById('g6challenge').addEventListener('click', startChallenge);
 
-  setChat('Chào con! Đây là khối lập phương 3D! Con hãy dùng chuột kéo để xoay khối, dùng cuộn chuột để zoom. Quan sát 6 mặt với 6 màu khác nhau nhé! 🧊');
+  setChat('Chào con! Đây là khối lập phương 3D! Con hãy dùng chuột kéo để xoay khối, dùng cuộn chuột để zoom. Quan sát 6 mặt với 6 màu khác nhau nhé!');
 }
 
 /* ============ LOAD THREE.JS CDN ============ */
@@ -276,7 +276,7 @@ function loadNet() {
         snd('correct');
         pad.querySelectorAll('.num-choice').forEach(x => x.disabled = true);
         document.getElementById('g6netFb').innerHTML = `<div style="background:#d1fae5;border-radius:16px;padding:14px;font-weight:700;color:#065f46;text-align:center">✅ Đúng! 6 mặt đều là hình vuông bằng nhau!</div>`;
-        setChat('Chính xác! Khối lập phương có 6 mặt, 12 cạnh, 8 đỉnh. Tất cả 6 mặt đều là hình vuông bằng nhau! 🎉');
+        setChat('Chính xác! Khối lập phương có 6 mặt, 12 cạnh, 8 đỉnh. Tất cả 6 mặt đều là hình vuông bằng nhau!');
         setTimeout(() => {
           const a2 = document.getElementById('g6area');
           a2.innerHTML += `<div class="action-row"><button class="action-btn btn-purple" id="g6backExplore">🧊 Xoay khối 3D</button><button class="action-btn btn-pink" id="g6toChal">🎮 Thử thách</button></div>`;
@@ -287,13 +287,13 @@ function loadNet() {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 500);
-        setChat('Chưa đúng! Con đếm lại: trước, sau, trên, dưới, trái, phải — đó là mấy mặt nhỉ? 🤔');
+        setChat('Chưa đúng! Con đếm lại: trước, sau, trên, dưới, trái, phải — đó là mấy mặt nhỉ?');
       }
     });
     pad.appendChild(b);
   });
 
-  setChat('Mở khối ra, con thấy hình chữ thập với 6 ô vuông. Mỗi ô là một mặt. Con đếm xem có bao nhiêu mặt nhé! 📦');
+  setChat('Mở khối ra, con thấy hình chữ thập với 6 ô vuông. Mỗi ô là một mặt. Con đếm xem có bao nhiêu mặt nhé!');
 }
 
 /* ============ CHALLENGE ============ */
@@ -386,7 +386,7 @@ function askChalQ(ri, qi) {
     grid.appendChild(b);
   });
 
-  setChat(`${qText} Con nghĩ kỹ rồi chọn nhé! 🤔`);
+  setChat(`${qText} Con nghĩ kỹ rồi chọn nhé!`);
 }
 
 function getRotationAnswers(ri) {
@@ -412,7 +412,7 @@ function handleChalAnswer(chosen, correct, qi, btn) {
     confetti(30);
     allBtns.forEach(x => x.disabled = true);
     fb.innerHTML = `<div style="background:#d1fae5;border-radius:14px;padding:12px;font-weight:700;color:#065f46;text-align:center">✅ Chính xác! Giỏi lắm! 🌟</div>`;
-    setChat('Chính xác! Mặt tiếp theo xuất hiện đúng như con tưởng tượng. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn màu này nhé! 🌟');
+    setChat('Chính xác! Mặt tiếp theo xuất hiện đúng như con tưởng tượng. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn màu này nhé!');
     setTimeout(() => nextChalStep(), 2000);
   } else {
     attempts++;
@@ -423,10 +423,10 @@ function handleChalAnswer(chosen, correct, qi, btn) {
       allBtns.forEach(x => x.disabled = true);
       const correctFace = FACES.find(f => f.colorName === correct);
       fb.innerHTML = `<div style="background:#fef3c7;border-radius:14px;padding:12px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án: ${correctFace.icon} Màu ${correct}</div>`;
-      setChat(`Đáp án đúng là màu ${correct}. Con thử quan sát kỹ lại vị trí 6 mặt của khối lập phương nhé! 💪`);
+      setChat(`Đáp án đúng là màu ${correct}. Con thử quan sát kỹ lại vị trí 6 mặt của khối lập phương nhé!`);
       setTimeout(() => nextChalStep(), 2500);
     } else {
-      setChat('Con thử nhìn kỹ khối này nhé: khi xoay theo hướng đó thì mặt nào sẽ xuất hiện ở phía trước? Hãy so sánh các màu và thử chọn lại lần nữa xem nào! 💡');
+      setChat('Con thử nhìn kỹ khối này nhé: khi xoay theo hướng đó thì mặt nào sẽ xuất hiện ở phía trước? Hãy so sánh các màu và thử chọn lại lần nữa xem nào!');
     }
   }
 }

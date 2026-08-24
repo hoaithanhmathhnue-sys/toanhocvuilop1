@@ -129,7 +129,13 @@ if ('speechSynthesis' in window) {
 export function speak(text) {
   if (!state.sound || !('speechSynthesis' in window)) return;
   try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
-  const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]*>/g, ''));
+  // Loại bỏ tất cả icon/emoji để tránh việc trình đọc giọng nói (TTS) đọc tên của các icon đó
+  const cleanText = String(text)
+    .replace(/<[^>]*>/g, '')
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]/gu, '')
+    .trim();
+  if (!cleanText) return;
+  const u = new SpeechSynthesisUtterance(cleanText);
   u.lang = 'vi-VN';
   u.rate = 1.2;
   // Nếu là giọng Nam bắt buộc (Microsoft An), nâng pitch lên 1.65 để chuyển thành giọng Nữ thân thiện
@@ -143,9 +149,13 @@ const chatBubble = document.getElementById('chatBubble');
 const chatTextEl = document.getElementById('chatText');
 
 export function setChat(txt, doSpeak = true) {
-  chatTextEl.textContent = txt;
+  // Loại bỏ emoji ở cuối câu nói của Cô Cú Thông Thái
+  const cleanText = String(txt)
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]+$/gu, '')
+    .trim();
+  chatTextEl.textContent = cleanText;
   chatBubble.classList.add('show');
-  if (doSpeak) speak(txt);
+  if (doSpeak) speak(cleanText);
 }
 
 export function hideChat() {
@@ -246,7 +256,7 @@ export function showResult(gid, stars, message) {
   showScreen('screen-result');
   confetti(120);
   snd('win');
-  setChat('Chúc mừng con! Con đã hoàn thành tuyệt vời! Cô rất tự hào về con! 🌟');
+  setChat('Chúc mừng con! Con đã hoàn thành tuyệt vời! Cô rất tự hào về con!');
 
   document.getElementById('resultHome').addEventListener('click', goHome);
   document.getElementById('resultReplay').addEventListener('click', () => startGame(gid));
@@ -293,7 +303,7 @@ function renderCards() {
         snd('click');
         startGame(m.n);
       } else {
-        setChat(`Con cần hoàn thành trò "${GAME_META[idx - 1].name}" trước để mở khóa trò này nhé! 💪`);
+        setChat(`Con cần hoàn thành trò "${GAME_META[idx - 1].name}" trước để mở khóa trò này nhé!`);
       }
     });
     g.appendChild(d);

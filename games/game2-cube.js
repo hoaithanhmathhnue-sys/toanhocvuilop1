@@ -97,7 +97,7 @@ function loadRound(r) {
   document.getElementById('b-left').addEventListener('click', () => pick('left', cubeFirst ? 'cube' : 'box'));
   document.getElementById('b-right').addEventListener('click', () => pick('right', cubeFirst ? 'box' : 'cube'));
 
-  setChat('Hãy quan sát kỹ hai khối và bấm vào KHỐI LẬP PHƯƠNG nhé! Khối lập phương có 6 mặt đều là hình vuông bằng nhau đó! 🧊');
+  setChat('Hãy quan sát kỹ hai khối và bấm vào KHỐI LẬP PHƯƠNG nhé! Khối lập phương có 6 mặt đều là hình vuông bằng nhau đó!');
 }
 
 function pick(side, type) {
@@ -111,12 +111,12 @@ function pick(side, type) {
     const el = document.getElementById('b-' + side);
     el.classList.add('wrongsel');
     setTimeout(() => el.classList.remove('wrongsel'), 600);
-    setChat('Con thử nhìn kỹ khối này nhé: các mặt của nó là hình gì, có bằng nhau không? Hãy so sánh với khối lập phương 6 mặt vuông bằng nhau – giống hay khác? Con chọn lại lần nữa xem nào! 💡');
+    setChat('Con thử nhìn kỹ khối này nhé: các mặt của nó là hình gì, có bằng nhau không? Hãy so sánh với khối lập phương 6 mặt vuông bằng nhau – giống hay khác? Con chọn lại lần nữa xem nào!');
   }
 }
 
 function askReason() {
-  setChat('Con chọn đúng rồi! Giờ Cô Cú Thông Thái hỏi: Vì sao đó là KHỐI LẬP PHƯƠNG? 🤔');
+  setChat('Con chọn đúng rồi! Giờ Cô Cú Thông Thái hỏi: Vì sao đó là KHỐI LẬP PHƯƠNG?');
   const a = document.getElementById('g2area');
   a.innerHTML += `
     <div class="prompt-box" style="margin-top:16px">❓ Vì sao đó là khối lập phương?</div>
@@ -149,12 +149,12 @@ function handleReason(btn, opt) {
     btn.classList.add('wrong');
     snd('wrong');
     setTimeout(() => btn.classList.remove('wrong'), 600);
-    setChat('Con thử nhìn kỹ khối lập phương nhé: các mặt của nó có bằng nhau không? Hãy so sánh các đáp án và sửa lại lần nữa xem nào! 💡');
+    setChat('Con thử nhìn kỹ khối lập phương nhé: các mặt của nó có bằng nhau không? Hãy so sánh các đáp án và sửa lại lần nữa xem nào!');
   }
 }
 
 function verify() {
-  setChat('Chính xác! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé! ✨');
+  setChat('Chính xác! Khối lập phương có 6 mặt đều là hình vuông bằng nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!');
   setTimeout(() => {
     g2.done.push(g2.round);
     if (g2.round < 3) {

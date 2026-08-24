@@ -108,23 +108,23 @@ function askExpression(L) {
         b.classList.add('correct');
         snd('correct');
         rs.querySelectorAll('.reason-btn').forEach(x => { x.disabled = true; });
-        setChat(`Chính xác! Ngôi sao ở bên ${q2} của rô-bốt. Con giỏi quá! Bây giờ hãy điều khiển rô-bốt tới đó và nói cho bạn nghe nhé! 🚀`);
+        setChat(`Chính xác! Ngôi sao ở bên ${q2} của rô-bốt. Con giỏi quá! Bây giờ hãy điều khiển rô-bốt tới đó và nói cho bạn nghe nhé!`);
       } else {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 600);
-        setChat('Con thử nhìn kỹ rô-bốt và ngôi sao nhé: Ngôi sao đang ở phía nào so với rô-bốt? Hãy so sánh bên trái, bên phải và ở giữa – Con chọn lại lần nữa xem nào! 💡');
+        setChat('Con thử nhìn kỹ rô-bốt và ngôi sao nhé: Ngôi sao đang ở phía nào so với rô-bốt? Hãy so sánh bên trái, bên phải và ở giữa – Con chọn lại lần nữa xem nào!');
       }
     });
     rs.appendChild(b);
   });
 
-  setChat('Trước khi điều khiển, Cô Cú Thông Thái hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt? 🧭');
+  setChat('Trước khi điều khiển, Cô Cú Thông Thái hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt?');
 }
 
 function move(dir) {
   if (g3.moved >= g3.steps) {
-    setChat('Con đã hết số bước rồi! Hãy bấm Chơi lại để thử lại nhé. 💪');
+    setChat('Con đã hết số bước rồi! Hãy bấm Chơi lại để thử lại nhé.');
     return;
   }
 
@@ -137,7 +137,7 @@ function move(dir) {
   else if (dir === 'right') c++;
 
   if (r < 0 || r > 2 || c < 0 || c > 2) {
-    setChat('Rô-bốt đi ra ngoài rồi! Hãy chọn hướng khác nhé. 🚧');
+    setChat('Rô-bốt đi ra ngoài rồi! Hãy chọn hướng khác nhé.');
     g3.cmd.pop();
     return;
   }
@@ -151,7 +151,7 @@ function move(dir) {
     win();
   } else if (g3.moved >= g3.steps) {
     setTimeout(() => {
-      setChat('Ôi, con đã hết bước mà chưa tới ngôi sao. Con thử bấm Chơi lại nhé! 🧠');
+      setChat('Ôi, con đã hết bước mà chưa tới ngôi sao. Con thử bấm Chơi lại nhé!');
       const a = document.getElementById('g3area');
       a.innerHTML += `<div class="action-row"><button class="action-btn btn-orange" id="g3retry">🔄 Chơi lại</button></div>`;
       document.getElementById('g3retry').addEventListener('click', () => loadRound(g3.round));
@@ -163,7 +163,7 @@ function win() {
   snd('win');
   const cmdNames = { up: 'Lên', down: 'Xuống', left: 'Trái', right: 'Phải' };
   const chain = g3.cmd.map(c => cmdNames[c]).join(' → ');
-  setChat(`Chính xác! Rô-bốt đã đến ngôi sao theo chuỗi đường đi: ${chain}. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn các bước đi này nhé! ✨`);
+  setChat(`Chính xác! Rô-bốt đã đến ngôi sao theo chuỗi đường đi: ${chain}. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn các bước đi này nhé!`);
 
   setTimeout(() => {
     if (g3.round < 3) {

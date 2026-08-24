@@ -101,12 +101,12 @@ function predict(it) {
         b.classList.add('correct');
         snd('correct');
         pad.querySelectorAll('.num-choice').forEach(x => { x.disabled = true; });
-        setChat(`Dự đoán hay đấy! ${it.name} dài ${correct} cm. Bây giờ con hãy kéo thước để kiểm chứng nhé! 📏`);
+        setChat(`Dự đoán hay đấy! ${it.name} dài ${correct} cm. Bây giờ con hãy kéo thước để kiểm chứng nhé!`);
       } else {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 500);
-        setChat('Con thử nhìn kỹ đồ vật này nhé: nó dài hay ngắn? Hãy so sánh các con số và thử chọn lại lần nữa xem nào! 💡');
+        setChat('Con thử nhìn kỹ đồ vật này nhé: nó dài hay ngắn? Hãy so sánh các con số và thử chọn lại lần nữa xem nào!');
       }
     });
     pad.appendChild(b);
@@ -143,12 +143,12 @@ function checkAlign(ruler, it) {
 
   if (diff <= g4.PX * 0.6) {
     msg.textContent = '';
-    setChat(`Vạch số 0 đã trùng với đầu ${it.name} rồi! Bây giờ con đọc kết quả nhé! 📖`);
+    setChat(`Vạch số 0 đã trùng với đầu ${it.name} rồi! Bây giờ con đọc kết quả nhé!`);
     readResult(it);
   } else {
     snd('wrong');
     msg.textContent = `⚠️ Vạch số 0 phải trùng với đầu ${it.name} nhé! Hãy kéo thước lại.`;
-    setChat(`Con thử nhìn kỹ thước nhé: Vạch số 0 đã trùng với đầu ${it.name} chưa? Hãy kéo thước lại xem nào! 📏`);
+    setChat(`Con thử nhìn kỹ thước nhé: Vạch số 0 đã trùng với đầu ${it.name} chưa? Hãy kéo thước lại xem nào!`);
   }
 }
 
@@ -185,7 +185,7 @@ function readResult(it) {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 500);
-        setChat(`Con thử nhìn kỹ đuôi ${it.name} trên thước nhé: nó chỉ vào vạch số mấy? Hãy so sánh các con số và sửa lại lần nữa xem nào! 🔍`);
+        setChat(`Con thử nhìn kỹ đuôi ${it.name} trên thước nhé: nó chỉ vào vạch số mấy? Hãy so sánh các con số và sửa lại lần nữa xem nào!`);
       }
     });
     pad.appendChild(b);
@@ -193,7 +193,7 @@ function readResult(it) {
 }
 
 function verify(it) {
-  setChat(`Chính xác! Vạch số 0 trùng với một đầu, đầu kia chỉ vạch số ${it.cm} nên ${it.name} dài ${it.cm} cm. Con giỏi quá! Bây giờ hãy nói cho bạn nghe cách con đo nhé! 📏✨`);
+  setChat(`Chính xác! Vạch số 0 trùng với một đầu, đầu kia chỉ vạch số ${it.cm} nên ${it.name} dài ${it.cm} cm. Con giỏi quá! Bây giờ hãy nói cho bạn nghe cách con đo nhé!`);
   setTimeout(() => {
     if (g4.round < 3) {
       g4.round++;

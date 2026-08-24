@@ -80,7 +80,7 @@ function loadClock() {
   document.getElementById('hourPlus').addEventListener('click', () => setHour(1));
   document.getElementById('checkClock').addEventListener('click', checkClock);
 
-  setChat(`Hãy bấm nút để xoay kim đồng hồ cho đúng ${g5.target} giờ con nhé! Kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. 🕐`);
+  setChat(`Hãy bấm nút để xoay kim đồng hồ cho đúng ${g5.target} giờ con nhé! Kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12.`);
 }
 
 function setHour(d) {
@@ -92,11 +92,11 @@ function setHour(d) {
 function checkClock() {
   if (g5.hour === g5.target) {
     snd('win');
-    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé! 🎉`);
+    setChat(`Chính xác! ${g5.target} giờ đúng: kim ngắn chỉ số ${g5.target}, kim dài chỉ số 12. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`);
     setTimeout(() => loadDays(), 2500);
   } else {
     snd('wrong');
-    setChat(`Con thử nhìn kỹ kim ngắn và kim dài nhé: Kim ngắn chỉ số mấy, kim dài chỉ số mấy? Hãy so sánh với ${g5.target} giờ đúng – giống hay khác? Con chỉnh lại lần nữa xem nào! 🔄`);
+    setChat(`Con thử nhìn kỹ kim ngắn và kim dài nhé: Kim ngắn chỉ số mấy, kim dài chỉ số mấy? Hãy so sánh với ${g5.target} giờ đúng – giống hay khác? Con chỉnh lại lần nữa xem nào!`);
   }
 }
 
@@ -134,24 +134,24 @@ function loadDay(i) {
         b.classList.add('wrong');
         snd('wrong');
         setTimeout(() => b.classList.remove('wrong'), 500);
-        setChat('Con thử nhớ lại thứ tự các ngày trong tuần nhé: Thứ Hai, Thứ Ba, Thứ Tư, Thứ Năm, Thứ Sáu, Thứ Bảy, Chủ Nhật. Hãy so sánh và chọn lại lần nữa xem nào! 📅');
+        setChat('Con thử nhớ lại thứ tự các ngày trong tuần nhé: Thứ Hai, Thứ Ba, Thứ Tư, Thứ Năm, Thứ Sáu, Thứ Bảy, Chủ Nhật. Hãy so sánh và chọn lại lần nữa xem nào!');
       }
     });
     pad.appendChild(b);
   });
 
   setChat(i === 0
-    ? `Hôm nay là ${q.today}. Con hãy đoán xem ${q.ask} là thứ mấy nhé! 📅`
-    : `Giỏi lắm! Bây giờ Cô Cú Thông Thái hỏi: ${q.ask} là thứ mấy? 📅`);
+    ? `Hôm nay là ${q.today}. Con hãy đoán xem ${q.ask} là thứ mấy nhé!`
+    : `Giỏi lắm! Bây giờ Cô Cú Thông Thái hỏi: ${q.ask} là thứ mấy?`);
 }
 
 function dayVerify(q, i) {
-  setChat(`Chính xác! ${q.answer} đấy con. Một tuần có 7 ngày khép kín nối tiếp nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn thứ này nhé! 🌈`);
+  setChat(`Chính xác! ${q.answer} đấy con. Một tuần có 7 ngày khép kín nối tiếp nhau. Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn thứ này nhé!`);
   setTimeout(() => {
     if (i === 0) {
       loadDay(1);
     } else {
-      showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cô Cú Thông Thái vỗ tay khen con! 👏');
+      showResult(5, 3, 'Con đã biết xem giờ và các ngày trong tuần! Cô Cú Thông Thái vỗ tay khen con!');
     }
   }, 2800);
 }

@@ -86,7 +86,7 @@ function loadQuestion(idx) {
     optGrid.appendChild(b);
   });
 
-  setChat(`Câu ${idx + 1}: ${qData.q} Con hãy chọn đáp án nhé! 🤔`);
+  setChat(`Câu ${idx + 1}: ${qData.q} Con hãy chọn đáp án nhé!`);
 }
 
 function handleAnswer(btn, chosen, correct, qData) {
@@ -101,7 +101,7 @@ function handleAnswer(btn, chosen, correct, qData) {
 
     const fb = document.getElementById('g7feedback');
     fb.innerHTML = `<div style="background:#d1fae5;border-radius:16px;padding:14px;font-weight:700;color:#065f46;text-align:center">✅ Chính xác! ${qData.explain}</div>`;
-    setChat(`Chính xác! ${qData.explain} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn đáp án này nhé! 🌟`);
+    setChat(`Chính xác! ${qData.explain} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn đáp án này nhé!`);
   } else {
     btn.classList.add('wrong');
     snd('wrong');
@@ -110,7 +110,7 @@ function handleAnswer(btn, chosen, correct, qData) {
 
     const fb = document.getElementById('g7feedback');
     fb.innerHTML = `<div style="background:#fef3c7;border-radius:16px;padding:14px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án đúng là: ${correct}. ${qData.explain}</div>`;
-    setChat(`Con thử đọc kỹ câu hỏi nhé: "${qData.q}" Đáp án đúng là "${correct}". ${qData.explain} Hãy nhớ để trả lời tốt hơn ở câu tiếp theo nhé! 💡`);
+    setChat(`Con thử đọc kỹ câu hỏi nhé: "${qData.q}" Đáp án đúng là "${correct}". ${qData.explain} Hãy nhớ để trả lời tốt hơn ở câu tiếp theo nhé!`);
   }
 
   setTimeout(() => {
