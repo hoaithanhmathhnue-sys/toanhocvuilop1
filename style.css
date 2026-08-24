@@ -161,12 +161,14 @@ header {
 .hero-sub { color: var(--purple-400); font-weight: 700; font-size: clamp(0.9rem, 2.5vw, 1.1rem); margin: 0; }
 .hero-desc { color: var(--text-secondary); font-size: 0.95rem; margin: 6px 0 0; }
 
-/* ---------- GAME CARDS GRID ---------- */
+/* ---------- GAME CARDS GRID (4 trên, 3 dưới cân đối) ---------- */
 .game-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  display: flex; flex-wrap: wrap; justify-content: center;
   gap: 16px; margin-top: 20px;
 }
 .game-card {
+  flex: 0 0 calc(25% - 12px);
+  max-width: calc(25% - 12px);
   background: var(--glass-bg); backdrop-filter: blur(6px);
   border-radius: var(--radius-lg); padding: 18px 14px;
   text-align: center; cursor: pointer;
@@ -503,11 +505,18 @@ header {
 .note-sm { font-size: 0.82rem; color: #777; text-align: center; margin-top: 8px; }
 
 /* ---------- RESPONSIVE ---------- */
+@media (max-width: 840px) {
+  .game-card {
+    flex: 0 0 calc(33.333% - 11px);
+    max-width: calc(33.333% - 11px);
+  }
+}
+
 @media (max-width: 600px) {
   .wrap { padding: 8px 10px 40px; }
   header { padding: 8px 12px; border-radius: var(--radius-sm); }
-  .game-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .game-card { padding: 14px 10px; }
+  .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .game-card { flex: none; max-width: 100%; padding: 14px 10px; }
   .card-emoji { font-size: 2.6rem !important; }
   .prompt-box { font-size: 1rem; padding: 12px 14px; }
   .action-btn { padding: 12px 18px; font-size: 1rem; }
