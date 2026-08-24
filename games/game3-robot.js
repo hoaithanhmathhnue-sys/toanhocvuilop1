@@ -119,7 +119,7 @@ function askExpression(L) {
     rs.appendChild(b);
   });
 
-  setChat('Trước khi điều khiển, cô hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt? 🧭');
+  setChat('Trước khi điều khiển, Cú Thông Thái hỏi con nhé: Ngôi sao đang ở phía nào so với rô-bốt? 🧭');
 }
 
 function move(dir) {
@@ -170,7 +170,7 @@ function win() {
       g3.round++;
       loadRound(g3.round);
     } else {
-      showResult(3, 3, 'Con đã chỉ đường cho rô-bốt đến đúng ngôi sao! Cô Cú rất tự hào!');
+      showResult(3, 3, 'Con đã chỉ đường cho rô-bốt đến đúng ngôi sao! Cú Thông Thái rất tự hào!');
     }
   }, 3000);
 }

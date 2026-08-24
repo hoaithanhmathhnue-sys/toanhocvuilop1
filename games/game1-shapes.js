@@ -237,7 +237,7 @@ function verify() {
       g1.round++;
       loadRound(g1.round);
     } else {
-      showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú tự hào quá!');
+      showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cú Thông Thái tự hào quá!');
     }
   }, 2200);
 }
