@@ -102,7 +102,7 @@ export function speak(text) {
   if (!state.sound || !('speechSynthesis' in window)) return;
   try { window.speechSynthesis.cancel(); } catch (e) { /* */ }
   const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]*>/g, ''));
-  u.lang = 'vi-VN'; u.rate = 0.92; u.pitch = 1.4; // pitch cao = giọng nữ
+  u.lang = 'vi-VN'; u.rate = 1.25; u.pitch = 1.4; // rate nhanh hơn để theo kịp thao tác
   if (viVoice) u.voice = viVoice;
   window.speechSynthesis.speak(u);
 }
