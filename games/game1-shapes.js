@@ -1,6 +1,6 @@
 /* ================================================================
    GAME 1: KHU VƯỜN HÌNH HỌC
-   Nhận dạng hình phẳng — Lưới 3x4 (12 ô) rõ ràng, hình ảnh và tên chuẩn xác
+   Nhận dạng hình phẳng — Lưới 3x4 (12 ô) rõ ràng, hình ảnh chuẩn xác, nhãn gọn gàng
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
@@ -75,60 +75,60 @@ const TRI_VARIANTS = [
   { id: 'tri-vuong-navy',label: 'Tam giác vuông xanh đậm', svg: () => triSVG('6,54 6,6 54,54', '#1e40af', 42), shape: 'triangle' },
 ];
 
-/* Danh sách đồ vật phân bổ 4 nhóm với hình ảnh chuẩn xác 100% */
+/* Danh sách đồ vật phân bổ 4 nhóm với tên gọi tự nhiên, không bị lặp chữ hình */
 const OBJ_POOL = {
   circle: [
-    { id: 'sun', svgFn: svgSun, label: 'Mặt trời tròn', isSVG: true },
-    { id: 'moon', emoji: '🌕', label: 'Mặt trăng tròn', isSVG: false },
-    { id: 'wheel', svgFn: svgWheel, label: 'Bánh xe tròn', isSVG: true },
-    { id: 'clock_round', svgFn: svgRoundClock, label: 'Đồng hồ tròn', isSVG: true },
-    { id: 'ball', emoji: '⚽', label: 'Quả bóng tròn', isSVG: false },
-    { id: 'plate', svgFn: svgPlate, label: 'Cái đĩa tròn', isSVG: true },
+    { id: 'sun', svgFn: svgSun, label: 'Mặt trời', isSVG: true },
+    { id: 'moon', emoji: '🌕', label: 'Mặt trăng', isSVG: false },
+    { id: 'wheel', svgFn: svgWheel, label: 'Bánh xe', isSVG: true },
+    { id: 'clock_round', svgFn: svgRoundClock, label: 'Đồng hồ', isSVG: true },
+    { id: 'ball', emoji: '⚽', label: 'Quả bóng', isSVG: false },
+    { id: 'plate', svgFn: svgPlate, label: 'Cái đĩa', isSVG: true },
     { id: 'circle_window', svgFn: svgCircleWindow, label: 'Cửa sổ tròn', isSVG: true },
-    { id: 'traffic_sign', svgFn: svgRoundSign, label: 'Biển báo tròn', isSVG: true },
-    { id: 'drum', emoji: '🥁', label: 'Mặt trống tròn', isSVG: false },
-    { id: 'button', svgFn: svgButtonCircle, label: 'Cúc áo tròn', isSVG: true },
-    { id: 'orange', emoji: '🍊', label: 'Quả cam tròn', isSVG: false },
-    { id: 'cookie', emoji: '🍪', label: 'Bánh quy tròn', isSVG: false }
+    { id: 'traffic_sign', svgFn: svgRoundSign, label: 'Biển báo', isSVG: true },
+    { id: 'drum', emoji: '🥁', label: 'Mặt trống', isSVG: false },
+    { id: 'button', svgFn: svgButtonCircle, label: 'Cúc áo', isSVG: true },
+    { id: 'orange', emoji: '🍊', label: 'Quả cam', isSVG: false },
+    { id: 'cookie', emoji: '🍪', label: 'Bánh quy', isSVG: false }
   ],
   triangle: [
-    { id: 'roof', emoji: '🏠', label: 'Mái nhà tam giác', isSVG: false },
-    { id: 'mountain', emoji: '⛰️', label: 'Ngọn núi tam giác', isSVG: false },
-    { id: 'pine_tree', emoji: '🌲', label: 'Cây thông tam giác', isSVG: false },
-    { id: 'flag', emoji: '🚩', label: 'Lá cờ tam giác', isSVG: false },
+    { id: 'roof', emoji: '🏠', label: 'Mái nhà', isSVG: false },
+    { id: 'mountain', emoji: '⛰️', label: 'Ngọn núi', isSVG: false },
+    { id: 'pine_tree', emoji: '🌲', label: 'Cây thông', isSVG: false },
+    { id: 'flag', emoji: '🚩', label: 'Lá cờ', isSVG: false },
     { id: 'warning_sign', emoji: '⚠️', label: 'Biển cảnh báo', isSVG: false },
-    { id: 'pizza_slice', emoji: '🍕', label: 'Miếng pizza tam giác', isSVG: false },
-    { id: 'tent', emoji: '⛺', label: 'Lều trại tam giác', isSVG: false },
+    { id: 'pizza_slice', emoji: '🍕', label: 'Miếng pizza', isSVG: false },
+    { id: 'tent', emoji: '⛺', label: 'Lều trại', isSVG: false },
     { id: 'pyramid', svgFn: svgPyramid, label: 'Kim tự tháp', isSVG: true },
-    { id: 'party_hat', emoji: '🥳', label: 'Mũ chóp sinh nhật', isSVG: false },
-    { id: 'sail', emoji: '⛵', label: 'Cánh buồm tam giác', isSVG: false },
+    { id: 'party_hat', emoji: '🥳', label: 'Mũ chóp', isSVG: false },
+    { id: 'sail', emoji: '⛵', label: 'Cánh buồm', isSVG: false },
     { id: 'watermelon_slice', emoji: '🍉', label: 'Miếng dưa hấu', isSVG: false }
   ],
   square: [
     { id: 'sq_window', svgFn: svgSquareWindow, label: 'Cửa sổ vuông', isSVG: true },
     { id: 'sq_tile', svgFn: svgSquareBrick, label: 'Viên gạch vuông', isSVG: true },
-    { id: 'rubik', svgFn: svgRubik, label: 'Khối rubik vuông', isSVG: true },
-    { id: 'gift_box', emoji: '🎁', label: 'Hộp quà vuông', isSVG: false },
-    { id: 'dice', emoji: '🎲', label: 'Xúc xắc vuông', isSVG: false },
-    { id: 'picture', emoji: '🖼️', label: 'Bức tranh vuông', isSVG: false },
-    { id: 'banh_chung', svgFn: svgBanhChung, label: 'Bánh chưng vuông', isSVG: true },
-    { id: 'sandwich', emoji: '🥪', label: 'Bánh sandwich vuông', isSVG: false },
+    { id: 'rubik', svgFn: svgRubik, label: 'Khối rubik', isSVG: true },
+    { id: 'gift_box', emoji: '🎁', label: 'Hộp quà', isSVG: false },
+    { id: 'dice', emoji: '🎲', label: 'Xúc xắc', isSVG: false },
+    { id: 'picture', emoji: '🖼️', label: 'Bức tranh', isSVG: false },
+    { id: 'banh_chung', svgFn: svgBanhChung, label: 'Bánh chưng', isSVG: true },
+    { id: 'sandwich', emoji: '🥪', label: 'Bánh sandwich', isSVG: false },
     { id: 'sq_clock', svgFn: svgSquareClock, label: 'Đồng hồ vuông', isSVG: true },
-    { id: 'sign_sq', svgFn: svgSquareSign, label: 'Biển hiệu vuông', isSVG: true }
+    { id: 'sign_sq', svgFn: svgSquareSign, label: 'Biển hiệu', isSVG: true }
   ],
   rectangle: [
-    { id: 'door', emoji: '🚪', label: 'Cánh cửa chữ nhật', isSVG: false },
-    { id: 'billboard', svgFn: svgRectSign, label: 'Bảng hiệu chữ nhật', isSVG: true },
-    { id: 'book', emoji: '📕', label: 'Quyển sách chữ nhật', isSVG: false },
+    { id: 'door', emoji: '🚪', label: 'Cánh cửa', isSVG: false },
+    { id: 'billboard', svgFn: svgRectSign, label: 'Bảng hiệu', isSVG: true },
+    { id: 'book', emoji: '📕', label: 'Quyển sách', isSVG: false },
     { id: 'tv', emoji: '📺', label: 'Màn hình TV', isSVG: false },
     { id: 'computer', emoji: '🖥️', label: 'Màn hình máy tính', isSVG: false },
-    { id: 'banknote', emoji: '💵', label: 'Tờ tiền chữ nhật', isSVG: false },
-    { id: 'brick_rect', svgFn: svgRectBrick, label: 'Viên gạch chữ nhật', isSVG: true },
-    { id: 'envelope', emoji: '✉️', label: 'Bao thư chữ nhật', isSVG: false },
-    { id: 'rect_window', emoji: '🪟', label: 'Cửa sổ chữ nhật', isSVG: false },
-    { id: 'smartphone', emoji: '📱', label: 'Điện thoại chữ nhật', isSVG: false },
-    { id: 'ruler', emoji: '📏', label: 'Thước kẻ chữ nhật', isSVG: false },
-    { id: 'road', emoji: '🛣️', label: 'Con đường chữ nhật', isSVG: false }
+    { id: 'banknote', emoji: '💵', label: 'Tờ tiền', isSVG: false },
+    { id: 'brick_rect', svgFn: svgRectBrick, label: 'Viên gạch', isSVG: true },
+    { id: 'envelope', emoji: '✉️', label: 'Bao thư', isSVG: false },
+    { id: 'rect_window', emoji: '🪟', label: 'Cửa sổ', isSVG: false },
+    { id: 'smartphone', emoji: '📱', label: 'Điện thoại', isSVG: false },
+    { id: 'ruler', emoji: '📏', label: 'Thước kẻ', isSVG: false },
+    { id: 'road', emoji: '🛣️', label: 'Con đường', isSVG: false }
   ]
 };
 
