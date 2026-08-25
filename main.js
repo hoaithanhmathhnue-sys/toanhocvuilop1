@@ -317,7 +317,7 @@ const GAME_META = [
   { n: 2, ico: '🧊', name: 'Lâu đài hình khối', sub: 'Khối lập phương & hộp chữ nhật', c: 'gc-2', max: 3 },
   { n: 3, ico: '🤖', name: 'Robot dẫn đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3', max: 3 },
   { n: 4, ico: '📏', name: 'Căn phòng đo lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
-  { n: 5, ico: '🕐', name: 'Cuộc dạo chơi của đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
+  { n: 5, ico: '🕐', name: 'Cuộc dạo chơi<br>của đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
   { n: 6, ico: '🎯', name: 'Khối lập phương thần kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
   { n: 7, ico: '🧩', name: 'Xếp hình Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-7', max: 4 },
   { n: 8, ico: '🏆', name: 'Siêu thử thách', sub: 'Ôn tập tất cả nội dung', c: 'gc-8', max: 5 },
@@ -351,7 +351,7 @@ function renderCards() {
         snd('click');
         startGame(m.n);
       } else {
-        setChat(`Con cần hoàn thành trò "${GAME_META[idx - 1].name}" trước để mở khóa trò này nhé!`);
+        setChat(`Con cần hoàn thành trò "${GAME_META[idx - 1].name.replace(/<br\s*\/?>/gi, ' ')}" trước để mở khóa trò này nhé!`);
       }
     });
     g.appendChild(d);
