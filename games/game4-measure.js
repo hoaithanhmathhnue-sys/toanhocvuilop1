@@ -1,18 +1,20 @@
 /* ================================================================
    GAME 4: PHÒNG ĐO LƯỜNG
-   Đo độ dài — Bàn chải to nằm ngang (vòng 1 trùng vạch 0, vòng 2-3 đặt lệch)
+   Đo độ dài — Bộ đồ vật PNG phong phú (Bàn chải, Bút chì, Chiếc lược, Cục tẩy, Kẹo mút, Cái muỗng, Cái kéo)
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
 let g4 = { round: 1, PX: 24, objLeft: 70, items: [] };
 
-/* Pool đồ vật — Bàn chải 8cm chuẩn ở bài 1 */
+/* Pool đồ vật phong phú — Bàn chải 8cm chuẩn ở vòng 1 */
 const ITEM_POOL = [
-  { id: 'banchai', name: 'Bàn chải', cm: 8, color: '#3b82f6' },
-  { id: 'pencil', name: 'Cái bút chì', cm: 10, color: '#f59e0b' },
-  { id: 'comb', name: 'Chiếc lược', cm: 9, color: '#ec4899' },
-  { id: 'pencil2', name: 'Bút chì ngắn', cm: 6, color: '#22c55e' },
-  { id: 'banchai2', name: 'Bàn chải lớn', cm: 11, color: '#a855f7' }
+  { id: 'banchai', name: 'Bàn chải', cm: 8 },
+  { id: 'pencil', name: 'Cái bút chì', cm: 10 },
+  { id: 'comb', name: 'Chiếc lược', cm: 9 },
+  { id: 'eraser', name: 'Cục tẩy', cm: 4 },
+  { id: 'lollipop', name: 'Cây kẹo mút', cm: 6 },
+  { id: 'spoon', name: 'Cái muỗng', cm: 7 },
+  { id: 'scissors', name: 'Cái kéo', cm: 11 }
 ];
 
 function shuffle(a) {
@@ -24,54 +26,30 @@ function shuffle(a) {
   return b;
 }
 
-/* Tạo hình SVG nằm ngang to, rõ nét cho từng đồ vật */
-function getObjectSVG(id, width) {
+/* Hiển thị đồ vật bằng tệp ảnh PNG sinh động, nền trong suốt */
+function getObjectHTML(id, width) {
+  let src = '';
   if (id.startsWith('banchai')) {
-    return `<svg width="${width}" height="52" viewBox="0 0 200 52" preserveAspectRatio="none" style="display:block; overflow:visible;">
-      <!-- Thân bàn chải -->
-      <path d="M 8,26 C 8,14 30,16 110,18 C 145,19 170,16 185,16 C 194,16 197,34 185,34 C 170,34 145,31 110,32 C 30,34 8,38 8,26 Z" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2.5"/>
-      <!-- Chi tiết đệm tay cầm -->
-      <rect x="45" y="22" width="35" height="8" rx="4" fill="#93c5fd"/>
-      <circle cx="95" cy="26" r="3.5" fill="#ffffff"/>
-      <circle cx="107" cy="26" r="3.5" fill="#ffffff"/>
-      <!-- Đầu bàn chải -->
-      <path d="M 170,16 L 195,16 C 198,16 200,18 200,26 C 200,34 198,36 195,36 L 170,36 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-      <!-- Lông bàn chải (quay lên trên) -->
-      <g stroke="#0284c7" stroke-width="3.5" stroke-linecap="round">
-        <line x1="172" y1="16" x2="172" y2="2"/>
-        <line x1="176" y1="16" x2="176" y2="2"/>
-        <line x1="180" y1="16" x2="180" y2="2"/>
-        <line x1="184" y1="16" x2="184" y2="2"/>
-        <line x1="188" y1="16" x2="188" y2="2"/>
-        <line x1="192" y1="16" x2="192" y2="2"/>
-        <line x1="196" y1="16" x2="196" y2="2"/>
-      </g>
-    </svg>`;
+    src = 'items/banchai.png';
   } else if (id.startsWith('pencil')) {
-    return `<svg width="${width}" height="44" viewBox="0 0 200 44" preserveAspectRatio="none" style="display:block; overflow:visible;">
-      <!-- Cục tẩy -->
-      <rect x="0" y="8" width="24" height="28" rx="4" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
-      <!-- Đai kim loại -->
-      <rect x="24" y="8" width="16" height="28" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/>
-      <!-- Thân bút chì -->
-      <rect x="40" y="8" width="125" height="28" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
-      <line x1="40" y1="17" x2="165" y2="17" stroke="#f59e0b" stroke-width="2"/>
-      <line x1="40" y1="27" x2="165" y2="27" stroke="#b45309" stroke-width="2"/>
-      <!-- Đầu gỗ chuốt -->
-      <polygon points="165,8 194,22 165,36" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
-      <!-- Ngòi chì -->
-      <polygon points="184,17 194,22 184,27" fill="#1e293b"/>
-    </svg>`;
+    src = 'items/pencil.png';
   } else if (id.startsWith('comb')) {
-    return `<svg width="${width}" height="46" viewBox="0 0 200 46" preserveAspectRatio="none" style="display:block; overflow:visible;">
-      <!-- Sống lược -->
-      <path d="M 5,6 Q 100,0 195,6 C 198,6 200,10 200,16 L 200,22 L 0,22 L 0,16 C 0,10 2,6 5,6 Z" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
-      <!-- Răng lược -->
-      <g stroke="#ec4899" stroke-width="3.5" stroke-linecap="square">
-        ${Array.from({length: 24}).map((_, i) => `<line x1="${8 + i * 8}" y1="22" x2="${8 + i * 8}" y2="42"/>`).join('')}
-      </g>
-    </svg>`;
+    src = 'items/comb.png';
+  } else if (id.startsWith('eraser')) {
+    src = 'items/eraser.png';
+  } else if (id.startsWith('lollipop')) {
+    src = 'items/lollipop.png';
+  } else if (id.startsWith('spoon')) {
+    src = 'items/spoon.png';
+  } else if (id.startsWith('scissors')) {
+    src = 'items/scissors.png';
   }
+
+  if (src) {
+    return `<img src="${src}" alt="${id}" style="width:${width}px; height:50px; object-fit:fill; display:block; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.18)); user-select:none; -webkit-user-drag:none; pointer-events:none;">`;
+  }
+
+  // Fallback SVG nếu không tìm thấy tệp ảnh
   return `<svg width="${width}" height="44" viewBox="0 0 200 44" preserveAspectRatio="none" style="display:block;">
     <rect x="0" y="6" width="200" height="32" rx="8" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3"/>
   </svg>`;
@@ -79,7 +57,7 @@ function getObjectSVG(id, width) {
 
 export function initG4() {
   g4.round = 1;
-  // Vòng 1 luôn là Bàn chải 8cm, các vòng sau ngẫu nhiên đồ vật khác
+  // Vòng 1 luôn là Bàn chải 8cm, các vòng 2 & 3 chọn ngẫu nhiên các đồ vật khác
   const otherItems = shuffle(ITEM_POOL.filter(x => x.id !== 'banchai'));
   g4.items = [ITEM_POOL[0], ...otherItems.slice(0, 2)];
   loadRound(1);
@@ -100,12 +78,12 @@ function loadRound(r) {
   const scene = document.getElementById('mscene');
   const len = it.cm * g4.PX;
 
-  // Tạo vật thể đo (Không có khung màu xanh bao quanh)
+  // Tạo vật thể đo bằng ảnh PNG (Không có khung màu xanh bao quanh)
   const obj = document.createElement('div');
   obj.className = 'm-object';
   obj.style.left = g4.objLeft + 'px';
   obj.style.width = len + 'px';
-  obj.innerHTML = getObjectSVG(it.id, len);
+  obj.innerHTML = getObjectHTML(it.id, len);
   scene.appendChild(obj);
 
   // Tạo thước kẻ
