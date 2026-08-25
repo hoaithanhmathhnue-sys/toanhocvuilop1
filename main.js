@@ -45,7 +45,7 @@ export function refreshStars() {
   document.getElementById('totalStars').textContent = totalStars();
 }
 
-/* ============ AUDIO (WebAudio API) ============ */
+/* ============ AUDIO & BGM (WebAudio API) ============ */
 let actx = null;
 function audioCtx() {
   if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { /* */ } }
@@ -53,6 +53,9 @@ function audioCtx() {
   return actx;
 }
 
+window.addEventListener('pointerdown', () => {
+  if (actx && actx.state === 'suspended') actx.resume();
+}, { once: true });
 
 function tone(freq, dur, type, when, vol) {
   const c = audioCtx();
@@ -81,6 +84,73 @@ export function snd(type) {
   } else if (type === 'win') {
     tone(523, 0.1, 'triangle'); tone(659, 0.1, 'triangle', 0.1);
     tone(784, 0.1, 'triangle', 0.2); tone(1046, 0.35, 'triangle', 0.3);
+  }
+}
+
+/* ------------ NHẠC NỀN (BACKGROUND MUSIC - WEBAUDIO SYNTH) ------------ */
+let bgmInterval = null;
+let bgmStep = 0;
+
+// Các giai điệu tươi vui, êm dịu, không áp đảo giọng đọc
+const BGM_PATTERNS = {
+  bright: [
+    { n: 523.25, d: 0.18 }, { n: 659.25, d: 0.18 }, { n: 783.99, d: 0.18 }, { n: 880.00, d: 0.25 },
+    { n: 783.99, d: 0.18 }, { n: 659.25, d: 0.18 }, { n: 587.33, d: 0.35 }, { n: 0, d: 0.15 },
+    { n: 523.25, d: 0.18 }, { n: 659.25, d: 0.18 }, { n: 783.99, d: 0.18 }, { n: 1046.50, d: 0.35 },
+    { n: 880.00, d: 0.18 }, { n: 783.99, d: 0.18 }, { n: 659.25, d: 0.35 }, { n: 0, d: 0.15 }
+  ],
+  playful: [
+    { n: 783.99, d: 0.16 }, { n: 659.25, d: 0.16 }, { n: 523.25, d: 0.16 }, { n: 587.33, d: 0.16 },
+    { n: 659.25, d: 0.16 }, { n: 783.99, d: 0.16 }, { n: 659.25, d: 0.16 }, { n: 587.33, d: 0.3 },
+    { n: 523.25, d: 0.16 }, { n: 659.25, d: 0.16 }, { n: 880.00, d: 0.16 }, { n: 783.99, d: 0.3 },
+    { n: 659.25, d: 0.16 }, { n: 587.33, d: 0.16 }, { n: 523.25, d: 0.35 }, { n: 0, d: 0.15 }
+  ]
+};
+
+export function startBGM(gameId = 1) {
+  stopBGM();
+  if (!state.sound) return;
+
+  const c = audioCtx();
+  if (!c) return;
+
+  const pattern = (gameId % 2 === 1) ? BGM_PATTERNS.bright : BGM_PATTERNS.playful;
+  bgmStep = 0;
+
+  bgmInterval = setInterval(() => {
+    if (!state.sound || !currentGame) {
+      stopBGM();
+      return;
+    }
+    const note = pattern[bgmStep % pattern.length];
+    bgmStep++;
+
+    if (note.n > 0) {
+      const o = c.createOscillator();
+      const g = c.createGain();
+
+      o.type = 'sine';
+      o.frequency.value = note.n;
+
+      const t = c.currentTime;
+      // Âm lượng nhẹ nhàng 0.02 để không đè lên giọng đọc Cô Cú
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.02, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + note.d);
+
+      o.connect(g);
+      g.connect(c.destination);
+
+      o.start(t);
+      o.stop(t + note.d);
+    }
+  }, 280);
+}
+
+export function stopBGM() {
+  if (bgmInterval) {
+    clearInterval(bgmInterval);
+    bgmInterval = null;
   }
 }
 
@@ -215,8 +285,13 @@ document.getElementById('soundToggle').addEventListener('click', function () {
   state.sound = !state.sound;
   this.textContent = state.sound ? '🔊' : '🔇';
   saveState();
-  if (!state.sound && 'speechSynthesis' in window) {
-    try { speechSynthesis.cancel(); } catch (e) { /* */ }
+  if (!state.sound) {
+    if ('speechSynthesis' in window) {
+      try { speechSynthesis.cancel(); } catch (e) { /* */ }
+    }
+    stopBGM();
+  } else if (currentGame) {
+    startBGM(currentGame);
   }
 });
 
@@ -400,64 +475,3 @@ setTimeout(() => {
   }
 }, 800);
 
-/* ============ BACKGROUND MUSIC (WebAudio API) ============ */
-let bgmInterval = null;
-let bgmGain = null;
-
-// Mỗi game có 1 giai điệu riêng — thể hiện tính chất của game
-const GAME_MELODIES = {
-  // Game 1: Khu vườn — nhẹ nhàng, trong trẻ, giống tiếng chim hót
-  1: { notes: [523,587,659,784,659,587,523,0,784,880,784,659,523,0], tempo: 280, type: 'sine', vol: 0.06 },
-  // Game 2: Lâu đài — trang nghiêm, huyền bí
-  2: { notes: [262,330,392,523,392,330,262,0,349,440,523,440,349,0], tempo: 350, type: 'triangle', vol: 0.05 },
-  // Game 3: Robot — điện tử, vui tươi
-  3: { notes: [440,0,523,0,659,0,784,0,880,784,659,523,440,0], tempo: 200, type: 'square', vol: 0.03 },
-  // Game 4: Đo lường — đều đặn, tò mò
-  4: { notes: [392,440,494,523,494,440,392,0,330,349,392,440,392,0], tempo: 320, type: 'sine', vol: 0.05 },
-  // Game 5: Đồng hồ — nhịp tick-tock, mềm mại
-  5: { notes: [523,0,392,0,523,0,392,0,659,587,523,494,523,0], tempo: 400, type: 'triangle', vol: 0.04 },
-  // Game 6: Khối 3D — huyền bí, ma thuật
-  6: { notes: [330,392,494,659,784,659,494,392,330,0,440,523,659,0], tempo: 340, type: 'sine', vol: 0.05 },
-  // Game 7: Tangram — nhẹ nhàng, thư giãn kiểu zen
-  7: { notes: [392,494,587,494,392,0,330,392,494,587,494,392,330,0], tempo: 380, type: 'sine', vol: 0.04 },
-  // Game 8: Siêu thử thách — sôi động, hào hứng
-  8: { notes: [523,659,784,880,784,659,523,659,784,1046,880,784,659,0], tempo: 220, type: 'triangle', vol: 0.05 },
-};
-
-function startBGM(gameNum) {
-  stopBGM();
-  const c = audioCtx();
-  if (!c || !state.sound) return;
-  const melody = GAME_MELODIES[gameNum];
-  if (!melody) return;
-
-  bgmGain = c.createGain();
-  bgmGain.gain.value = melody.vol;
-  bgmGain.connect(c.destination);
-
-  let noteIdx = 0;
-  bgmInterval = setInterval(() => {
-    if (!state.sound) { stopBGM(); return; }
-    const freq = melody.notes[noteIdx % melody.notes.length];
-    if (freq > 0) {
-      const osc = c.createOscillator();
-      const env = c.createGain();
-      osc.type = melody.type;
-      osc.frequency.value = freq;
-      const t = c.currentTime;
-      env.gain.setValueAtTime(0.0001, t);
-      env.gain.exponentialRampToValueAtTime(melody.vol, t + 0.03);
-      env.gain.exponentialRampToValueAtTime(0.0001, t + melody.tempo / 1000 * 0.9);
-      osc.connect(env);
-      env.connect(bgmGain);
-      osc.start(t);
-      osc.stop(t + melody.tempo / 1000);
-    }
-    noteIdx++;
-  }, melody.tempo);
-}
-
-export function stopBGM() {
-  if (bgmInterval) { clearInterval(bgmInterval); bgmInterval = null; }
-  if (bgmGain) { try { bgmGain.disconnect(); } catch(e) {} bgmGain = null; }
-}
