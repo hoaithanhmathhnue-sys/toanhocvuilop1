@@ -55,6 +55,9 @@ function audioCtx() {
 
 window.addEventListener('pointerdown', () => {
   if (actx && actx.state === 'suspended') actx.resume();
+  if (!currentGame && state.sound && !bgmInterval) {
+    startBGM('home');
+  }
 }, { once: true });
 
 function tone(freq, dur, type, when, vol) {
@@ -91,51 +94,120 @@ export function snd(type) {
 let bgmInterval = null;
 let bgmStep = 0;
 
-// Các giai điệu tươi vui, êm dịu, không áp đảo giọng đọc
+// Các giai điệu độc bản riêng biệt cho Màn hình chính và từng Game 1-8
 const BGM_PATTERNS = {
-  bright: [
-    { n: 523.25, d: 0.18 }, { n: 659.25, d: 0.18 }, { n: 783.99, d: 0.18 }, { n: 880.00, d: 0.25 },
-    { n: 783.99, d: 0.18 }, { n: 659.25, d: 0.18 }, { n: 587.33, d: 0.35 }, { n: 0, d: 0.15 },
-    { n: 523.25, d: 0.18 }, { n: 659.25, d: 0.18 }, { n: 783.99, d: 0.18 }, { n: 1046.50, d: 0.35 },
-    { n: 880.00, d: 0.18 }, { n: 783.99, d: 0.18 }, { n: 659.25, d: 0.35 }, { n: 0, d: 0.15 }
-  ],
-  playful: [
-    { n: 783.99, d: 0.16 }, { n: 659.25, d: 0.16 }, { n: 523.25, d: 0.16 }, { n: 587.33, d: 0.16 },
-    { n: 659.25, d: 0.16 }, { n: 783.99, d: 0.16 }, { n: 659.25, d: 0.16 }, { n: 587.33, d: 0.3 },
-    { n: 523.25, d: 0.16 }, { n: 659.25, d: 0.16 }, { n: 880.00, d: 0.16 }, { n: 783.99, d: 0.3 },
-    { n: 659.25, d: 0.16 }, { n: 587.33, d: 0.16 }, { n: 523.25, d: 0.35 }, { n: 0, d: 0.15 }
-  ]
+  home: { // Màn hình chính — chào mừng tươi vui, rộn rã
+    tempo: 240,
+    notes: [
+      { n: 523.25, d: 0.15, type: 'sine' }, { n: 659.25, d: 0.15, type: 'sine' },
+      { n: 783.99, d: 0.15, type: 'sine' }, { n: 880.00, d: 0.22, type: 'sine' },
+      { n: 1046.50, d: 0.25, type: 'sine' }, { n: 880.00, d: 0.15, type: 'sine' },
+      { n: 783.99, d: 0.22, type: 'sine' }, { n: 0, d: 0.12, type: 'sine' }
+    ]
+  },
+  1: { // Game 1: Khu vườn hình học — tiếng chim hót trong trẻo
+    tempo: 280,
+    notes: [
+      { n: 523.25, d: 0.18, type: 'sine' }, { n: 659.25, d: 0.18, type: 'sine' },
+      { n: 783.99, d: 0.18, type: 'sine' }, { n: 1046.50, d: 0.28, type: 'sine' },
+      { n: 880.00, d: 0.18, type: 'sine' }, { n: 783.99, d: 0.18, type: 'sine' },
+      { n: 659.25, d: 0.3, type: 'sine' }, { n: 0, d: 0.15, type: 'sine' }
+    ]
+  },
+  2: { // Game 2: Lâu đài hình khối — lâu đài phép thuật ấm áp
+    tempo: 320,
+    notes: [
+      { n: 392.00, d: 0.2, type: 'triangle' }, { n: 493.88, d: 0.2, type: 'triangle' },
+      { n: 587.33, d: 0.2, type: 'triangle' }, { n: 659.25, d: 0.3, type: 'triangle' },
+      { n: 587.33, d: 0.2, type: 'triangle' }, { n: 493.88, d: 0.2, type: 'triangle' },
+      { n: 392.00, d: 0.35, type: 'triangle' }, { n: 0, d: 0.15, type: 'triangle' }
+    ]
+  },
+  3: { // Game 3: Robot dẫn đường — nhạc điện tử robot nhí nhảnh
+    tempo: 220,
+    notes: [
+      { n: 440.00, d: 0.12, type: 'square' }, { n: 0, d: 0.08, type: 'square' },
+      { n: 554.37, d: 0.12, type: 'square' }, { n: 0, d: 0.08, type: 'square' },
+      { n: 659.25, d: 0.15, type: 'square' }, { n: 880.00, d: 0.22, type: 'square' },
+      { n: 659.25, d: 0.15, type: 'square' }, { n: 0, d: 0.1, type: 'square' }
+    ]
+  },
+  4: { // Game 4: Căn phòng đo lường — nhịp đếm thước đo nhịp nhàng
+    tempo: 300,
+    notes: [
+      { n: 440.00, d: 0.18, type: 'triangle' }, { n: 493.88, d: 0.18, type: 'triangle' },
+      { n: 523.25, d: 0.18, type: 'triangle' }, { n: 587.33, d: 0.25, type: 'triangle' },
+      { n: 523.25, d: 0.18, type: 'triangle' }, { n: 493.88, d: 0.18, type: 'triangle' },
+      { n: 440.00, d: 0.3, type: 'triangle' }, { n: 0, d: 0.15, type: 'triangle' }
+    ]
+  },
+  5: { // Game 5: Cuộc dạo chơi đồng hồ — nhịp tích tắc dạo chơi
+    tempo: 350,
+    notes: [
+      { n: 523.25, d: 0.15, type: 'sine' }, { n: 392.00, d: 0.15, type: 'sine' },
+      { n: 659.25, d: 0.15, type: 'sine' }, { n: 392.00, d: 0.15, type: 'sine' },
+      { n: 783.99, d: 0.22, type: 'sine' }, { n: 659.25, d: 0.18, type: 'sine' },
+      { n: 523.25, d: 0.3, type: 'sine' }, { n: 0, d: 0.15, type: 'sine' }
+    ]
+  },
+  6: { // Game 6: Khối lập phương thần kỳ — 3D biến hóa ma thuật
+    tempo: 310,
+    notes: [
+      { n: 329.63, d: 0.18, type: 'sine' }, { n: 392.00, d: 0.18, type: 'sine' },
+      { n: 493.88, d: 0.18, type: 'sine' }, { n: 659.25, d: 0.25, type: 'sine' },
+      { n: 783.99, d: 0.22, type: 'sine' }, { n: 659.25, d: 0.18, type: 'sine' },
+      { n: 493.88, d: 0.3, type: 'sine' }, { n: 0, d: 0.15, type: 'sine' }
+    ]
+  },
+  7: { // Game 7: Xếp hình Tangram — nhẹ nhàng, thư thái
+    tempo: 360,
+    notes: [
+      { n: 392.00, d: 0.22, type: 'triangle' }, { n: 440.00, d: 0.22, type: 'triangle' },
+      { n: 523.25, d: 0.22, type: 'triangle' }, { n: 659.25, d: 0.32, type: 'triangle' },
+      { n: 523.25, d: 0.22, type: 'triangle' }, { n: 440.00, d: 0.22, type: 'triangle' },
+      { n: 392.00, d: 0.4, type: 'triangle' }, { n: 0, d: 0.2, type: 'triangle' }
+    ]
+  },
+  8: { // Game 8: Siêu thử thách — sôi động, khúc khải hoàn
+    tempo: 210,
+    notes: [
+      { n: 523.25, d: 0.14, type: 'triangle' }, { n: 659.25, d: 0.14, type: 'triangle' },
+      { n: 783.99, d: 0.14, type: 'triangle' }, { n: 1046.50, d: 0.22, type: 'triangle' },
+      { n: 880.00, d: 0.14, type: 'triangle' }, { n: 1046.50, d: 0.28, type: 'triangle' },
+      { n: 1174.66, d: 0.35, type: 'triangle' }, { n: 0, d: 0.12, type: 'triangle' }
+    ]
+  }
 };
 
-export function startBGM(gameId = 1) {
+export function startBGM(trackId = 'home') {
   stopBGM();
   if (!state.sound) return;
 
   const c = audioCtx();
   if (!c) return;
 
-  const pattern = (gameId % 2 === 1) ? BGM_PATTERNS.bright : BGM_PATTERNS.playful;
+  const track = BGM_PATTERNS[trackId] || BGM_PATTERNS.home;
   bgmStep = 0;
 
   bgmInterval = setInterval(() => {
-    if (!state.sound || !currentGame) {
+    if (!state.sound) {
       stopBGM();
       return;
     }
-    const note = pattern[bgmStep % pattern.length];
+    const note = track.notes[bgmStep % track.notes.length];
     bgmStep++;
 
     if (note.n > 0) {
       const o = c.createOscillator();
       const g = c.createGain();
 
-      o.type = 'sine';
+      o.type = note.type || 'sine';
       o.frequency.value = note.n;
 
       const t = c.currentTime;
-      // Âm lượng nhẹ nhàng 0.02 để không đè lên giọng đọc Cô Cú
+      const vol = (note.type === 'square') ? 0.012 : 0.022;
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(0.02, t + 0.02);
+      g.gain.linearRampToValueAtTime(vol, t + 0.02);
       g.gain.exponentialRampToValueAtTime(0.0001, t + note.d);
 
       o.connect(g);
@@ -144,7 +216,7 @@ export function startBGM(gameId = 1) {
       o.start(t);
       o.stop(t + note.d);
     }
-  }, 280);
+  }, track.tempo);
 }
 
 export function stopBGM() {
@@ -328,7 +400,7 @@ export function goHome() {
   showScreen('screen-home');
   renderCards();
   speak('Con muốn chơi trò nào nữa nào?');
-  stopBGM();
+  startBGM('home');
 }
 
 export function startGame(n) {
