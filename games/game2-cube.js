@@ -116,7 +116,7 @@ function pick(side, type) {
 }
 
 function askReason() {
-  setChat('Con chọn đúng rồi! Giờ Cô Cú thông thái hỏi: Vì sao đó là khối lập phương?');
+  setChat('Con chọn chính xác rồi! Giờ Cô Cú thông thái hỏi: Vì sao đó là khối lập phương?');
   const a = document.getElementById('g2area');
   a.innerHTML += `
     <div class="prompt-box" style="margin-top:16px">❓ Vì sao đó là khối lập phương?</div>

@@ -594,30 +594,40 @@ header {
 /* ---------- GAME 4: RULER ---------- */
 .measure-scene {
   position: relative; border-radius: var(--radius-md);
-  height: 220px; overflow: hidden; border: 3px solid #eee;
-  background: #fff;
+  height: 220px; overflow: hidden; border: 3px solid #fcd34d;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
 }
 .m-object {
-  position: absolute; top: 100px; height: 44px;
-  border-radius: 10px; display: flex; align-items: center;
-  justify-content: center; font-weight: 800; color: #fff;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  position: absolute; top: 35px; height: 52px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex; align-items: center;
+  user-select: none;
+  z-index: 2;
 }
 .ruler {
-  position: absolute; top: 24px; height: 60px;
-  background: linear-gradient(180deg, #fff8dc, #f5e6a8);
-  border: 3px solid #d4a017; border-radius: 8px;
+  position: absolute; top: 98px; height: 80px;
+  background: linear-gradient(180deg, #fffbeb, #fef3c7);
+  border: 3px solid #d97706; border-radius: 8px;
   cursor: grab; touch-action: none; user-select: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 16px rgba(180, 100, 0, 0.2);
+  z-index: 3;
 }
-.ruler .tick { position: absolute; bottom: 6px; width: 2px; background: #8a6d1a; }
-.ruler .rnum { position: absolute; bottom: 20px; font-size: 9px; font-weight: 800; color: #8a6d1a; transform: translateX(-50%); }
+.ruler .tick { position: absolute; top: 0; width: 2px; background: #78350f; }
+.ruler .rnum {
+  position: absolute; top: 28px; font-size: 16px;
+  font-weight: 800; color: #78350f; transform: translateX(-50%);
+  user-select: none; font-family: system-ui, sans-serif;
+}
 .ruler .zero-badge {
-  position: absolute; top: -14px; left: 0; transform: translateX(-50%);
-  background: var(--red-500); color: #fff; font-size: 9px;
-  font-weight: 800; padding: 2px 6px; border-radius: 6px;
+  position: absolute; top: -16px; left: 0; transform: translateX(-50%);
+  background: #ef4444; color: #fff; font-size: 11px;
+  font-weight: 900; padding: 2px 8px; border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.align-msg { text-align: center; font-weight: 700; color: var(--red-500); margin-top: 8px; font-size: 0.9rem; }
+.align-msg { text-align: center; font-weight: 700; color: var(--red-500); margin-top: 8px; font-size: 0.95rem; }
 
 /* ---------- GAME 5: CLOCK ---------- */
 .clock-wrap { display: flex; justify-content: center; margin: 12px 0; }

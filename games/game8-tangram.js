@@ -173,7 +173,7 @@ function loadPuzzle(idx) {
       if (g8.placed === g8.total) {
         setTimeout(() => puzzleComplete(), 600);
       } else {
-        setChat(`Đúng rồi! Mảnh "${piece.label}" đã vào đúng chỗ! Còn ${g8.total - g8.placed} mảnh nữa!`);
+        setChat(`Chính xác rồi! Mảnh "${piece.label}" đã vào đúng chỗ! Còn ${g8.total - g8.placed} mảnh nữa!`);
       }
     } else {
       snd('wrong');

@@ -282,25 +282,20 @@ export function stopSpeech() {
   }
 }
 
-function splitTextChunks(text, maxLen = 160) {
-  if (text.length <= maxLen) return [text];
-  const parts = text.match(/[^.!?:]+[.!?:]*/g) || [text];
+function splitTextChunks(text) {
+  if (!text) return [];
+  // Tách riêng các câu theo dấu ngắt câu (. ! ? :) để có khoảng nghỉ giọng đọc tự nhiên
+  const sentences = text.match(/[^.!?:]+[.!?:]*/g) || [text];
   const res = [];
-  let cur = '';
-  for (const p of parts) {
-    if ((cur + p).length <= maxLen) {
-      cur += p;
-    } else {
-      if (cur) res.push(cur.trim());
-      cur = p;
-    }
+  for (let s of sentences) {
+    s = s.trim();
+    if (s) res.push(s);
   }
-  if (cur.trim()) res.push(cur.trim());
   return res.length ? res : [text];
 }
 
 function playGoogleTTS(cleanText, onEnd, onError) {
-  const chunks = splitTextChunks(cleanText, 160);
+  const chunks = splitTextChunks(cleanText);
   let idx = 0;
 
   function playNextChunk() {
@@ -325,7 +320,8 @@ function playGoogleTTS(cleanText, onEnd, onError) {
 
     audio.onended = () => {
       clearTimeout(timer);
-      playNextChunk();
+      // Tạm dừng 550ms giữa các câu để ngắt giọng tự nhiên giữa lời khen và đề bài
+      setTimeout(playNextChunk, 550);
     };
 
     audio.onerror = () => {
@@ -354,32 +350,37 @@ function playWebSpeech(cleanText, onEnd, estimatedMs) {
   }
 
   try { window.speechSynthesis.cancel(); } catch (e) {}
-  const u = new SpeechSynthesisUtterance(cleanText);
-  activeUtterance = u;
-  window._activeUtterance = u;
+  const chunks = splitTextChunks(cleanText);
+  let idx = 0;
 
-  u.lang = 'vi-VN';
-  u.rate = 1.05;
-  u.pitch = isMaleFallback ? 1.65 : 1.4;
-  if (viVoice) u.voice = viVoice;
+  function speakNext() {
+    if (idx >= chunks.length) {
+      activeUtterance = null;
+      if (onEnd) setTimeout(onEnd, 400);
+      return;
+    }
+    const chunk = chunks[idx++];
+    const u = new SpeechSynthesisUtterance(chunk);
+    activeUtterance = u;
+    window._activeUtterance = u;
 
-  if (onEnd) {
-    let called = false;
-    let fallbackTimer = null;
-    const triggerEnd = () => {
-      if (!called) {
-        called = true;
-        if (fallbackTimer) clearTimeout(fallbackTimer);
-        onEnd();
-      }
+    u.lang = 'vi-VN';
+    u.rate = 1.0; // Tốc độ vừa phải, rõ ràng cho học sinh lớp 1
+    u.pitch = isMaleFallback ? 1.65 : 1.4;
+    if (viVoice) u.voice = viVoice;
+
+    u.onend = () => {
+      // Ngắt nghỉ 550ms giữa các câu
+      setTimeout(speakNext, 550);
+    };
+    u.onerror = () => {
+      speakNext();
     };
 
-    u.onend = () => setTimeout(triggerEnd, 700);
-    u.onerror = triggerEnd;
-    fallbackTimer = setTimeout(triggerEnd, estimatedMs + 2500);
+    window.speechSynthesis.speak(u);
   }
 
-  window.speechSynthesis.speak(u);
+  speakNext();
 }
 
 export function speak(text, onEnd = null) {
