@@ -1,7 +1,6 @@
 /* ================================================================
    GAME 1: KHU VƯỜN HÌNH HỌC
-   Nhận dạng hình phẳng — ngẫu nhiên hóa mỗi lần chơi
-   Thêm tam giác SVG đa dạng (cân, đều, nhọn, vuông)
+   Nhận dạng hình phẳng — Lưới 3x4 (12 ô) rõ ràng, không dính hình
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
@@ -13,61 +12,72 @@ const SHAPES = {
 };
 
 /* SVG tam giác đa dạng */
-function triSVG(points, color, size) {
+function triSVG(points, color, size = 46) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 60 60"><polygon points="${points}" fill="${color}" stroke="${color}" stroke-width="2" stroke-linejoin="round"/></svg>`;
 }
 
 const TRI_VARIANTS = [
-  { id: 'tri-deu-do',    label: 'Tam giác đều đỏ',    svg: () => triSVG('30,4 4,56 56,56', '#ef4444', 52), shape: 'triangle' },
+  { id: 'tri-deu-do',    label: 'Tam giác đều đỏ',    svg: () => triSVG('30,4 4,56 56,56', '#ef4444', 46), shape: 'triangle' },
   { id: 'tri-deu-xanh',  label: 'Tam giác đều xanh',  svg: () => triSVG('30,6 6,54 54,54', '#3b82f6', 44), shape: 'triangle' },
-  { id: 'tri-can-vang',  label: 'Tam giác cân vàng',   svg: () => triSVG('30,2 8,58 52,58', '#f59e0b', 48), shape: 'triangle' },
-  { id: 'tri-can-tim',   label: 'Tam giác cân tím',    svg: () => triSVG('30,4 10,56 50,56', '#a855f7', 40), shape: 'triangle' },
-  { id: 'tri-nhon-cam',  label: 'Tam giác nhọn cam',   svg: () => triSVG('30,2 18,58 42,58', '#f97316', 38), shape: 'triangle' },
-  { id: 'tri-nhon-hong', label: 'Tam giác nhọn hồng',  svg: () => triSVG('30,3 20,55 40,55', '#ec4899', 34), shape: 'triangle' },
-  { id: 'tri-vuong-lc',  label: 'Tam giác vuông xanh lá', svg: () => triSVG('4,56 4,4 56,56', '#22c55e', 46), shape: 'triangle' },
+  { id: 'tri-can-vang',  label: 'Tam giác cân vàng',   svg: () => triSVG('30,2 8,58 52,58', '#f59e0b', 46), shape: 'triangle' },
+  { id: 'tri-can-tim',   label: 'Tam giác cân tím',    svg: () => triSVG('30,4 10,56 50,56', '#a855f7', 42), shape: 'triangle' },
+  { id: 'tri-nhon-cam',  label: 'Tam giác nhọn cam',   svg: () => triSVG('30,2 18,58 42,58', '#f97316', 40), shape: 'triangle' },
+  { id: 'tri-nhon-hong', label: 'Tam giác nhọn hồng',  svg: () => triSVG('30,3 20,55 40,55', '#ec4899', 38), shape: 'triangle' },
+  { id: 'tri-vuong-lc',  label: 'Tam giác vuông xanh lá', svg: () => triSVG('4,56 4,4 56,56', '#22c55e', 44), shape: 'triangle' },
   { id: 'tri-vuong-navy',label: 'Tam giác vuông xanh đậm', svg: () => triSVG('6,54 6,6 54,54', '#1e40af', 42), shape: 'triangle' },
-  { id: 'tri-to-do',     label: 'Tam giác to đỏ',      svg: () => triSVG('30,2 2,58 58,58', '#dc2626', 56), shape: 'triangle' },
-  { id: 'tri-nho-xanh',  label: 'Tam giác nhỏ xanh',   svg: () => triSVG('30,10 14,50 46,50', '#06b6d4', 32), shape: 'triangle' },
 ];
 
-/* Pool đồ vật lớn — random chọn mỗi lần */
+/* Danh sách đồ vật phân bổ 4 nhóm theo yêu cầu người dùng */
 const OBJ_POOL = {
   circle: [
-    { id: 'sun', emoji: '🌞', label: 'Mặt trời' },
+    { id: 'sun', emoji: '☀️', label: 'Mặt trời' },
+    { id: 'moon', emoji: '🌕', label: 'Mặt trăng' },
+    { id: 'wheel', emoji: '🛞', label: 'Bánh xe' },
+    { id: 'clock', emoji: '⏰', label: 'Đồng hồ' },
     { id: 'ball', emoji: '⚽', label: 'Quả bóng' },
-    { id: 'moon', emoji: '🌕', label: 'Trăng tròn' },
-    { id: 'cookie', emoji: '🍪', label: 'Bánh quy' },
-    { id: 'clock', emoji: '🕐', label: 'Đồng hồ' },
-    { id: 'coin', emoji: '💿', label: 'Đĩa CD' },
-    { id: 'pizza', emoji: '🍕', label: 'Pizza' },
-    { id: 'watermelon', emoji: '🍉', label: 'Dưa hấu' }
-  ],
-  square: [
-    { id: 'window', emoji: '🟦', label: 'Cửa sổ' },
-    { id: 'gift', emoji: '🎁', label: 'Hộp quà' },
-    { id: 'dice', emoji: '🎲', label: 'Xúc xắc' },
-    { id: 'tv', emoji: '📺', label: 'Ti vi' },
-    { id: 'frame', emoji: '🖼️', label: 'Khung ảnh' },
-    { id: 'napkin', emoji: '🧻', label: 'Khăn vuông' },
-    { id: 'waffle', emoji: '🧇', label: 'Bánh kẹp' }
+    { id: 'plate', emoji: '🍽️', label: 'Cái đĩa' },
+    { id: 'circle_window', emoji: '🪟', label: 'Cửa sổ tròn' },
+    { id: 'traffic_sign', emoji: '🚫', label: 'Biển báo tròn' },
+    { id: 'drum', emoji: '🥁', label: 'Mặt trống' },
+    { id: 'button', emoji: '🔘', label: 'Cúc áo' }
   ],
   triangle: [
-    { id: 'tree', emoji: '🌲', label: 'Cây thông' },
-    { id: 'roof', emoji: '🔺', label: 'Mái nhà' },
-    { id: 'tent', emoji: '⛺', label: 'Cái lều' },
-    { id: 'pizza2', emoji: '🍕', label: 'Miếng pizza' },
-    { id: 'warn', emoji: '⚠️', label: 'Biển cảnh báo' },
+    { id: 'roof', emoji: '🏠', label: 'Mái nhà' },
     { id: 'mountain', emoji: '⛰️', label: 'Ngọn núi' },
+    { id: 'pine_tree', emoji: '🌲', label: 'Cây thông' },
+    { id: 'flag', emoji: '🚩', label: 'Lá cờ tam giác' },
+    { id: 'warning_sign', emoji: '⚠️', label: 'Biển cảnh báo' },
+    { id: 'pizza_slice', emoji: '🍕', label: 'Miếng pizza' },
+    { id: 'tent', emoji: '⛺', label: 'Lều trại' },
+    { id: 'pyramid', emoji: '🛕', label: 'Kim tự tháp' },
+    { id: 'cone_hat', emoji: '🥳', label: 'Mũ chóp' },
     { id: 'sail', emoji: '⛵', label: 'Cánh buồm' }
   ],
+  square: [
+    { id: 'sq_window', emoji: '🪟', label: 'Cửa sổ vuông' },
+    { id: 'sq_tile', emoji: '🧱', label: 'Viên gạch vuông' },
+    { id: 'rubik', emoji: '🧊', label: 'Khối rubik' },
+    { id: 'sq_door_window', emoji: '⏹️', label: 'Ô cửa' },
+    { id: 'picture', emoji: '🖼️', label: 'Bức tranh vuông' },
+    { id: 'sign_sq', emoji: '🪧', label: 'Biển hiệu vuông' },
+    { id: 'floor_tile', emoji: '🟫', label: 'Gạch lát nền' },
+    { id: 'box', emoji: '📦', label: 'Chiếc hộp vuông' },
+    { id: 'frame', emoji: '🖼️', label: 'Khung ảnh vuông' },
+    { id: 'sq_clock', emoji: '⏹️', label: 'Đồng hồ vuông' }
+  ],
   rectangle: [
-    { id: 'sign', emoji: '🪧', label: 'Bảng hiệu' },
-    { id: 'door', emoji: '🚪', label: 'Cửa ra vào' },
+    { id: 'door', emoji: '🚪', label: 'Cánh cửa' },
+    { id: 'billboard', emoji: '🪧', label: 'Bảng hiệu' },
     { id: 'book', emoji: '📕', label: 'Quyển sách' },
-    { id: 'phone', emoji: '📱', label: 'Điện thoại' },
-    { id: 'flag', emoji: '🏳️', label: 'Lá cờ' },
-    { id: 'ticket', emoji: '🎫', label: 'Vé xe' },
-    { id: 'ruler', emoji: '📏', label: 'Cây thước' }
+    { id: 'tv', emoji: '📺', label: 'Màn hình TV' },
+    { id: 'computer', emoji: '🖥️', label: 'Màn hình máy tính' },
+    { id: 'desk', emoji: '🛋️', label: 'Bàn học' },
+    { id: 'brick', emoji: '🧱', label: 'Viên gạch' },
+    { id: 'sign_board', emoji: '🏷️', label: 'Tấm biển' },
+    { id: 'rect_window', emoji: '🪟', label: 'Cửa sổ chữ nhật' },
+    { id: 'road', emoji: '🛣️', label: 'Con đường' },
+    { id: 'bridge', emoji: '🌉', label: 'Cây cầu' },
+    { id: 'fence', emoji: '🪵', label: 'Hàng rào' }
   ]
 };
 
@@ -96,72 +106,50 @@ const REASONS = {
 
 function shuffle(a) { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
 
-/* Sinh vị trí ngẫu nhiên không chồng nhau */
-function randomPositions(count) {
-  const positions = [];
-  const used = [];
-  for (let i = 0; i < count; i++) {
-    let x, y, tries = 0;
-    do {
-      x = 6 + Math.random() * 82;
-      y = 6 + Math.random() * 60;
-      tries++;
-    } while (tries < 120 && used.some(p => Math.abs(p.x - x) < 18 && Math.abs(p.y - y) < 25));
-    used.push({ x, y });
-    positions.push({ x: Math.round(x), y: Math.round(y) });
-  }
-  return positions;
-}
-
-let g1 = { round: 1, target: 'circle', found: [], roundCfg: [], totalRounds: 4, objects: [] };
+let g1 = { round: 1, target: 'circle', found: [], roundCfg: [], totalRounds: 4 };
 
 function buildRounds() {
   const order = shuffle(['circle', 'square', 'triangle', 'rectangle']);
   return order.map(shape => {
+    let targets = [];
     if (shape === 'triangle') {
-      // Vòng tam giác: mix emoji + SVG tam giác đa dạng
       const emojiTargets = shuffle(OBJ_POOL.triangle).slice(0, 2);
-      const svgTargets = shuffle(TRI_VARIANTS).slice(0, 3);
-      const targets = [
+      const svgTargets = shuffle(TRI_VARIANTS).slice(0, 2);
+      targets = [
         ...emojiTargets.map(t => ({ ...t, isSVG: false })),
         ...svgTargets.map(t => ({ id: t.id, label: t.label, svgFn: t.svg, isSVG: true }))
       ];
-      return { shape, targets };
+    } else {
+      const pool = OBJ_POOL[shape];
+      targets = shuffle(pool).slice(0, 4).map(t => ({ ...t, isSVG: false }));
     }
-    const pool = OBJ_POOL[shape];
-    const chosen = shuffle(pool).slice(0, 3);
-    return { shape, targets: chosen.map(t => ({ ...t, isSVG: false })) };
+    return { shape, targets };
   });
 }
 
-function buildObjects(roundCfg) {
-  const allObjs = [];
-  const allShapes = ['circle', 'square', 'triangle', 'rectangle'];
+function buildGridObjects(cfg) {
+  const targetShape = cfg.shape;
+  const targets = cfg.targets.map(t => ({ ...t, shape: targetShape }));
 
-  roundCfg.forEach(rc => {
-    rc.targets.forEach(t => {
-      allObjs.push({ ...t, shape: rc.shape });
-    });
+  // Chọn 8 distractors từ 3 hình còn lại (3 + 3 + 2 = 8 món)
+  const otherShapes = ['circle', 'square', 'triangle', 'rectangle'].filter(s => s !== targetShape);
+  let distractors = [];
+
+  otherShapes.forEach((s, idx) => {
+    const count = idx === 0 ? 3 : (idx === 1 ? 3 : 2);
+    const items = shuffle(OBJ_POOL[s]).slice(0, count);
+    items.forEach(item => distractors.push({ ...item, shape: s, isSVG: false }));
   });
 
-  // Thêm distractor từ hình khác
-  allShapes.forEach(shape => {
-    const existing = allObjs.filter(o => o.shape === shape).length;
-    if (existing < 2) {
-      const extra = shuffle(OBJ_POOL[shape]).slice(0, 2 - existing);
-      extra.forEach(e => allObjs.push({ ...e, shape, isSVG: false }));
-    }
-  });
-
-  const positions = randomPositions(allObjs.length);
-  return allObjs.map((o, i) => ({ ...o, x: positions[i].x, y: positions[i].y }));
+  // Tổng cộng 4 mục tiêu + 8 gây nhiễu = 12 ô (Lưới 3x4)
+  const all12 = shuffle([...targets, ...distractors]);
+  return all12;
 }
 
 export function initG1() {
   g1.round = 1;
   g1.roundCfg = buildRounds();
   g1.totalRounds = g1.roundCfg.length;
-  g1.objects = buildObjects(g1.roundCfg);
   loadRound(1);
 }
 
@@ -175,30 +163,21 @@ function loadRound(r) {
   const shapeName = SHAPES[cfg.shape].name;
   a.innerHTML = `
     <div class="prompt-box">🌲 Hãy chạm vào tất cả <b>${shapeName}</b> trong khu vườn!</div>
-    <div class="forest" id="g1forest"></div>
+    <div class="forest-grid" id="g1forest"></div>
   `;
 
+  const gridObjs = buildGridObjects(cfg);
   const forest = document.getElementById('g1forest');
-  const decos = ['🌿', '🌻', '🍄', '☁️', '🦋', '🐞', '🌼'];
-  for (let i = 0; i < 4; i++) {
-    const d = document.createElement('div');
-    d.style.cssText = `position:absolute;top:${10 + Math.random()*70}%;left:${5 + Math.random()*85}%;font-size:${1.5+Math.random()}rem;opacity:0.3`;
-    d.textContent = decos[Math.floor(Math.random() * decos.length)];
-    forest.appendChild(d);
-  }
 
-  g1.objects.forEach(o => {
+  gridObjs.forEach(o => {
     const d = document.createElement('div');
-    d.className = 'obj';
+    d.className = 'obj-card';
     d.id = 'obj-' + o.id;
-    d.style.left = o.x + '%';
-    d.style.top = o.y + '%';
 
     if (o.isSVG && o.svgFn) {
-      // SVG tam giác đa dạng
-      d.innerHTML = `<span style="display:inline-block">${o.svgFn()}</span><span class="lbl">${o.label}</span>`;
+      d.innerHTML = `<div class="icon-wrap">${o.svgFn()}</div><div class="lbl">${o.label}</div>`;
     } else {
-      d.innerHTML = `<span style="font-size:44px">${o.emoji}</span><span class="lbl">${o.label}</span>`;
+      d.innerHTML = `<div class="icon-wrap">${o.emoji}</div><div class="lbl">${o.label}</div>`;
     }
     d.addEventListener('click', () => handleClick(o, d, cfg));
     forest.appendChild(d);
@@ -217,7 +196,7 @@ function handleClick(obj, el, cfg) {
     el.innerHTML += '<div class="check-mark">✓</div>';
 
     if (g1.found.length === cfg.targets.length) {
-      setTimeout(() => allFound(), 700);
+      setTimeout(() => allFound(), 600);
     }
   } else {
     snd('wrong');
@@ -235,7 +214,7 @@ function allFound() {
 
   const a = document.getElementById('g1area');
   a.innerHTML += `
-    <div class="prompt-box">❓ Vì sao con biết đây là <b>${SHAPES[g1.target].name}</b>?</div>
+    <div class="prompt-box" style="margin-top:16px;">❓ Vì sao con biết đây là <b>${SHAPES[g1.target].name}</b>?</div>
     <div class="reason-grid" id="g1reasons"></div>
   `;
 
