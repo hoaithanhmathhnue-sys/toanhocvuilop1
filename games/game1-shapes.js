@@ -69,6 +69,9 @@ function svgSquarePhotoFrame() {
 function svgTriFlag() {
   return `<svg width="46" height="46" viewBox="0 0 60 60"><line x1="14" y1="6" x2="14" y2="54" stroke="#475569" stroke-width="4" stroke-linecap="round"/><polygon points="14,10 52,24 14,38" fill="#ef4444" stroke="#dc2626" stroke-width="2"/></svg>`;
 }
+function svgTriRuler() {
+  return `<svg width="46" height="46" viewBox="0 0 60 60"><polygon points="8,52 8,12 48,52" fill="#fef08a" stroke="#ca8a04" stroke-width="3" stroke-linejoin="round"/><polygon points="16,46 16,28 34,46" fill="#ffffff" stroke="#ca8a04" stroke-width="2"/><line x1="8" y1="52" x2="48" y2="52" stroke="#854d0e" stroke-width="2" stroke-dasharray="2,3"/><line x1="8" y1="12" x2="8" y2="52" stroke="#854d0e" stroke-width="2" stroke-dasharray="2,3"/></svg>`;
+}
 function triSVG(points, color, size = 46) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 60 60"><polygon points="${points}" fill="${color}" stroke="${color}" stroke-width="2" stroke-linejoin="round"/></svg>`;
 }
@@ -111,7 +114,7 @@ const OBJ_POOL = {
     { id: 'pyramid', svgFn: svgPyramid, label: 'Kim tự tháp', isSVG: true },
     { id: 'party_hat', emoji: '🥳', label: 'Mũ chóp', isSVG: false },
     { id: 'sail', emoji: '⛵', label: 'Cánh buồm', isSVG: false },
-    { id: 'watermelon_slice', emoji: '🍉', label: 'Miếng dưa hấu', isSVG: false }
+    { id: 'tri_ruler', svgFn: svgTriRuler, label: 'Thước tam giác', isSVG: true }
   ],
   square: [
     { id: 'sq_window', svgFn: svgSquareWindow, label: 'Cửa sổ vuông', isSVG: true },
