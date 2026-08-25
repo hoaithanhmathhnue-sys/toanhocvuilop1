@@ -318,8 +318,8 @@ const GAME_META = [
   { n: 3, ico: '🤖', name: 'Robot dẫn đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3', max: 3 },
   { n: 4, ico: '📏', name: 'Căn phòng đo lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
   { n: 5, ico: '🕐', name: 'Cuộc dạo chơi<br>của đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
-  { n: 6, ico: '🎯', name: 'Khối lập phương thần kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
-  { n: 7, ico: '🧩', name: 'Xếp hình Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-7', max: 4 },
+  { n: 6, ico: '🎯', name: 'Khối lập phương<br>thần kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
+  { n: 7, ico: '🧩', name: 'Xếp hình<br>Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-7', max: 4 },
   { n: 8, ico: '🏆', name: 'Siêu thử thách', sub: 'Ôn tập tất cả nội dung', c: 'gc-8', max: 5 },
 ];
 
