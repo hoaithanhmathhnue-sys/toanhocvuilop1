@@ -60,6 +60,15 @@ function svgPyramid() {
 function svgSun() {
   return `<svg width="46" height="46" viewBox="0 0 60 60"><circle cx="30" cy="30" r="16" fill="#eab308" stroke="#ca8a04" stroke-width="2"/><g stroke="#eab308" stroke-width="4" stroke-linecap="round"><line x1="30" y1="4" x2="30" y2="9"/><line x1="30" y1="51" x2="30" y2="56"/><line x1="4" y1="30" x2="9" y2="30"/><line x1="51" y1="30" x2="56" y2="30"/><line x1="11.6" y1="11.6" x2="15.1" y2="15.1"/><line x1="44.9" y1="44.9" x2="48.4" y2="48.4"/><line x1="11.6" y1="48.4" x2="15.1" y2="44.9"/><line x1="44.9" y1="15.1" x2="48.4" y2="11.6"/></g></svg>`;
 }
+function svgWaffle() {
+  return `<svg width="46" height="46" viewBox="0 0 60 60"><rect x="5" y="5" width="50" height="50" rx="6" fill="#f59e0b" stroke="#d97706" stroke-width="3"/><rect x="12" y="12" width="14" height="14" rx="2" fill="#b45309"/><rect x="34" y="12" width="14" height="14" rx="2" fill="#b45309"/><rect x="12" y="34" width="14" height="14" rx="2" fill="#b45309"/><rect x="34" y="34" width="14" height="14" rx="2" fill="#b45309"/></svg>`;
+}
+function svgSquarePhotoFrame() {
+  return `<svg width="46" height="46" viewBox="0 0 60 60"><rect x="5" y="5" width="50" height="50" rx="4" fill="#b45309" stroke="#78350f" stroke-width="3"/><rect x="12" y="12" width="36" height="36" fill="#38bdf8"/><circle cx="21" cy="21" r="4" fill="#fef08a"/><polygon points="12,48 26,30 36,42 42,34 48,48" fill="#22c55e"/></svg>`;
+}
+function svgTriFlag() {
+  return `<svg width="46" height="46" viewBox="0 0 60 60"><line x1="14" y1="6" x2="14" y2="54" stroke="#475569" stroke-width="4" stroke-linecap="round"/><polygon points="14,10 52,24 14,38" fill="#ef4444" stroke="#dc2626" stroke-width="2"/></svg>`;
+}
 function triSVG(points, color, size = 46) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 60 60"><polygon points="${points}" fill="${color}" stroke="${color}" stroke-width="2" stroke-linejoin="round"/></svg>`;
 }
@@ -98,7 +107,7 @@ const OBJ_POOL = {
     { id: 'flag', emoji: '🚩', label: 'Lá cờ', isSVG: false },
     { id: 'warning_sign', emoji: '⚠️', label: 'Biển cảnh báo', isSVG: false },
     { id: 'pizza_slice', emoji: '🍕', label: 'Miếng pizza', isSVG: false },
-    { id: 'tent', emoji: '⛺', label: 'Lều trại', isSVG: false },
+    { id: 'tri_flag', svgFn: svgTriFlag, label: 'Cờ tam giác', isSVG: true },
     { id: 'pyramid', svgFn: svgPyramid, label: 'Kim tự tháp', isSVG: true },
     { id: 'party_hat', emoji: '🥳', label: 'Mũ chóp', isSVG: false },
     { id: 'sail', emoji: '⛵', label: 'Cánh buồm', isSVG: false },
@@ -108,11 +117,11 @@ const OBJ_POOL = {
     { id: 'sq_window', svgFn: svgSquareWindow, label: 'Cửa sổ vuông', isSVG: true },
     { id: 'sq_tile', svgFn: svgSquareBrick, label: 'Viên gạch vuông', isSVG: true },
     { id: 'rubik', svgFn: svgRubik, label: 'Khối rubik', isSVG: true },
-    { id: 'gift_box', emoji: '🎁', label: 'Hộp quà', isSVG: false },
+    { id: 'waffle', svgFn: svgWaffle, label: 'Bánh waffle', isSVG: true },
     { id: 'dice', emoji: '🎲', label: 'Xúc xắc', isSVG: false },
     { id: 'picture', emoji: '🖼️', label: 'Bức tranh', isSVG: false },
     { id: 'banh_chung', svgFn: svgBanhChung, label: 'Bánh chưng', isSVG: true },
-    { id: 'sandwich', emoji: '🥪', label: 'Bánh sandwich', isSVG: false },
+    { id: 'photo_frame', svgFn: svgSquarePhotoFrame, label: 'Khung ảnh vuông', isSVG: true },
     { id: 'sq_clock', svgFn: svgSquareClock, label: 'Đồng hồ vuông', isSVG: true },
     { id: 'sign_sq', svgFn: svgSquareSign, label: 'Biển hiệu', isSVG: true }
   ],

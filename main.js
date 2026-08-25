@@ -226,9 +226,11 @@ export function stopBGM() {
   }
 }
 
-/* ============ SPEECH SYNTHESIS (giọng NỮ Cô Cú thông thái) ============ */
+/* ============ HYBRID TTS ENGINE (giọng NỮ Cô Cú thông thái) ============ */
 let viVoice = null;
 let isMaleFallback = false;
+let currentAudio = null;
+let activeUtterance = null;
 
 function loadVoices() {
   if (!window.speechSynthesis) return;
@@ -240,13 +242,11 @@ function loadVoices() {
   const femaleKeywords = ['hoaimy', 'linh', 'female', 'woman', 'nữ', 'girl', 'chi', 'hương', 'mai', 'lan', 'google'];
   const maleKeywords = ['microsoft an', 'microsoft nam', ' male', 'male ', 'boy'];
 
-  // 1. Ưu tiên 1: Tìm giọng Việt nữ rõ ràng (Microsoft HoaiMy, Linh, Google tiếng Việt...)
   let selected = viVoices.find(v => {
     const name = v.name.toLowerCase();
     return femaleKeywords.some(kw => name.includes(kw));
   });
 
-  // 2. Ưu tiên 2: Tìm giọng Việt KHÔNG thuộc danh sách giọng Nam
   if (!selected) {
     selected = viVoices.find(v => {
       const name = v.name.toLowerCase();
@@ -254,7 +254,6 @@ function loadVoices() {
     });
   }
 
-  // 3. Nếu hệ thống chỉ có duy nhất giọng Nam (Microsoft An), dùng nó nhưng bật cờ ép pitch cao
   if (!selected && viVoices.length > 0) {
     selected = viVoices[0];
     isMaleFallback = true;
@@ -270,37 +269,97 @@ if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = loadVoices;
 }
 
-let activeUtterance = null;
+export function stopSpeech() {
+  if (currentAudio) {
+    try {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    } catch (e) {}
+    currentAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+  }
+}
 
-export function speak(text, onEnd = null) {
-  const cleanText = String(text)
-    .replace(/<[^>]*>/g, '')
-    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]/gu, '')
-    .trim();
+function splitTextChunks(text, maxLen = 160) {
+  if (text.length <= maxLen) return [text];
+  const parts = text.match(/[^.!?:]+[.!?:]*/g) || [text];
+  const res = [];
+  let cur = '';
+  for (const p of parts) {
+    if ((cur + p).length <= maxLen) {
+      cur += p;
+    } else {
+      if (cur) res.push(cur.trim());
+      cur = p;
+    }
+  }
+  if (cur.trim()) res.push(cur.trim());
+  return res.length ? res : [text];
+}
 
-  // Tốc độ 1.05 phù hợp với học sinh Lớp 1 (1.2 hơi nhanh)
-  const rate = 1.05;
-  const estimatedMs = Math.max(3500, Math.ceil((cleanText.length * 120) / rate) + 2000);
+function playGoogleTTS(cleanText, onEnd, onError) {
+  const chunks = splitTextChunks(cleanText, 160);
+  let idx = 0;
 
-  if (!state.sound || !('speechSynthesis' in window)) {
+  function playNextChunk() {
+    if (idx >= chunks.length) {
+      currentAudio = null;
+      if (onEnd) setTimeout(onEnd, 400);
+      return;
+    }
+    const chunk = chunks[idx++];
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=vi&client=tw-ob`;
+    const audio = new Audio(url);
+    currentAudio = audio;
+    audio.playbackRate = 1.0;
+
+    let timer = setTimeout(() => {
+      if (audio === currentAudio) {
+        audio.pause();
+        currentAudio = null;
+        onError();
+      }
+    }, 5000);
+
+    audio.onended = () => {
+      clearTimeout(timer);
+      playNextChunk();
+    };
+
+    audio.onerror = () => {
+      clearTimeout(timer);
+      currentAudio = null;
+      onError();
+    };
+
+    const promise = audio.play();
+    if (promise && promise.catch) {
+      promise.catch(() => {
+        clearTimeout(timer);
+        currentAudio = null;
+        onError();
+      });
+    }
+  }
+
+  playNextChunk();
+}
+
+function playWebSpeech(cleanText, onEnd, estimatedMs) {
+  if (!('speechSynthesis' in window)) {
     if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 4000));
     return;
   }
 
-  try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
-  if (!cleanText) {
-    if (onEnd) onEnd();
-    return;
-  }
-
+  try { window.speechSynthesis.cancel(); } catch (e) {}
   const u = new SpeechSynthesisUtterance(cleanText);
-  // Lưu giữ reference toàn cục chống V8 Garbage Collector hủy giữa chừng
   activeUtterance = u;
   window._activeUtterance = u;
 
   u.lang = 'vi-VN';
-  u.rate = rate;
-  // Nếu là giọng Nam bắt buộc (Microsoft An), nâng pitch lên 1.65 để chuyển thành giọng Nữ thân thiện
+  u.rate = 1.05;
   u.pitch = isMaleFallback ? 1.65 : 1.4;
   if (viVoice) u.voice = viVoice;
 
@@ -314,11 +373,8 @@ export function speak(text, onEnd = null) {
         onEnd();
       }
     };
-    
-    // Thêm khoảng nghỉ 700ms sau khi đọc xong để âm thanh phát hết qua loa rồi mới gọi callback chuyển màn
-    u.onend = () => {
-      setTimeout(triggerEnd, 700);
-    };
+
+    u.onend = () => setTimeout(triggerEnd, 700);
     u.onerror = triggerEnd;
     fallbackTimer = setTimeout(triggerEnd, estimatedMs + 2500);
   }
@@ -326,12 +382,38 @@ export function speak(text, onEnd = null) {
   window.speechSynthesis.speak(u);
 }
 
+export function speak(text, onEnd = null) {
+  const cleanText = String(text)
+    .replace(/<[^>]*>/g, '')
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]/gu, '')
+    .trim();
+
+  stopSpeech();
+
+  if (!cleanText) {
+    if (onEnd) onEnd();
+    return;
+  }
+
+  const rate = 1.05;
+  const estimatedMs = Math.max(3500, Math.ceil((cleanText.length * 120) / rate) + 2000);
+
+  if (!state.sound) {
+    if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 4000));
+    return;
+  }
+
+  // Phát âm thanh giọng Việt chuẩn qua Google TTS (nếu offline/chặn thì fallback WebSpeech)
+  playGoogleTTS(cleanText, onEnd, () => {
+    playWebSpeech(cleanText, onEnd, estimatedMs);
+  });
+}
+
 /* ============ CHAT BUBBLE ============ */
 const chatBubble = document.getElementById('chatBubble');
 const chatTextEl = document.getElementById('chatText');
 
 export function setChat(txt, doSpeak = true, onEnd = null) {
-  // Loại bỏ emoji ở cuối câu nói của Cô Cú thông thái
   const cleanText = String(txt)
     .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]+$/gu, '')
     .trim();
@@ -358,9 +440,7 @@ document.getElementById('soundToggle').addEventListener('click', function () {
   this.textContent = state.sound ? '🔊' : '🔇';
   saveState();
   if (!state.sound) {
-    if ('speechSynthesis' in window) {
-      try { speechSynthesis.cancel(); } catch (e) { /* */ }
-    }
+    stopSpeech();
     stopBGM();
   } else if (currentGame) {
     startBGM(currentGame);
@@ -395,6 +475,7 @@ export function showScreen(id) {
 }
 
 export function goHome() {
+  stopSpeech();
   currentGame = null;
   hideChat();
   showScreen('screen-home');
@@ -404,6 +485,7 @@ export function goHome() {
 }
 
 export function startGame(n) {
+  stopSpeech();
   currentGame = n;
   showScreen('screen-g' + n);
   if (gameInits[n]) gameInits[n]();
