@@ -1,6 +1,6 @@
 /* ================================================================
    GAME 4: PHÒNG ĐO LƯỜNG
-   Đo độ dài — Bộ đồ vật PNG phong phú (Bàn chải, Bút chì, Chiếc lược, Cục tẩy, Kẹo mút, Cái muỗng, Cái kéo)
+   Đo độ dài — Căn chỉnh tỉ lệ ảnh chuẩn tự nhiên (không bị bẹt, đã xén lề trong suốt)
    ================================================================ */
 import { setChat, snd, makePills, showResult } from '../main.js';
 
@@ -9,7 +9,7 @@ let g4 = { round: 1, PX: 24, objLeft: 70, items: [] };
 /* Pool đồ vật phong phú — Bàn chải 8cm chuẩn ở vòng 1 */
 const ITEM_POOL = [
   { id: 'banchai', name: 'Bàn chải', cm: 8 },
-  { id: 'pencil', name: 'Cái bút chì', cm: 10 },
+  { id: 'pencil', name: 'Cái bút chì', cm: 8 },
   { id: 'comb', name: 'Chiếc lược', cm: 9 },
   { id: 'eraser', name: 'Cục tẩy', cm: 4 },
   { id: 'lollipop', name: 'Cây kẹo mút', cm: 6 },
@@ -26,8 +26,8 @@ function shuffle(a) {
   return b;
 }
 
-/* Hiển thị đồ vật bằng tệp ảnh PNG sinh động, nền trong suốt */
-function getObjectHTML(id, width) {
+/* Hiển thị đồ vật bằng tệp ảnh PNG chuẩn tỉ lệ, không bị bẹt hay biến dạng */
+function getObjectHTML(id) {
   let src = '';
   if (id.startsWith('banchai')) {
     src = 'items/banchai.png';
@@ -46,11 +46,10 @@ function getObjectHTML(id, width) {
   }
 
   if (src) {
-    return `<img src="${src}" alt="${id}" style="width:${width}px; height:50px; object-fit:fill; display:block; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.18)); user-select:none; -webkit-user-drag:none; pointer-events:none;">`;
+    return `<img src="${src}" alt="${id}">`;
   }
 
-  // Fallback SVG nếu không tìm thấy tệp ảnh
-  return `<svg width="${width}" height="44" viewBox="0 0 200 44" preserveAspectRatio="none" style="display:block;">
+  return `<svg width="100%" height="44" viewBox="0 0 200 44" preserveAspectRatio="none" style="display:block;">
     <rect x="0" y="6" width="200" height="32" rx="8" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3"/>
   </svg>`;
 }
@@ -78,12 +77,12 @@ function loadRound(r) {
   const scene = document.getElementById('mscene');
   const len = it.cm * g4.PX;
 
-  // Tạo vật thể đo bằng ảnh PNG (Không có khung màu xanh bao quanh)
+  // Tạo vật thể đo bằng ảnh PNG (Không bị bẹt, căn chuẩn số cm)
   const obj = document.createElement('div');
   obj.className = 'm-object';
   obj.style.left = g4.objLeft + 'px';
   obj.style.width = len + 'px';
-  obj.innerHTML = getObjectHTML(it.id, len);
+  obj.innerHTML = getObjectHTML(it.id);
   scene.appendChild(obj);
 
   // Tạo thước kẻ
