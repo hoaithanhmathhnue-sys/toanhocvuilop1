@@ -128,14 +128,17 @@ if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = loadVoices;
 }
 
+let activeUtterance = null;
+
 export function speak(text, onEnd = null) {
   const cleanText = String(text)
     .replace(/<[^>]*>/g, '')
     .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]/gu, '')
     .trim();
 
-  // Ước tính thời gian đọc (ms): khoảng 90ms mỗi ký tự + 1000ms buffer, tối thiểu 3500ms
-  const estimatedMs = Math.max(3500, Math.ceil(cleanText.length * 90) + 1000);
+  // Tốc độ 1.05 phù hợp với học sinh Lớp 1 (1.2 hơi nhanh)
+  const rate = 1.05;
+  const estimatedMs = Math.max(3500, Math.ceil((cleanText.length * 120) / rate) + 2000);
 
   if (!state.sound || !('speechSynthesis' in window)) {
     if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 4000));
@@ -149,24 +152,33 @@ export function speak(text, onEnd = null) {
   }
 
   const u = new SpeechSynthesisUtterance(cleanText);
+  // Lưu giữ reference toàn cục chống V8 Garbage Collector hủy giữa chừng
+  activeUtterance = u;
+  window._activeUtterance = u;
+
   u.lang = 'vi-VN';
-  u.rate = 1.2;
+  u.rate = rate;
   // Nếu là giọng Nam bắt buộc (Microsoft An), nâng pitch lên 1.65 để chuyển thành giọng Nữ thân thiện
   u.pitch = isMaleFallback ? 1.65 : 1.4;
   if (viVoice) u.voice = viVoice;
 
   if (onEnd) {
     let called = false;
+    let fallbackTimer = null;
     const triggerEnd = () => {
       if (!called) {
         called = true;
+        if (fallbackTimer) clearTimeout(fallbackTimer);
         onEnd();
       }
     };
-    u.onend = triggerEnd;
+    
+    // Thêm khoảng nghỉ 700ms sau khi đọc xong để âm thanh phát hết qua loa rồi mới gọi callback chuyển màn
+    u.onend = () => {
+      setTimeout(triggerEnd, 700);
+    };
     u.onerror = triggerEnd;
-    // Timer dự phòng đảm bảo luôn chuyển tiếp ngay cả khi trình duyệt không bắn sự kiện onend
-    setTimeout(triggerEnd, estimatedMs + 1000);
+    fallbackTimer = setTimeout(triggerEnd, estimatedMs + 2500);
   }
 
   window.speechSynthesis.speak(u);

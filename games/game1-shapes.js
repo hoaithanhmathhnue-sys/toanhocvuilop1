@@ -296,7 +296,7 @@ function handleReason(btn, opt) {
 
 function verify() {
   const desc = SHAPES[g1.target].desc;
-  setChat(`Chính xác! ${desc} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn nhé!`, true, () => {
+  setChat(`Chính xác! ${desc} Con giỏi quá!`, true, () => {
     setTimeout(() => {
       if (g1.round < g1.totalRounds) {
         g1.round++;
@@ -304,6 +304,6 @@ function verify() {
       } else {
         showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú thông thái tự hào quá!');
       }
-    }, 800);
+    }, 1500);
   });
 }
