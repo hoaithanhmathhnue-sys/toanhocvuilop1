@@ -1,6 +1,6 @@
 /* ================================================================
-   TOÁN HỌC KỲ DIỆU — LỚP 1
-   Main Application Engine
+   SỰ KÌ DIỆU CỦA VƯƠNG QUỐC TOÁN HỌC — LỚP 1
+   Main Application Engine — Thần Rùa Kim Quy (AI Mentor)
    ================================================================ */
 import './style.css';
 import { initG1 } from './games/game1-shapes.js';
@@ -8,15 +8,14 @@ import { initG2 } from './games/game2-cube.js';
 import { initG3 } from './games/game3-robot.js';
 import { initG4 } from './games/game4-measure.js';
 import { initG5 } from './games/game5-clock.js';
-import { initG6 } from './games/game6-challenge.js';
-import { initG8 as initG7 } from './games/game8-tangram.js';
-import { initG7 as initG8 } from './games/game7-cube3d.js';
+import { initG6 } from './games/game8-tangram.js';
+import { initG7 } from './games/game7-cube3d.js';
 
 /* ============ STATE & STORAGE ============ */
-const STORAGE_KEY = 'toan1_kydieu_state';
+const STORAGE_KEY = 'toan1_kydieu_kimquy_state';
 export const state = {
   sound: true,
-  stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 }
+  stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }
 };
 
 export function saveState() {
@@ -42,7 +41,8 @@ export function completed(n) {
 }
 
 export function refreshStars() {
-  document.getElementById('totalStars').textContent = totalStars();
+  const el = document.getElementById('totalStars');
+  if (el) el.textContent = totalStars();
 }
 
 /* ============ AUDIO & BGM (WebAudio API) ============ */
@@ -94,9 +94,8 @@ export function snd(type) {
 let bgmInterval = null;
 let bgmStep = 0;
 
-// Các giai điệu độc bản riêng biệt cho Màn hình chính và từng Game 1-8
 const BGM_PATTERNS = {
-  home: { // Màn hình chính — chào mừng tươi vui, rộn rã
+  home: { // Màn hình chính — tươi vui, hoàng tráng
     tempo: 240,
     notes: [
       { n: 523.25, d: 0.15, type: 'sine' }, { n: 659.25, d: 0.15, type: 'sine' },
@@ -105,7 +104,7 @@ const BGM_PATTERNS = {
       { n: 783.99, d: 0.22, type: 'sine' }, { n: 0, d: 0.12, type: 'sine' }
     ]
   },
-  1: { // Game 1: Khu vườn hình học — tiếng chim hót trong trẻo
+  1: { // Game 1: Khu vườn hình học
     tempo: 280,
     notes: [
       { n: 523.25, d: 0.18, type: 'sine' }, { n: 659.25, d: 0.18, type: 'sine' },
@@ -114,7 +113,7 @@ const BGM_PATTERNS = {
       { n: 659.25, d: 0.3, type: 'sine' }, { n: 0, d: 0.15, type: 'sine' }
     ]
   },
-  2: { // Game 2: Lâu đài hình khối — lâu đài phép thuật ấm áp
+  2: { // Game 2: Phép màu hình khối
     tempo: 320,
     notes: [
       { n: 392.00, d: 0.2, type: 'triangle' }, { n: 493.88, d: 0.2, type: 'triangle' },
@@ -123,7 +122,7 @@ const BGM_PATTERNS = {
       { n: 392.00, d: 0.35, type: 'triangle' }, { n: 0, d: 0.15, type: 'triangle' }
     ]
   },
-  3: { // Game 3: Robot dẫn đường — nhạc điện tử robot nhí nhảnh
+  3: { // Game 3: Robot dẫn đường
     tempo: 220,
     notes: [
       { n: 440.00, d: 0.12, type: 'square' }, { n: 0, d: 0.08, type: 'square' },
@@ -132,7 +131,7 @@ const BGM_PATTERNS = {
       { n: 659.25, d: 0.15, type: 'square' }, { n: 0, d: 0.1, type: 'square' }
     ]
   },
-  4: { // Game 4: Căn phòng đo lường — nhịp đếm thước đo nhịp nhàng
+  4: { // Game 4: Trạm đo lường kì diệu
     tempo: 300,
     notes: [
       { n: 440.00, d: 0.18, type: 'triangle' }, { n: 493.88, d: 0.18, type: 'triangle' },
@@ -141,7 +140,7 @@ const BGM_PATTERNS = {
       { n: 440.00, d: 0.3, type: 'triangle' }, { n: 0, d: 0.15, type: 'triangle' }
     ]
   },
-  5: { // Game 5: Cuộc dạo chơi đồng hồ — nhịp tích tắc dạo chơi
+  5: { // Game 5: Cuộc dạo chơi đồng hồ
     tempo: 350,
     notes: [
       { n: 523.25, d: 0.15, type: 'sine' }, { n: 392.00, d: 0.15, type: 'sine' },
@@ -150,16 +149,7 @@ const BGM_PATTERNS = {
       { n: 523.25, d: 0.3, type: 'sine' }, { n: 0, d: 0.15, type: 'sine' }
     ]
   },
-  6: { // Game 6: Khối lập phương thần kỳ — 3D biến hóa ma thuật
-    tempo: 310,
-    notes: [
-      { n: 329.63, d: 0.18, type: 'sine' }, { n: 392.00, d: 0.18, type: 'sine' },
-      { n: 493.88, d: 0.18, type: 'sine' }, { n: 659.25, d: 0.25, type: 'sine' },
-      { n: 783.99, d: 0.22, type: 'sine' }, { n: 659.25, d: 0.18, type: 'sine' },
-      { n: 493.88, d: 0.3, type: 'sine' }, { n: 0, d: 0.15, type: 'sine' }
-    ]
-  },
-  7: { // Game 7: Xếp hình Tangram — nhẹ nhàng, thư thái
+  6: { // Game 6: Ghép mảnh phép màu
     tempo: 360,
     notes: [
       { n: 392.00, d: 0.22, type: 'triangle' }, { n: 440.00, d: 0.22, type: 'triangle' },
@@ -168,7 +158,7 @@ const BGM_PATTERNS = {
       { n: 392.00, d: 0.4, type: 'triangle' }, { n: 0, d: 0.2, type: 'triangle' }
     ]
   },
-  8: { // Game 8: Siêu thử thách — sôi động, khúc khải hoàn
+  7: { // Game 7: Chinh phục đỉnh cao
     tempo: 210,
     notes: [
       { n: 523.25, d: 0.14, type: 'triangle' }, { n: 659.25, d: 0.14, type: 'triangle' },
@@ -226,11 +216,9 @@ export function stopBGM() {
   }
 }
 
-/* ============ HYBRID TTS ENGINE (giọng NỮ Cô Cú thông thái) ============ */
-let viVoice = null;
-let isMaleFallback = false;
+/* ============ AUDIO & VOICE PLAYBACK ENGINE ============ */
 let currentAudio = null;
-let activeUtterance = null;
+let viVoice = null;
 
 function loadVoices() {
   if (!window.speechSynthesis) return;
@@ -238,30 +226,16 @@ function loadVoices() {
   if (!vs.length) return;
 
   const viVoices = vs.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith('vi'));
-  
-  const femaleKeywords = ['hoaimy', 'linh', 'female', 'woman', 'nữ', 'girl', 'chi', 'hương', 'mai', 'lan', 'google'];
-  const maleKeywords = ['microsoft an', 'microsoft nam', ' male', 'male ', 'boy'];
-
-  let selected = viVoices.find(v => {
-    const name = v.name.toLowerCase();
-    return femaleKeywords.some(kw => name.includes(kw));
-  });
-
-  if (!selected) {
-    selected = viVoices.find(v => {
-      const name = v.name.toLowerCase();
-      return !maleKeywords.some(kw => name.includes(kw));
+  if (viVoices.length > 0) {
+    // Ưu tiên giọng nữ truyền cảm
+    const female = viVoices.find(v => {
+      const n = v.name.toLowerCase();
+      return ['hoaimy', 'linh', 'female', 'nữ', 'chi', 'mai', 'lan', 'google'].some(kw => n.includes(kw));
     });
-  }
-
-  if (!selected && viVoices.length > 0) {
-    selected = viVoices[0];
-    isMaleFallback = true;
+    viVoice = female || viVoices[0];
   } else {
-    isMaleFallback = false;
+    viVoice = null;
   }
-
-  viVoice = selected || null;
 }
 
 if ('speechSynthesis' in window) {
@@ -282,9 +256,37 @@ export function stopSpeech() {
   }
 }
 
+/* Phát trực tiếp tệp âm thanh MP3 thu âm (chuẩn studio tiếng Việt) */
+export function playAudioFile(url, onEnd = null) {
+  stopSpeech();
+  if (!state.sound) {
+    if (onEnd) setTimeout(onEnd, 500);
+    return;
+  }
+
+  const audio = new Audio(url);
+  currentAudio = audio;
+
+  audio.onended = () => {
+    currentAudio = null;
+    if (onEnd) onEnd();
+  };
+  audio.onerror = () => {
+    currentAudio = null;
+    if (onEnd) onEnd();
+  };
+
+  const p = audio.play();
+  if (p && p.catch) {
+    p.catch(() => {
+      currentAudio = null;
+      if (onEnd) onEnd();
+    });
+  }
+}
+
 function splitTextChunks(text) {
   if (!text) return [];
-  // Tách riêng các câu theo dấu ngắt câu (. ! ? :) để có khoảng nghỉ giọng đọc tự nhiên
   const sentences = text.match(/[^.!?:]+[.!?:]*/g) || [text];
   const res = [];
   for (let s of sentences) {
@@ -301,14 +303,13 @@ function playGoogleTTS(cleanText, onEnd, onError) {
   function playNextChunk() {
     if (idx >= chunks.length) {
       currentAudio = null;
-      if (onEnd) setTimeout(onEnd, 400);
+      if (onEnd) setTimeout(onEnd, 300);
       return;
     }
     const chunk = chunks[idx++];
     const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=vi&client=tw-ob`;
     const audio = new Audio(url);
     currentAudio = audio;
-    audio.playbackRate = 1.0;
 
     let timer = setTimeout(() => {
       if (audio === currentAudio) {
@@ -316,12 +317,11 @@ function playGoogleTTS(cleanText, onEnd, onError) {
         currentAudio = null;
         onError();
       }
-    }, 5000);
+    }, 4500);
 
     audio.onended = () => {
       clearTimeout(timer);
-      // Tạm dừng 550ms giữa các câu để ngắt giọng tự nhiên giữa lời khen và đề bài
-      setTimeout(playNextChunk, 550);
+      setTimeout(playNextChunk, 400);
     };
 
     audio.onerror = () => {
@@ -343,46 +343,7 @@ function playGoogleTTS(cleanText, onEnd, onError) {
   playNextChunk();
 }
 
-function playWebSpeech(cleanText, onEnd, estimatedMs) {
-  if (!('speechSynthesis' in window)) {
-    if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 4000));
-    return;
-  }
-
-  try { window.speechSynthesis.cancel(); } catch (e) {}
-  const chunks = splitTextChunks(cleanText);
-  let idx = 0;
-
-  function speakNext() {
-    if (idx >= chunks.length) {
-      activeUtterance = null;
-      if (onEnd) setTimeout(onEnd, 400);
-      return;
-    }
-    const chunk = chunks[idx++];
-    const u = new SpeechSynthesisUtterance(chunk);
-    activeUtterance = u;
-    window._activeUtterance = u;
-
-    u.lang = 'vi-VN';
-    u.rate = 1.0; // Tốc độ vừa phải, rõ ràng cho học sinh lớp 1
-    u.pitch = isMaleFallback ? 1.65 : 1.4;
-    if (viVoice) u.voice = viVoice;
-
-    u.onend = () => {
-      // Ngắt nghỉ 550ms giữa các câu
-      setTimeout(speakNext, 550);
-    };
-    u.onerror = () => {
-      speakNext();
-    };
-
-    window.speechSynthesis.speak(u);
-  }
-
-  speakNext();
-}
-
+/* SỬA LỖI PHÁT ÂM TIẾNG ANH: Nếu không có voice tiếng Việt chuẩn thì KHÔNG ĐỌC BẰNG GIỌNG ANH */
 export function speak(text, onEnd = null) {
   const cleanText = String(text)
     .replace(/<[^>]*>/g, '')
@@ -396,17 +357,30 @@ export function speak(text, onEnd = null) {
     return;
   }
 
-  const rate = 1.05;
-  const estimatedMs = Math.max(3500, Math.ceil((cleanText.length * 120) / rate) + 2000);
+  const estimatedMs = Math.max(2500, Math.ceil(cleanText.length * 90));
 
   if (!state.sound) {
-    if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 4000));
+    if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 3000));
     return;
   }
 
-  // Phát âm thanh giọng Việt chuẩn qua Google TTS (nếu offline/chặn thì fallback WebSpeech)
+  // Thử Google TTS tiếng Việt trước
   playGoogleTTS(cleanText, onEnd, () => {
-    playWebSpeech(cleanText, onEnd, estimatedMs);
+    // Fallback: WebSpeech chỉ dùng khi CÓ VOICE TIẾNG VIỆT
+    if ('speechSynthesis' in window && viVoice) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+      const u = new SpeechSynthesisUtterance(cleanText);
+      u.voice = viVoice;
+      u.lang = 'vi-VN';
+      u.rate = 1.0;
+      u.onend = () => { if (onEnd) setTimeout(onEnd, 300); };
+      u.onerror = () => { if (onEnd) onEnd(); };
+      window.speechSynthesis.speak(u);
+    } else {
+      // TUYỆT ĐỐI KHÔNG DÙNG GIỌNG ANH ĐỂ ĐỌC TIẾNG VIỆT
+      // Kết thúc êm đẹp sau thời gian đọc ước lượng
+      if (onEnd) setTimeout(onEnd, Math.min(estimatedMs, 3500));
+    }
   });
 }
 
@@ -418,8 +392,9 @@ export function setChat(txt, doSpeak = true, onEnd = null) {
   const cleanText = String(txt)
     .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}\u{200D}\u{FE0F}]+$/gu, '')
     .trim();
-  chatTextEl.textContent = cleanText;
-  chatBubble.classList.add('show');
+  if (chatTextEl) chatTextEl.textContent = cleanText;
+  if (chatBubble) chatBubble.classList.add('show');
+
   if (doSpeak) {
     speak(cleanText, onEnd);
   } else if (onEnd) {
@@ -428,15 +403,15 @@ export function setChat(txt, doSpeak = true, onEnd = null) {
 }
 
 export function hideChat() {
-  chatBubble.classList.remove('show');
+  if (chatBubble) chatBubble.classList.remove('show');
 }
 
-document.getElementById('chatReplay').addEventListener('click', () => {
-  speak(chatTextEl.textContent);
+document.getElementById('chatReplay')?.addEventListener('click', () => {
+  if (chatTextEl) speak(chatTextEl.textContent);
 });
 
 /* ============ SOUND TOGGLE ============ */
-document.getElementById('soundToggle').addEventListener('click', function () {
+document.getElementById('soundToggle')?.addEventListener('click', function () {
   state.sound = !state.sound;
   this.textContent = state.sound ? '🔊' : '🔇';
   saveState();
@@ -451,6 +426,7 @@ document.getElementById('soundToggle').addEventListener('click', function () {
 /* ============ CONFETTI ============ */
 export function confetti(n = 80) {
   const box = document.getElementById('confetti');
+  if (!box) return;
   const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2', '#c76bf0', '#ff9f5a', '#f472b6', '#60a5fa'];
   for (let i = 0; i < n; i++) {
     const d = document.createElement('div');
@@ -466,13 +442,46 @@ export function confetti(n = 80) {
   }
 }
 
+/* ============ SUB-NAV HELPER (Nút Quay lại & Tiếp tục) ============ */
+export function renderSubNav(containerId, { onBack, onNext, canBack = true, canNext = true, nextLabel = 'Tiếp tục ➡', backLabel = '⬅ Quay lại' }) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = `
+    <button class="nav-subbtn nav-btn-back" id="${containerId}-back" ${!canBack ? 'disabled' : ''}>${backLabel}</button>
+    <button class="nav-subbtn nav-btn-next" id="${containerId}-next" ${!canNext ? 'disabled' : ''}>${nextLabel}</button>
+  `;
+
+  if (canBack && onBack) {
+    document.getElementById(`${containerId}-back`)?.addEventListener('click', () => {
+      snd('click');
+      onBack();
+    });
+  }
+  if (canNext && onNext) {
+    document.getElementById(`${containerId}-next`)?.addEventListener('click', () => {
+      snd('click');
+      onNext();
+    });
+  }
+}
+
 /* ============ SCREEN NAVIGATION ============ */
 let currentGame = null;
-const gameInits = { 1: initG1, 2: initG2, 3: initG3, 4: initG4, 5: initG5, 6: initG6, 7: initG7, 8: initG8 };
+const gameInits = {
+  1: initG1,
+  2: initG2,
+  3: initG3,
+  4: initG4,
+  5: initG5,
+  6: initG6,
+  7: initG7
+};
 
 export function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 export function goHome() {
@@ -481,7 +490,7 @@ export function goHome() {
   hideChat();
   showScreen('screen-home');
   renderCards();
-  speak('Con muốn chơi trò nào nữa nào?');
+  setChat('Các dũng sĩ nhí muốn tiếp tục chinh phục thử thách nào tiếp theo?');
   startBGM('home');
 }
 
@@ -520,90 +529,140 @@ export function showResult(gid, stars, message) {
 
   box.innerHTML = `
     <div class="big-stars">${starsHtml}</div>
-    <h2>🎉 Hoàn thành! Tuyệt vời!</h2>
+    <h2>🎉 Hoàn thành Thử thách ${gid}! Tuyệt vời!</h2>
     <div class="result-msg">${message}</div>
-    <div class="result-msg">Con kiếm được <b>${stars} sao ⭐</b> trong trò này!<br>Tổng sao: <b>${totalStars()}</b></div>
+    <div class="result-msg">Dũng sĩ nhận được <b>${stars} sao ⭐</b> trong thử thách này!<br>Tổng số sao đã đạt: <b>${totalStars()}</b></div>
     <div class="action-row">
-      <button class="big-btn btn-green" id="resultHome">🏠 Về nhà</button>
+      <button class="big-btn btn-green" id="resultHome">🏠 Về bản đồ</button>
       <button class="big-btn btn-orange" id="resultReplay">🔄 Chơi lại</button>
-      ${gid < 8 ? `<button class="big-btn btn-purple" id="resultNext">▶ Trò tiếp</button>` : ''}
+      ${gid < 7 ? `<button class="big-btn btn-purple" id="resultNext">▶ Thử thách tiếp (${gid + 1})</button>` : `<button class="big-btn btn-orange" id="resultOutro">🏆 Khám phá Lời kết Hồ Gươm</button>`}
     </div>
   `;
   showScreen('screen-result');
   confetti(120);
   snd('win');
-  setChat('Chúc mừng con! Con đã hoàn thành tuyệt vời! Cô rất tự hào về con!');
+  setChat(`Chúc mừng các dũng sĩ nhí! Thần Rùa Kim Quy rất tự hào về tinh thần trí tuệ và nỗ lực của con!`);
   stopBGM();
 
-  document.getElementById('resultHome').addEventListener('click', goHome);
-  document.getElementById('resultReplay').addEventListener('click', () => startGame(gid));
+  document.getElementById('resultHome')?.addEventListener('click', goHome);
+  document.getElementById('resultReplay')?.addEventListener('click', () => startGame(gid));
   const nextBtn = document.getElementById('resultNext');
   if (nextBtn) nextBtn.addEventListener('click', () => startGame(gid + 1));
+  const outroBtn = document.getElementById('resultOutro');
+  if (outroBtn) outroBtn.addEventListener('click', openOutroModal);
 }
 
-/* ============ GAME CARDS (HOME) ============ */
+/* ============ 7 GAME METADATA (KHỚP BẢN ĐỒ) ============ */
 const GAME_META = [
-  { n: 1, ico: '🌲', name: 'Khu vườn hình học', sub: 'Hình tròn, vuông, tam giác, chữ nhật', c: 'gc-1', max: 4 },
-  { n: 2, ico: '🧊', name: 'Lâu đài hình khối', sub: 'Khối lập phương & hộp chữ nhật', c: 'gc-2', max: 3 },
-  { n: 3, ico: '🤖', name: 'Robot dẫn đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3', max: 3 },
-  { n: 4, ico: '📏', name: 'Căn phòng đo lường', sub: 'Đo độ dài bằng xăng-ti-mét', c: 'gc-4', max: 3 },
-  { n: 5, ico: '🕐', name: 'Cuộc dạo chơi<br>của đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5', max: 3 },
-  { n: 6, ico: '🎯', name: 'Khối lập phương<br>thần kỳ', sub: 'Xoay khối 3D, đoán mặt, khai triển', c: 'gc-6', max: 4 },
-  { n: 7, ico: '🧩', name: 'Xếp hình<br>Tangram', sub: 'Kéo thả xếp hình thú vị', c: 'gc-7', max: 4 },
-  { n: 8, ico: '🏆', name: 'Siêu thử thách', sub: 'Ôn tập tất cả nội dung', c: 'gc-8', max: 5 },
+  { n: 1, ico: '🌲', name: '1. Khu vườn hình học', sub: 'Hình tròn, vuông, tam giác, chữ nhật', c: 'gc-1' },
+  { n: 2, ico: '🧊', name: '2. Phép màu hình khối', sub: 'Khối lập phương & hộp chữ nhật 3D', c: 'gc-2' },
+  { n: 3, ico: '🤖', name: '3. Robot dẫn đường', sub: 'Trên, dưới, trái, phải, giữa', c: 'gc-3' },
+  { n: 4, ico: '📏', name: '4. Trạm đo lường kì diệu', sub: 'Đo độ dài bằng xăng-ti-mét (cm)', c: 'gc-4' },
+  { n: 5, ico: '🕐', name: '5. Cuộc dạo chơi đồng hồ', sub: 'Xem giờ & các ngày trong tuần', c: 'gc-5' },
+  { n: 6, ico: '🧩', name: '6. Ghép mảnh phép màu', sub: 'Sáng tạo ghép hình trên giấy trắng', c: 'gc-7' },
+  { n: 7, ico: '🏆', name: '7. Chinh phục đỉnh cao', sub: 'Xếp tháp gạch 5 tầng & đếm lâu đài', c: 'gc-8' },
 ];
 
 function renderCards() {
   const g = document.getElementById('gameGrid');
+  if (!g) return;
   g.innerHTML = '';
-  GAME_META.forEach((m, idx) => {
-    const locked = false; // Mở khóa tất cả
+  GAME_META.forEach((m) => {
     const d = document.createElement('div');
-    d.className = 'game-card ' + m.c + (locked ? ' locked' : '');
+    d.className = 'game-card ' + m.c;
 
     let starsText = '';
     if (completed(m.n)) {
       const s = Math.min(state.stars[m.n], 5);
       for (let i = 0; i < s; i++) starsText += '⭐';
     } else {
-      starsText = locked ? '🔒 Chưa mở' : '✨ Bắt đầu!';
+      starsText = '✨ Bắt đầu!';
     }
 
     d.innerHTML = `
-      <div class="lock-icon">${locked ? '🔒' : ''}</div>
       <div class="card-emoji">${m.ico}</div>
       <div class="card-name">${m.name}</div>
       <div class="card-desc">${m.sub}</div>
       <div class="card-stars">${starsText}</div>
     `;
     d.addEventListener('click', () => {
-      if (!locked) {
-        snd('click');
-        startGame(m.n);
-      } else {
-        setChat(`Con cần hoàn thành trò "${GAME_META[idx - 1].name.replace(/<br\s*\/?>/gi, ' ')}" trước để mở khóa trò này nhé!`);
-      }
+      snd('click');
+      startGame(m.n);
     });
     g.appendChild(d);
   });
 }
 
-/* ============ BACK BUTTONS ============ */
-for (let i = 1; i <= 8; i++) {
-  const btn = document.getElementById('backBtn' + i);
-  if (btn) btn.addEventListener('click', goHome);
+/* ============ MODAL MỞ ĐẦU & KẾT THÚC ============ */
+const modalIntro = document.getElementById('modalIntro');
+const modalOutro = document.getElementById('modalOutro');
+
+export function openIntroModal() {
+  if (modalIntro) modalIntro.classList.add('show');
+  playAudioFile('/audio/intro.mp3');
 }
-const backResult = document.getElementById('backBtnResult');
-if (backResult) backResult.addEventListener('click', goHome);
+
+export function closeIntroModal() {
+  if (modalIntro) modalIntro.classList.remove('show');
+  stopSpeech();
+}
+
+export function openOutroModal() {
+  if (modalOutro) modalOutro.classList.add('show');
+  confetti(100);
+  playAudioFile('/audio/outro.mp3');
+}
+
+export function closeOutroModal() {
+  if (modalOutro) modalOutro.classList.remove('show');
+  stopSpeech();
+}
+
+// Gắn sự kiện modal mở đầu
+document.getElementById('btnOpenIntro')?.addEventListener('click', openIntroModal);
+document.getElementById('heroIntroBtn')?.addEventListener('click', openIntroModal);
+document.getElementById('closeIntroBtn')?.addEventListener('click', closeIntroModal);
+document.getElementById('playIntroAudioBtn')?.addEventListener('click', () => playAudioFile('/audio/intro.mp3'));
+document.getElementById('startJourneyBtn')?.addEventListener('click', () => {
+  closeIntroModal();
+  setChat('Hành trình đã bắt đầu! Con hãy chọn một trong 7 thử thách kì diệu nhé!');
+});
+
+// Gắn sự kiện modal kết thúc
+document.getElementById('btnOpenOutro')?.addEventListener('click', openOutroModal);
+document.getElementById('closeOutroBtn')?.addEventListener('click', closeOutroModal);
+document.getElementById('playOutroAudioBtn')?.addEventListener('click', () => playAudioFile('/audio/outro.mp3'));
+document.getElementById('outroHomeBtn')?.addEventListener('click', () => {
+  closeOutroModal();
+  goHome();
+});
+
+// Quay về trang chủ từ Brand
+document.getElementById('brandHome')?.addEventListener('click', goHome);
+
+// Nút quay lại từ các Game screen
+for (let i = 1; i <= 7; i++) {
+  document.getElementById('backBtn' + i)?.addEventListener('click', goHome);
+  // Gắn sự kiện Gợi ý cách chơi
+  const guideBtn = document.getElementById('guideBtn' + i);
+  if (guideBtn) {
+    guideBtn.addEventListener('click', () => {
+      snd('click');
+      playAudioFile(`/audio/guide-g${i}.mp3`);
+    });
+  }
+}
+document.getElementById('backBtnResult')?.addEventListener('click', goHome);
 
 /* ============ NOTE TOGGLE ============ */
-document.getElementById('noteToggle').addEventListener('click', () => {
-  document.getElementById('notePanel').classList.toggle('show');
+document.getElementById('noteToggle')?.addEventListener('click', () => {
+  document.getElementById('notePanel')?.classList.toggle('show');
 });
 
 /* ============ FLOATING PARTICLES ============ */
 function createParticles() {
   const container = document.getElementById('particles');
+  if (!container) return;
   const colors = ['#ffd166', '#a855f7', '#60a5fa', '#4ade80', '#f472b6', '#fb923c'];
   for (let i = 0; i < 20; i++) {
     const p = document.createElement('div');
@@ -623,10 +682,9 @@ renderCards();
 refreshStars();
 createParticles();
 
-// Greet on load
+// Chào mừng khi mở ứng dụng
 setTimeout(() => {
-  if (state.sound && 'speechSynthesis' in window) {
-    speak('Chào con! Con muốn chơi trò gì hôm nay?');
+  if (state.sound) {
+    setChat('Chào các dũng sĩ nhí! Thần Rùa Kim Quy đã sẵn sàng cùng con khám phá Vương quốc Toán học!');
   }
 }, 800);
-

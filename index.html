@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Vương quốc Toán học kì diệu — Hình học và Đo lường</title>
-  <meta name="description" content="Trò chơi toán học tương tác cho học sinh lớp 1: Hình học, Đo lường, Không gian. AI Cô Cú thông thái hướng dẫn biểu đạt, trao đổi và kiểm chứng ý tưởng toán học.">
+  <title>Sự kì diệu của Vương quốc Toán học — Hình học và Đo lường Lớp 1</title>
+  <meta name="description" content="Trò chơi toán học tương tác cho học sinh lớp 1: Hình học, Đo lường, Không gian. Thần Rùa Kim Quy hướng dẫn biểu đạt, trao đổi và kiểm chứng ý tưởng toán học.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦉</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐢</text></svg>">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -18,43 +18,32 @@
 
     <!-- HEADER -->
     <header id="mainHeader">
-      <div class="brand">
-        <div class="brand-icon">🦉</div>
+      <div class="brand" id="brandHome" style="cursor:pointer" title="Về trang chủ">
+        <img class="brand-avatar" src="/assets/than-kim-quy.png" alt="Thần Rùa Kim Quy">
         <div>
-          <div class="brand-title">Vương quốc Toán học kì diệu</div>
-          <div class="brand-sub">Chủ đề Hình học và Đo lường</div>
+          <div class="brand-title">Sự kì diệu của Vương quốc Toán học</div>
+          <div class="brand-sub">Chủ đề: Hình học & Đo lường — Lớp 1</div>
         </div>
       </div>
       <div class="hdr-right">
+        <button class="story-btn" id="btnOpenIntro" title="Mở đầu Sự tích Hồ Gươm">📜 Khởi hành</button>
+        <button class="story-btn outro-btn" id="btnOpenOutro" title="Lời kết Hồ Gươm">🏆 Đoạn kết</button>
         <div class="star-pill" id="starPill">⭐ <span id="totalStars">0</span></div>
         <button class="icon-btn" id="soundToggle" title="Bật/tắt âm thanh">🔊</button>
       </div>
     </header>
 
-    <!-- OWL CHAT (global) -->
+    <!-- THẦN RÙA CHAT BUBBLE (Global) -->
     <div class="chat-bubble" id="chatBubble">
-      <div class="chat-owl">
-        <svg class="owl-svg" viewBox="0 0 100 100">
-          <ellipse cx="50" cy="62" rx="34" ry="30" fill="#8a5aa8"/>
-          <ellipse cx="50" cy="56" rx="30" ry="26" fill="#a87cc4"/>
-          <ellipse cx="34" cy="38" rx="16" ry="18" fill="#fff"/>
-          <ellipse cx="66" cy="38" rx="16" ry="18" fill="#fff"/>
-          <circle cx="37" cy="40" r="7" fill="#3a2a1a"/>
-          <circle cx="63" cy="40" r="7" fill="#3a2a1a"/>
-          <circle cx="39" cy="38" r="2.4" fill="#fff"/>
-          <circle cx="65" cy="38" r="2.4" fill="#fff"/>
-          <polygon points="38,12 44,30 32,30" fill="#ffb703"/>
-          <polygon points="62,12 68,30 56,30" fill="#ffb703"/>
-          <polygon points="50,56 40,72 60,72" fill="#ff9f5a"/>
-          <path d="M46 66 Q50 70 54 66" stroke="#a34b00" stroke-width="2" fill="none"/>
-          <ellipse cx="32" cy="84" rx="8" ry="6" fill="#a87cc4"/>
-          <ellipse cx="68" cy="84" rx="8" ry="6" fill="#a87cc4"/>
-        </svg>
+      <div class="chat-avatar-wrap">
+        <img class="chat-avatar-img" src="/assets/than-kim-quy.png" alt="Thần Rùa Kim Quy">
       </div>
       <div class="chat-body">
-        <div class="chat-name">🦉 Cô Cú thông thái</div>
-        <div class="chat-text" id="chatText">Chào con! Cô là Cô Cú thông thái đây!</div>
-        <button class="chat-replay" id="chatReplay">🔊 Nghe lại</button>
+        <div class="chat-name">🐢 Thần Rùa Kim Quy</div>
+        <div class="chat-text" id="chatText">Chào các dũng sĩ nhí! Thần Rùa Kim Quy sẽ đồng hành cùng con!</div>
+        <div class="chat-actions">
+          <button class="chat-replay" id="chatReplay">🔊 Nghe lại</button>
+        </div>
       </div>
     </div>
 
@@ -64,122 +53,142 @@
       <!-- HOME SCREEN -->
       <section class="screen active" id="screen-home">
         <div class="hero">
-          <div class="hero-owl">
-            <svg viewBox="0 0 100 100" width="140">
-              <ellipse cx="50" cy="62" rx="34" ry="30" fill="#8a5aa8"/>
-              <ellipse cx="50" cy="56" rx="30" ry="26" fill="#a87cc4"/>
-              <ellipse cx="34" cy="38" rx="16" ry="18" fill="#fff"/>
-              <ellipse cx="66" cy="38" rx="16" ry="18" fill="#fff"/>
-              <circle cx="37" cy="40" r="7" fill="#3a2a1a"/>
-              <circle cx="63" cy="40" r="7" fill="#3a2a1a"/>
-              <circle cx="39" cy="38" r="2.4" fill="#fff"/>
-              <circle cx="65" cy="38" r="2.4" fill="#fff"/>
-              <polygon points="38,12 44,30 32,30" fill="#ffb703"/>
-              <polygon points="62,12 68,30 56,30" fill="#ffb703"/>
-              <polygon points="50,56 40,72 60,72" fill="#ff9f5a"/>
-              <path d="M46 66 Q50 70 54 66" stroke="#a34b00" stroke-width="2" fill="none"/>
-              <ellipse cx="32" cy="84" rx="8" ry="6" fill="#a87cc4"/>
-              <ellipse cx="68" cy="84" rx="8" ry="6" fill="#a87cc4"/>
-            </svg>
+          <div class="hero-character">
+            <img class="hero-kimquy" src="/assets/than-kim-quy.png" alt="Thần Rùa Kim Quy">
           </div>
-          <h1 class="hero-title">🌟 Vương quốc Toán học kì diệu</h1>
-          <p class="hero-sub">Chủ đề Hình học và Đo lường</p>
-          <p class="hero-desc">Cô Cú thông thái sẽ dẫn con qua 8 trò chơi thú vị! Con sẵn sàng chưa nào? 🎉</p>
+          <h1 class="hero-title">🌟 Sự kì diệu của Vương quốc Toán học</h1>
+          <p class="hero-sub">Hành trình 7 thử thách cùng Thần Rùa Kim Quy</p>
+          <p class="hero-desc">Hãy cầm chắc thanh Gươm thần, vận dụng trí tuệ và đoàn kết để khám phá muôn điều kì diệu! 🎉</p>
+          <div class="hero-actions">
+            <button class="hero-btn-intro" id="heroIntroBtn">📜 Nghe lời dặn của Thần Kim Quy (Mở đầu)</button>
+          </div>
         </div>
 
+        <!-- 7 THỬ THÁCH GRID (Khớp bản đồ) -->
         <div class="game-grid" id="gameGrid"></div>
 
         <button class="note-toggle" id="noteToggle">📖 Ghi chú cho thầy cô (mở/đóng)</button>
         <div class="note-panel" id="notePanel">
           <h4>📖 Ghi chú sư phạm cho giáo viên</h4>
-          <p>Mỗi trò chơi tuân theo <b>vòng tuần hoạt 3 bước: Trải nghiệm → Biểu đạt → Kiểm chứng</b>, với sự hướng dẫn, gợi mở và phản hồi của <b>Cô Cú thông thái (AI mentor)</b>.</p>
-          <p><b>Biện pháp 5:</b> "Sử dụng AI có hướng dẫn nhằm tạo cơ hội cho học sinh biểu đạt, trao đổi và kiểm chứng ý tưởng toán học"</p>
+          <p>Mỗi trò chơi tuân theo <b>vòng tuần hoàn 3 bước: Trải nghiệm → Biểu đạt → Kiểm chứng</b>, với sự dẫn dắt, gợi mở và phản hồi của <b>Thần Rùa Kim Quy (AI Mentor)</b>.</p>
+          <p><b>Biện pháp 5:</b> "Sử dụng AI có hướng dẫn nhằm tạo cơ hội cho học sinh biểu đạt, trao đổi và kiểm chứng ý tưởng toán học kết hợp giáo dục truyền thống lịch sử (Sự tích Hồ Gươm)".</p>
           <table>
-            <tr><th>Trò chơi</th><th>Trải nghiệm</th><th>Biểu đạt</th><th>Kiểm chứng</th><th>YCCĐ (CT GDPT 2018)</th></tr>
-            <tr><td>1. Khu vườn hình học</td><td>Chạm hình phẳng trong khu vườn</td><td>Chọn lý do nhận dạng hình</td><td>Cô Cú thông thái chốt đặc điểm từng hình</td><td>Nhận dạng hình tròn, vuông, tam giác, chữ nhật</td></tr>
-            <tr><td>2. Lâu đài hình khối</td><td>Xoay, quan sát khối 3D</td><td>Chọn lý do phân biệt khối</td><td>Đếm mặt, so sánh khối</td><td>Nhận dạng khối lập phương, hộp chữ nhật</td></tr>
-            <tr><td>3. Robot dẫn đường</td><td>Điều khiển robot trên lưới</td><td>Dự đoán hướng đi</td><td>Kiểm chứng chuỗi lệnh</td><td>Xác định vị trí, định hướng không gian</td></tr>
-            <tr><td>4. Căn phòng đo lường</td><td>Kéo thước, căn vạch 0</td><td>Ước lượng độ dài</td><td>Kiểm tra, đếm vạch, chốt kết quả</td><td>Nhận biết đơn vị cm, đo độ dài</td></tr>
-            <tr><td>5. Cuộc dạo chơi của đồng hồ</td><td>Chỉnh kim đồng hồ</td><td>Nói giờ, xác định ngày</td><td>Giải thích giờ đúng, thứ trong tuần</td><td>Xem giờ đúng; các ngày trong tuần</td></tr>
-            <tr><td>6. Khối lập phương thần kỳ</td><td>Xoay khối 3D, quan sát mặt</td><td>Đoán mặt sau xoay</td><td>Cô Cú phản hồi đáp án</td><td>Nhận dạng khối lập phương 3D</td></tr>
-            <tr><td>7. Xếp hình Tangram</td><td>Kéo thả mảnh hình</td><td>Giải thích cách ghép</td><td>So sánh hình dạng các mảnh</td><td>Tư duy không gian, nhận dạng hình</td></tr>
-            <tr><td>8. Siêu thử thách</td><td>Quiz ngẫu nhiên</td><td>Chọn đáp án, giải thích</td><td>Cô Cú thông thái phản hồi</td><td>Ôn tập tổng hợp</td></tr>
+            <tr><th>Thử thách</th><th>Trải nghiệm</th><th>Biểu đạt</th><th>Kiểm chứng</th><th>YCCĐ (CT GDPT 2018)</th></tr>
+            <tr><td>1. Khu vườn hình học</td><td>Chạm hình phẳng trong vườn</td><td>Giải thích dấu hiệu nhận biết</td><td>Thần Kim Quy chốt đặc điểm từng hình</td><td>Nhận dạng hình tròn, vuông, tam giác, chữ nhật</td></tr>
+            <tr><td>2. Phép màu hình khối</td><td>Xoay 3D, mở bung khối</td><td>So sánh khối, đếm 6 mặt vuông</td><td>Kiểm chứng mặt khối mở phẳng</td><td>Nhận dạng khối lập phương, hộp chữ nhật</td></tr>
+            <tr><td>3. Robot dẫn đường</td><td>Điều khiển robot trên lưới</td><td>Xác định vị trí tương đối</td><td>Kiểm chứng chuỗi lệnh 4 hướng</td><td>Xác định vị trí không gian (trên, dưới, trái, phải, giữa)</td></tr>
+            <tr><td>4. Trạm đo lường kì diệu</td><td>Kéo thước, căn vạch 0</td><td>Ước lượng độ dài</td><td>Kiểm tra vạch trùng, chốt cm</td><td>Nhận biết đơn vị cm, thực hành đo độ dài</td></tr>
+            <tr><td>5. Cuộc dạo chơi của đồng hồ</td><td>Chỉnh kim đồng hồ (6h, 11h, 19h)</td><td>Nói giờ, thời gian sinh hoạt, thứ</td><td>Giải thích giờ đúng & thứ trong tuần</td><td>Xem giờ đúng; các ngày trong tuần</td></tr>
+            <tr><td>6. Ghép mảnh phép màu</td><td>Tự do ghép mảnh trên giấy trắng</td><td>Sáng tạo thuyền, nhà, cây thông</td><td>Tổng kết các mảnh hình học đã dùng</td><td>Tư duy sáng tạo không gian hình học</td></tr>
+            <tr><td>7. Chinh phục đỉnh cao</td><td>Xếp tháp gạch 5 tầng & đếm lâu đài</td><td>Điền số lượng gạch, đếm khối</td><td>Kiểm chứng cấu trúc và tổng kết</td><td>Ôn tập tổng hợp, rèn luyện tư duy</td></tr>
           </table>
-          <p><i>Ghi chú: Cô Cú thông thái luôn khen ngợi khi đúng, gợi mở và cho thử lại khi sai, không trừ sao khi sai để khích lệ trẻ tự tin.</i></p>
+          <p><i>Ghi chú: Thần Rùa Kim Quy luôn khen ngợi khi đúng, gợi mở và cho thử lại khi chưa đúng, không trừ điểm để khích lệ trẻ tự tin.</i></p>
         </div>
       </section>
 
-      <!-- GAME SCREENS (dynamically filled by JS) -->
+      <!-- GAME 1: KHU VƯỜN HÌNH HỌC -->
       <section class="screen" id="screen-g1">
         <div class="game-header">
           <button class="back-btn" id="backBtn1">← Về nhà</button>
-          <div class="game-title" id="gTitle1">🌲 Khu vườn hình học</div>
+          <div class="game-title" id="gTitle1">🌲 1. Khu vườn hình học</div>
+          <div class="guide-corner" id="guideG1">
+            <button class="guide-audio-btn" id="guideBtn1" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Chạm hình theo yêu cầu & giải thích lý do</span>
+          </div>
           <div class="round-pills" id="g1pills"></div>
         </div>
         <div id="g1area"></div>
+        <div class="nav-subrow" id="navRow1"></div>
       </section>
 
+      <!-- GAME 2: PHÉP MÀU HÌNH KHỐI -->
       <section class="screen" id="screen-g2">
         <div class="game-header">
           <button class="back-btn" id="backBtn2">← Về nhà</button>
-          <div class="game-title" id="gTitle2">🏰 Lâu đài hình khối</div>
+          <div class="game-title" id="gTitle2">🧊 2. Phép màu hình khối</div>
+          <div class="guide-corner" id="guideG2">
+            <button class="guide-audio-btn" id="guideBtn2" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Nhận dạng khối 3D, xoay khối & đếm mặt mở bung</span>
+          </div>
           <div class="round-pills" id="g2pills"></div>
         </div>
         <div id="g2area"></div>
+        <div class="nav-subrow" id="navRow2"></div>
       </section>
 
+      <!-- GAME 3: ROBOT DẪN ĐƯỜNG -->
       <section class="screen" id="screen-g3">
         <div class="game-header">
           <button class="back-btn" id="backBtn3">← Về nhà</button>
-          <div class="game-title" id="gTitle3">🤖 Robot dẫn đường</div>
+          <div class="game-title" id="gTitle3">🤖 3. Robot dẫn đường</div>
+          <div class="guide-corner" id="guideG3">
+            <button class="guide-audio-btn" id="guideBtn3" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Xác định vị trí sao & bấm nút mũi tên dẫn đường</span>
+          </div>
           <div class="round-pills" id="g3pills"></div>
         </div>
         <div id="g3area"></div>
+        <div class="nav-subrow" id="navRow3"></div>
       </section>
 
+      <!-- GAME 4: TRẠM ĐO LƯỜNG KÌ DIỆU -->
       <section class="screen" id="screen-g4">
         <div class="game-header">
           <button class="back-btn" id="backBtn4">← Về nhà</button>
-          <div class="game-title" id="gTitle4">📏 Căn phòng đo lường</div>
+          <div class="game-title" id="gTitle4">📏 4. Trạm đo lường kì diệu</div>
+          <div class="guide-corner" id="guideG4">
+            <button class="guide-audio-btn" id="guideBtn4" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Kéo thước căn vạch 0 & đọc độ dài xăng-ti-mét</span>
+          </div>
           <div class="round-pills" id="g4pills"></div>
         </div>
         <div id="g4area"></div>
+        <div class="nav-subrow" id="navRow4"></div>
       </section>
 
+      <!-- GAME 5: CUỘC DẠO CHƠI CỦA ĐỒNG HỒ -->
       <section class="screen" id="screen-g5">
         <div class="game-header">
           <button class="back-btn" id="backBtn5">← Về nhà</button>
-          <div class="game-title" id="gTitle5">🕐 Cuộc dạo chơi của đồng hồ</div>
+          <div class="game-title" id="gTitle5">🕐 5. Cuộc dạo chơi của đồng hồ</div>
+          <div class="guide-corner" id="guideG5">
+            <button class="guide-audio-btn" id="guideBtn5" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Chỉnh kim giờ đúng & đoán thứ trong tuần</span>
+          </div>
           <div class="round-pills" id="g5pills"></div>
         </div>
         <div id="g5area"></div>
+        <div class="nav-subrow" id="navRow5"></div>
       </section>
 
+      <!-- GAME 6: GHÉP MẢNH PHÉP MÀU -->
       <section class="screen" id="screen-g6">
         <div class="game-header">
           <button class="back-btn" id="backBtn6">← Về nhà</button>
-          <div class="game-title" id="gTitle6">🎯 Khối lập phương thần kỳ</div>
+          <div class="game-title" id="gTitle6">🧩 6. Ghép mảnh phép màu</div>
+          <div class="guide-corner" id="guideG6">
+            <button class="guide-audio-btn" id="guideBtn6" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Kéo thả tự do trên giấy trắng tạo hình sáng tạo</span>
+          </div>
           <div class="round-pills" id="g6pills"></div>
         </div>
         <div id="g6area"></div>
+        <div class="nav-subrow" id="navRow6"></div>
       </section>
 
+      <!-- GAME 7: CHINH PHỤC ĐỈNH CAO -->
       <section class="screen" id="screen-g7">
         <div class="game-header">
           <button class="back-btn" id="backBtn7">← Về nhà</button>
-          <div class="game-title" id="gTitle7">🧩 Xếp hình Tangram</div>
+          <div class="game-title" id="gTitle7">🏆 7. Chinh phục đỉnh cao</div>
+          <div class="guide-corner" id="guideG7">
+            <button class="guide-audio-btn" id="guideBtn7" title="Nghe gợi ý cách chơi">🔊 Gợi ý cách chơi</button>
+            <span class="guide-text-snip">Ôn tập, xếp tháp gạch 5 tầng & đếm khối lâu đài</span>
+          </div>
           <div class="round-pills" id="g7pills"></div>
         </div>
         <div id="g7area"></div>
-      </section>
-
-      <section class="screen" id="screen-g8">
-        <div class="game-header">
-          <button class="back-btn" id="backBtn8">← Về nhà</button>
-          <div class="game-title" id="gTitle8">🏆 Siêu thử thách</div>
-          <div class="round-pills" id="g8pills"></div>
-        </div>
-        <div id="g8area"></div>
+        <div class="nav-subrow" id="navRow7"></div>
       </section>
 
       <!-- RESULT SCREEN -->
@@ -189,6 +198,54 @@
       </section>
 
     </main>
+
+    <!-- ==================== MODAL SLIDE MỞ ĐẦU (SỰ TÍCH HỒ GƯƠM) ==================== -->
+    <div class="modal-overlay" id="modalIntro">
+      <div class="modal-card intro-card">
+        <div class="modal-header">
+          <div class="modal-badge">🌟 MỞ ĐẦU HÀNH TRÌNH</div>
+          <h2 class="modal-title">Sự tích Hồ Gươm & Vương quốc Toán học</h2>
+          <button class="modal-close" id="closeIntroBtn" title="Đóng">✕</button>
+        </div>
+        <div class="modal-media-wrap">
+          <img class="modal-img" src="/assets/kingdom-map.jpg" alt="Bản đồ Sự kì diệu của Vương quốc Toán học">
+        </div>
+        <div class="modal-speech-box">
+          <div class="speech-quote-mark">“</div>
+          <p class="modal-speech-text" id="introSpeechText">
+            Các dũng sĩ, hành trình chinh phục <b>Vương quốc Toán học</b> đã bắt đầu! Hãy cầm chắc <b>thanh Gươm thần</b>, vận dụng trí tuệ và tinh thần đoàn kết để vượt qua <b>7 thử thách</b> phía trước. Mỗi thử thách được chinh phục, một điều kì diệu sẽ được mở ra! Các bạn đã sẵn sàng chưa? <b>Lên đường thôi nào!</b>
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button class="big-btn btn-orange" id="playIntroAudioBtn">🔊 Nghe lời dặn của Thần Kim Quy</button>
+          <button class="big-btn btn-green" id="startJourneyBtn">⚔️ Lên đường thôi nào!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL SLIDE KẾT THÚC ==================== -->
+    <div class="modal-overlay" id="modalOutro">
+      <div class="modal-card outro-card">
+        <div class="modal-header">
+          <div class="modal-badge">🏆 KHÚC KHẢI HOÀN</div>
+          <h2 class="modal-title">Hồ Gươm Khải Hoàn — Bài Học Hòa Bình & Yêu Nước</h2>
+          <button class="modal-close" id="closeOutroBtn" title="Đóng">✕</button>
+        </div>
+        <div class="modal-media-wrap">
+          <img class="modal-img" src="/assets/ending-lake.jpg" alt="Vua Lê Lợi trả gươm thần Kim Quy tại Hồ Gươm">
+        </div>
+        <div class="modal-speech-box">
+          <div class="speech-quote-mark">“</div>
+          <p class="modal-speech-text" id="outroSpeechText">
+            “Hành trình khám phá Vương quốc Toán học” khép lại với những thử thách mà các em đã cùng nhau vượt qua. Cũng như Vua Lê Lợi xưa kia đã nhận thanh Gươm thần từ thần Kim Quy, vượt qua muôn vàn gian khó để đánh thắng giặc Minh, mỗi thử thách hôm nay là một cơ hội để chúng ta rèn luyện bản lĩnh, tinh thần đoàn kết và ý chí vượt khó. Qua đó, câu chuyện lịch sử nhắc nhở thế hệ hôm nay phải biết trân trọng hòa bình, yêu nước và có trách nhiệm chung tay xây dựng, bảo vệ quê hương, đất nước.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button class="big-btn btn-orange" id="playOutroAudioBtn">🔊 Nghe lời dặn kết thúc</button>
+          <button class="big-btn btn-green" id="outroHomeBtn">🏠 Về Vương quốc Toán học</button>
+        </div>
+      </div>
+    </div>
 
     <!-- CONFETTI CONTAINER -->
     <div id="confetti"></div>

@@ -1,146 +1,473 @@
 /* ================================================================
-   GAME 7: THỬ THÁCH TỔNG HỢP
-   Quiz ngẫu nhiên từ tất cả chủ đề — ôn tập tổng hợp
-   Không có câu hỏi về đỉnh/góc (HS lớp 1 chưa học)
-   Câu hỏi viết bình thường, không in hoa nhấn mạnh
+   GAME 7: CHINH PHỤC ĐỈNH CAO (Đổi tên từ Siêu thử thách)
+   - Thu gọn ôn tập thành 2 câu nhanh
+   - Bài 1: Xếp tháp 5 tầng từ các khối hộp chữ nhật rời màu nâu và xám
+           Điền số thích hợp: 9 viên gạch nâu và 6 viên gạch xám
+   - Bài 2: Đếm khối trên toà lâu đài kì diệu (khối lập phương, khối hộp chữ nhật)
+   - Nút Quay lại & Tiếp tục
    ================================================================ */
-import { setChat, snd, makePills, showResult, confetti } from '../main.js';
+import { setChat, snd, makePills, showResult, confetti, openOutroModal, renderSubNav } from '../main.js';
 
-const QUESTIONS = [
-  // === Hình phẳng ===
-  { cat: '🌲 Hình học', q: 'Hình nào có 3 cạnh?', opts: ['Hình tam giác', 'Hình vuông', 'Hình tròn'], ans: 0, explain: 'Hình tam giác có 3 cạnh!' },
-  { cat: '🌲 Hình học', q: 'Hình nào tròn xoe, không có cạnh?', opts: ['Hình tròn', 'Hình vuông', 'Hình chữ nhật'], ans: 0, explain: 'Hình tròn tròn xoe, không có cạnh nào cả!' },
-  { cat: '🌲 Hình học', q: 'Hình vuông có mấy cạnh bằng nhau?', opts: ['4 cạnh', '3 cạnh', '2 cạnh'], ans: 0, explain: 'Hình vuông có 4 cạnh bằng nhau!' },
-  { cat: '🌲 Hình học', q: 'Hình chữ nhật có mấy cạnh?', opts: ['4 cạnh', '3 cạnh', '2 cạnh'], ans: 0, explain: 'Hình chữ nhật có 4 cạnh: 2 cạnh dài bằng nhau và 2 cạnh ngắn bằng nhau!' },
-  { cat: '🌲 Hình học', q: 'Mặt trời giống hình gì nhất?', opts: ['Hình tròn', 'Hình vuông', 'Hình tam giác'], ans: 0, explain: 'Mặt trời tròn xoe nên giống hình tròn!' },
-  { cat: '🌲 Hình học', q: 'Cửa sổ lớp học thường giống hình gì?', opts: ['Hình vuông', 'Hình tròn', 'Hình tam giác'], ans: 0, explain: 'Cửa sổ lớp học thường là hình vuông hoặc chữ nhật!' },
-  { cat: '🌲 Hình học', q: 'Mái nhà giống hình gì?', opts: ['Hình tam giác', 'Hình tròn', 'Hình chữ nhật'], ans: 0, explain: 'Mái nhà có dạng tam giác!' },
-  { cat: '🌲 Hình học', q: 'Hình chữ nhật khác hình vuông ở điểm nào?', opts: ['2 cạnh dài 2 cạnh ngắn', 'Chỉ có 3 cạnh', 'Tròn xoe'], ans: 0, explain: 'Hình chữ nhật có 2 cạnh dài và 2 cạnh ngắn!' },
-  { cat: '🌲 Hình học', q: 'Quả bóng giống hình gì?', opts: ['Hình tròn', 'Hình vuông', 'Hình tam giác'], ans: 0, explain: 'Quả bóng tròn xoe nên giống hình tròn!' },
-  { cat: '🌲 Hình học', q: 'Cây thước kẻ giống hình gì?', opts: ['Hình chữ nhật', 'Hình tròn', 'Hình tam giác'], ans: 0, explain: 'Cây thước kẻ dài và thẳng nên giống hình chữ nhật!' },
-  // === Khối 3D ===
-  { cat: '🧊 Khối 3D', q: 'Khối lập phương có mấy mặt?', opts: ['6 mặt', '4 mặt', '8 mặt'], ans: 0, explain: 'Khối lập phương có 6 mặt, tất cả đều là hình vuông!' },
-  { cat: '🧊 Khối 3D', q: 'Các mặt của khối lập phương đều là hình gì?', opts: ['Hình vuông', 'Hình tròn', 'Hình tam giác'], ans: 0, explain: 'Khối lập phương có 6 mặt đều là hình vuông bằng nhau!' },
-  { cat: '🧊 Khối 3D', q: 'Khối hộp chữ nhật khác khối lập phương ở điểm nào?', opts: ['Các mặt không bằng nhau', 'Chỉ có 4 mặt', 'Tròn xoe'], ans: 0, explain: 'Khối hộp chữ nhật có các mặt là hình chữ nhật, kích thước khác nhau!' },
-  { cat: '🧊 Khối 3D', q: 'Viên xúc xắc giống khối gì?', opts: ['Khối lập phương', 'Khối hộp chữ nhật', 'Hình cầu'], ans: 0, explain: 'Viên xúc xắc là khối lập phương vì 6 mặt đều là hình vuông!' },
-  { cat: '🧊 Khối 3D', q: 'Hộp sữa giống khối gì?', opts: ['Khối hộp chữ nhật', 'Khối lập phương', 'Hình cầu'], ans: 0, explain: 'Hộp sữa có các mặt hình chữ nhật nên giống khối hộp chữ nhật!' },
-  // === Vị trí ===
-  { cat: '🤖 Vị trí', q: 'Nếu rô-bốt đang ở bên trái, nó cần đi hướng nào để sang phải?', opts: ['Sang phải ➡', 'Lên trên ⬆', 'Xuống dưới ⬇'], ans: 0, explain: 'Để sang phải, rô-bốt phải đi theo hướng ➡!' },
-  { cat: '🤖 Vị trí', q: 'Con mèo đứng trên bàn. Vậy con mèo ở vị trí nào so với bàn?', opts: ['Ở trên', 'Ở dưới', 'Ở giữa'], ans: 0, explain: 'Con mèo đứng trên bàn nghĩa là nó ở vị trí phía trên!' },
-  { cat: '🤖 Vị trí', q: 'Con cá bơi dưới nước. Con cá ở vị trí nào so với mặt nước?', opts: ['Ở dưới', 'Ở trên', 'Bên phải'], ans: 0, explain: 'Con cá bơi dưới nước nghĩa là nó ở bên dưới mặt nước!' },
-  { cat: '🤖 Vị trí', q: 'Bạn An ngồi giữa Bình và Chi. An ở vị trí nào?', opts: ['Ở giữa', 'Bên trái', 'Bên phải'], ans: 0, explain: 'An ngồi giữa nghĩa là An ở vị trí chính giữa hai bạn!' },
-  { cat: '🤖 Vị trí', q: 'Muốn đi từ tầng 1 lên tầng 2, con phải đi hướng nào?', opts: ['Lên trên ⬆', 'Sang phải ➡', 'Xuống dưới ⬇'], ans: 0, explain: 'Tầng 2 ở trên tầng 1, nên con phải đi lên!' },
-  // === Đo lường ===
-  { cat: '📏 Đo lường', q: 'Khi đo bằng thước, vạch nào phải trùng với đầu vật?', opts: ['Vạch số 0', 'Vạch số 5', 'Vạch cuối cùng'], ans: 0, explain: 'Khi đo, ta luôn đặt vạch số 0 trùng với đầu vật cần đo!' },
-  { cat: '📏 Đo lường', q: 'Cây bút dài 7 cm. Số 7 ta đọc ở đâu?', opts: ['Ở vạch cuối trùng đuôi bút', 'Ở vạch giữa thước', 'Ở vạch số 0'], ans: 0, explain: 'Ta đọc số ở vạch cuối cùng mà đuôi bút trùng vào!' },
-  { cat: '📏 Đo lường', q: 'Đơn vị đo độ dài nhỏ nhất con học là gì?', opts: ['Xăng-ti-mét (cm)', 'Ki-lô-mét (km)', 'Mét (m)'], ans: 0, explain: 'Lớp 1 con học đơn vị cm - xăng-ti-mét!' },
-  { cat: '📏 Đo lường', q: 'Vật nào dài hơn: bút chì hay cục tẩy?', opts: ['Bút chì', 'Cục tẩy', 'Bằng nhau'], ans: 0, explain: 'Bút chì thường dài hơn cục tẩy!' },
-  // === Đồng hồ & ngày ===
-  { cat: '🕐 Đồng hồ', q: '3 giờ đúng: kim ngắn chỉ số mấy?', opts: ['Số 3', 'Số 12', 'Số 6'], ans: 0, explain: '3 giờ đúng: kim ngắn chỉ số 3, kim dài chỉ số 12!' },
-  { cat: '🕐 Đồng hồ', q: 'Sau thứ Sáu là thứ mấy?', opts: ['Thứ Bảy', 'Thứ Tư', 'Chủ Nhật'], ans: 0, explain: 'Sau Thứ Sáu là Thứ Bảy!' },
-  { cat: '🕐 Đồng hồ', q: 'Một tuần có bao nhiêu ngày?', opts: ['7 ngày', '5 ngày', '10 ngày'], ans: 0, explain: 'Một tuần có 7 ngày: Hai, Ba, Tư, Năm, Sáu, Bảy, Chủ Nhật!' },
-  { cat: '🕐 Đồng hồ', q: '6 giờ đúng: kim ngắn chỉ số mấy?', opts: ['Số 6', 'Số 12', 'Số 3'], ans: 0, explain: '6 giờ đúng: kim ngắn chỉ số 6, kim dài chỉ số 12!' },
-  { cat: '🕐 Đồng hồ', q: 'Kim nào ngắn hơn trên đồng hồ?', opts: ['Kim giờ', 'Kim phút', 'Bằng nhau'], ans: 0, explain: 'Kim giờ (kim ngắn) luôn ngắn hơn kim phút (kim dài)!' },
-  { cat: '🕐 Đồng hồ', q: 'Ngày đầu tiên trong tuần là?', opts: ['Thứ Hai', 'Chủ Nhật', 'Thứ Ba'], ans: 0, explain: 'Tuần bắt đầu từ Thứ Hai!' },
-  { cat: '🕐 Đồng hồ', q: '12 giờ trưa: kim ngắn chỉ số mấy?', opts: ['Số 12', 'Số 6', 'Số 1'], ans: 0, explain: '12 giờ: kim ngắn chỉ số 12, kim dài cũng chỉ số 12!' },
-  // === Tangram & xếp hình ===
-  { cat: '🧩 Xếp hình', q: 'Để ghép một hình vuông lớn, con cần mấy hình tam giác nhỏ bằng nhau?', opts: ['2 tam giác', '3 tam giác', '4 tam giác'], ans: 0, explain: '2 hình tam giác vuông nhỏ bằng nhau ghép lại thành 1 hình vuông!' },
-  { cat: '🧩 Xếp hình', q: 'Bộ Tangram có bao nhiêu mảnh?', opts: ['7 mảnh', '5 mảnh', '10 mảnh'], ans: 0, explain: 'Bộ Tangram gồm 7 mảnh ghép!' },
-];
-
-let g7 = { qIdx: 0, score: 0, questions: [], total: 5 };
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+let g7 = {
+  part: 1, // 1: Ôn tập 1 | 2: Ôn tập 2 | 3: Bài 1 xếp tháp | 4: Bài 2 đếm lâu đài
+  towerSlots: {}, // slotId -> color
+  done: []
+};
 
 export function initG7() {
-  g7.questions = shuffle(QUESTIONS).slice(0, g7.total);
-  g7.qIdx = 0;
-  g7.score = 0;
-  loadQuestion(0);
+  g7.part = 1;
+  g7.towerSlots = {};
+  g7.done = [];
+  loadPart(1);
 }
 
-function loadQuestion(idx) {
-  const qData = g7.questions[idx];
-  makePills('g8pills', g7.total, idx + 1, []);
+function loadPart(p) {
+  g7.part = p;
+  makePills('g7pills', 4, p, g7.done);
 
-  const a = document.getElementById('g8area');
-  const origCorrect = qData.opts[qData.ans];
-  const shuffledOpts = shuffle(qData.opts);
+  if (p === 1) loadReviewQ1();
+  else if (p === 2) loadReviewQ2();
+  else if (p === 3) loadTowerTask();
+  else if (p === 4) loadCastleTask();
+}
 
+/* ---------- PHẦN 1: ÔN TẬP CÂU 1 ---------- */
+function loadReviewQ1() {
+  const a = document.getElementById('g7area');
   a.innerHTML = `
-    <div class="prompt-box" style="font-size:0.85rem;color:#888;font-weight:600;margin-bottom:4px;border:none;background:none;padding:4px">${qData.cat} · Câu ${idx + 1}/${g7.total}</div>
-    <div class="prompt-box">❓ ${qData.q}</div>
-    <div class="reason-grid" id="g7opts"></div>
-    <div id="g7feedback" style="margin-top:12px"></div>
+    <div class="prompt-box" style="font-size:0.9rem;color:#64748b">🏆 Ôn tập nhanh · Câu 1/2</div>
+    <div class="prompt-box" style="font-size:1.2rem">
+      ❓ <b>Khối lập phương</b> có bao nhiêu mặt và các mặt là hình gì?
+    </div>
+    <div class="reason-grid" id="g7q1Grid" style="margin:20px 0"></div>
   `;
 
-  const optGrid = document.getElementById('g7opts');
-  shuffledOpts.forEach(opt => {
+  const opts = [
+    { t: 'Có 6 mặt đều là hình vuông bằng nhau', good: true },
+    { t: 'Có 4 mặt hình vuông và 2 mặt hình chữ nhật', good: false },
+    { t: 'Có 3 mặt hình tam giác', good: false }
+  ];
+
+  const grid = document.getElementById('g7q1Grid');
+  opts.forEach(o => {
     const b = document.createElement('button');
     b.className = 'reason-btn';
-    b.style.minWidth = '200px';
-    b.style.textAlign = 'center';
-    b.textContent = opt;
-    b.addEventListener('click', () => handleAnswer(b, opt, origCorrect, qData));
-    optGrid.appendChild(b);
+    b.textContent = o.t;
+    b.addEventListener('click', () => {
+      if (o.good) {
+        b.classList.add('correct');
+        snd('correct');
+        grid.querySelectorAll('.reason-btn').forEach(x => x.disabled = true);
+        g7.done.push(1);
+        setChat('Chính xác! Khối lập phương có 6 mặt đều là hình vuông bằng nhau!', true, () => {
+          setTimeout(() => loadPart(2), 1000);
+        });
+      } else {
+        b.classList.add('wrong');
+        snd('wrong');
+        setTimeout(() => b.classList.remove('wrong'), 500);
+        setChat('Con nhớ lại đặc điểm khối lập phương nhé: 6 mặt đều là hình gì bằng nhau?');
+      }
+    });
+    grid.appendChild(b);
   });
 
-  setChat(`Câu ${idx + 1}: ${qData.q} Con hãy chọn đáp án nhé!`);
+  setChat('Khởi động Chinh phục đỉnh cao! Khối lập phương có mấy mặt và các mặt là hình gì con nhỉ?');
+
+  renderSubNav('navRow7', {
+    onBack: null,
+    onNext: () => loadPart(2),
+    canBack: false,
+    canNext: true,
+    nextLabel: 'Sang Câu 2 ➡'
+  });
 }
 
-function handleAnswer(btn, chosen, correct, qData) {
-  const allBtns = document.querySelectorAll('#g7opts .reason-btn');
+/* ---------- PHẦN 2: ÔN TẬP CÂU 2 ---------- */
+function loadReviewQ2() {
+  const a = document.getElementById('g7area');
+  a.innerHTML = `
+    <div class="prompt-box" style="font-size:0.9rem;color:#64748b">🏆 Ôn tập nhanh · Câu 2/2</div>
+    <div class="prompt-box" style="font-size:1.2rem">
+      ❓ Khi thực hành đo độ dài đồ vật bằng thước kẻ, <b>vạch nào</b> phải trùng với đầu đồ vật?
+    </div>
+    <div class="reason-grid" id="g7q2Grid" style="margin:20px 0"></div>
+  `;
 
-  const nextStep = () => {
-    setTimeout(() => {
-      if (g7.qIdx + 1 < g7.total) {
-        g7.qIdx++;
-        loadQuestion(g7.qIdx);
+  const opts = [
+    { t: 'Vạch số 0 trên thước kẻ', good: true },
+    { t: 'Vạch số 1 trên thước kẻ', good: false },
+    { t: 'Mép ngoài cùng của thước kẻ', good: false }
+  ];
+
+  const grid = document.getElementById('g7q2Grid');
+  opts.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'reason-btn';
+    b.textContent = o.t;
+    b.addEventListener('click', () => {
+      if (o.good) {
+        b.classList.add('correct');
+        snd('correct');
+        grid.querySelectorAll('.reason-btn').forEach(x => x.disabled = true);
+        g7.done.push(2);
+        setChat('Rất chính xác! Luôn luôn đặt vạch số 0 trùng với một đầu đồ vật khi đo!', true, () => {
+          setTimeout(() => loadPart(3), 1000);
+        });
       } else {
-        finishChallenge();
+        b.classList.add('wrong');
+        snd('wrong');
+        setTimeout(() => b.classList.remove('wrong'), 500);
+        setChat('Chưa đúng rồi! Khi đo cm, ta bắt đầu đếm từ vạch số mấy con nhỉ?');
       }
-    }, 800);
-  };
+    });
+    grid.appendChild(b);
+  });
 
-  if (chosen === correct) {
-    btn.classList.add('correct');
-    snd('correct');
-    g7.score++;
-    allBtns.forEach(x => { x.disabled = true; });
-    confetti(40);
+  setChat('Khi đo độ dài bằng thước, vạch số mấy phải trùng với một đầu của đồ vật?');
 
-    const fb = document.getElementById('g7feedback');
-    fb.innerHTML = `<div style="background:#d1fae5;border-radius:16px;padding:14px;font-weight:700;color:#065f46;text-align:center">✅ Chính xác! ${qData.explain}</div>`;
-    setChat(`Chính xác! ${qData.explain} Con giỏi quá! Bây giờ hãy nói cho bạn nghe vì sao con chọn đáp án này nhé!`, true, nextStep);
-  } else {
-    btn.classList.add('wrong');
-    snd('wrong');
-    allBtns.forEach(x => { x.disabled = true; });
-    allBtns.forEach(x => { if (x.textContent === correct) x.classList.add('correct'); });
+  renderSubNav('navRow7', {
+    onBack: () => loadPart(1),
+    onNext: () => loadPart(3),
+    canBack: true,
+    canNext: true,
+    nextLabel: 'Sang Bài 1 (Xếp tháp gạch) ➡'
+  });
+}
 
-    const fb = document.getElementById('g7feedback');
-    fb.innerHTML = `<div style="background:#fef3c7;border-radius:16px;padding:14px;font-weight:700;color:#92400e;text-align:center">💡 Đáp án đúng là: ${correct}. ${qData.explain}</div>`;
-    setChat(`Con thử đọc kỹ câu hỏi nhé: "${qData.q}" Đáp án đúng là "${correct}". ${qData.explain} Hãy nhớ để trả lời tốt hơn ở câu tiếp theo nhé!`, true, nextStep);
+/* ---------- PHẦN 3: BÀI 1 — XẾP THÁP GẠCH 5 TẦNG & ĐIỀN SỐ ---------- */
+function loadTowerTask() {
+  const a = document.getElementById('g7area');
+
+  a.innerHTML = `
+    <div class="prompt-box">
+      🧱 <b>Bài 1:</b> Cho các viên gạch màu nâu và xám, em hãy xếp thành hình toà tháp 5 tầng (lưu ý dùng hết số gạch để xếp).
+    </div>
+
+    <div class="tower-game-wrap">
+      <!-- Toà tháp 5 tầng -->
+      <div class="tower-build-zone">
+        <div style="font-weight:800;font-size:0.9rem;color:#b45309;margin-bottom:6px">
+          🏰 Toà tháp 5 tầng (Kéo gạch vào các tầng)
+        </div>
+
+        <!-- Tầng 1: 1 ô (nâu) -->
+        <div class="tower-layer" data-layer="1">
+          <div class="tower-slot" id="slot-1-1" data-slot="1-1">1</div>
+        </div>
+
+        <!-- Tầng 2: 2 ô (xám) -->
+        <div class="tower-layer" data-layer="2">
+          <div class="tower-slot" id="slot-2-1" data-slot="2-1">2</div>
+          <div class="tower-slot" id="slot-2-2" data-slot="2-2">2</div>
+        </div>
+
+        <!-- Tầng 3: 3 ô (nâu) -->
+        <div class="tower-layer" data-layer="3">
+          <div class="tower-slot" id="slot-3-1" data-slot="3-1">3</div>
+          <div class="tower-slot" id="slot-3-2" data-slot="3-2">3</div>
+          <div class="tower-slot" id="slot-3-3" data-slot="3-3">3</div>
+        </div>
+
+        <!-- Tầng 4: 4 ô (xám) -->
+        <div class="tower-layer" data-layer="4">
+          <div class="tower-slot" id="slot-4-1" data-slot="4-1">4</div>
+          <div class="tower-slot" id="slot-4-2" data-slot="4-2">4</div>
+          <div class="tower-slot" id="slot-4-3" data-slot="4-3">4</div>
+          <div class="tower-slot" id="slot-4-4" data-slot="4-4">4</div>
+        </div>
+
+        <!-- Tầng 5: 5 ô (nâu) -->
+        <div class="tower-layer" data-layer="5">
+          <div class="tower-slot" id="slot-5-1" data-slot="5-1">5</div>
+          <div class="tower-slot" id="slot-5-2" data-slot="5-2">5</div>
+          <div class="tower-slot" id="slot-5-3" data-slot="5-3">5</div>
+          <div class="tower-slot" id="slot-5-4" data-slot="5-4">5</div>
+          <div class="tower-slot" id="slot-5-5" data-slot="5-5">5</div>
+        </div>
+      </div>
+
+      <!-- Khay gạch rời & Điền số -->
+      <div class="brick-tray-zone">
+        <div class="brick-palette">
+          <div style="font-weight:800;font-size:0.85rem;color:#334155;margin-bottom:8px">
+            🧱 Kho gạch rời (Bấm hoặc Kéo để xếp vào tháp):
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px" id="brownBricksWrap">
+            <!-- 9 viên nâu -->
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center" id="grayBricksWrap">
+            <!-- 6 viên xám -->
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <button class="action-btn btn-blue" id="btnAutoStack" style="padding:6px 14px;font-size:0.85rem">
+              ⚡ Xếp nhanh mẫu tháp
+            </button>
+          </div>
+        </div>
+
+        <!-- Ô điền số theo đúng docx -->
+        <div class="brick-inputs-box">
+          <div style="margin-bottom:8px">❓ Điền số thích hợp vào ô trống:</div>
+          <div style="line-height:2">
+            Em đã dùng <input type="number" id="inputBrown" class="number-input-field" min="0" max="20" placeholder="?"> viên gạch màu nâu<br>
+            và <input type="number" id="inputGray" class="number-input-field" min="0" max="20" placeholder="?"> viên gạch màu xám để xếp toà tháp.
+          </div>
+          <div style="margin-top:12px;text-align:center">
+            <button class="action-btn btn-green" id="btnCheckTower" style="padding:8px 20px;font-size:1rem">
+              ✅ Kiểm tra kết quả
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="towerFeedback" style="margin-top:10px"></div>
+  `;
+
+  // Sinh 9 viên gạch nâu và 6 viên gạch xám
+  const brownWrap = document.getElementById('brownBricksWrap');
+  const grayWrap = document.getElementById('grayBricksWrap');
+
+  for (let i = 1; i <= 9; i++) {
+    const img = document.createElement('img');
+    img.src = '/assets/brick-brown.jpg';
+    img.className = 'brick-item';
+    img.id = 'brick-brown-' + i;
+    img.title = 'Gạch nâu ' + i;
+    img.dataset.color = 'brown';
+    img.addEventListener('click', () => fillFirstAvailableSlot('brown', img));
+    brownWrap?.appendChild(img);
+  }
+
+  for (let i = 1; i <= 6; i++) {
+    const img = document.createElement('img');
+    img.src = '/assets/brick-gray.jpg';
+    img.className = 'brick-item';
+    img.id = 'brick-gray-' + i;
+    img.title = 'Gạch xám ' + i;
+    img.dataset.color = 'gray';
+    img.addEventListener('click', () => fillFirstAvailableSlot('gray', img));
+    grayWrap?.appendChild(img);
+  }
+
+  // Nút xếp nhanh mẫu tháp
+  document.getElementById('btnAutoStack')?.addEventListener('click', () => {
+    snd('step');
+    autoStackTower();
+  });
+
+  // Kiểm tra đáp án điền số (9 viên nâu và 6 viên xám)
+  document.getElementById('btnCheckTower')?.addEventListener('click', checkTowerAnswer);
+
+  setChat('Bài 1: Cho các viên gạch màu nâu và xám, em hãy xếp thành hình toà tháp 5 tầng và đếm xem đã dùng bao nhiêu viên gạch mỗi loại nhé!');
+
+  renderSubNav('navRow7', {
+    onBack: () => loadPart(2),
+    onNext: () => loadPart(4),
+    canBack: true,
+    canNext: true,
+    nextLabel: 'Sang Bài 2 (Đếm lâu đài) ➡'
+  });
+}
+
+function fillFirstAvailableSlot(color, brickEl) {
+  // Tìm slot trống theo thứ tự tầng: Tầng 1 (nâu), Tầng 2 (xám), Tầng 3 (nâu), Tầng 4 (xám), Tầng 5 (nâu)
+  const layerTargetColor = { 1: 'brown', 2: 'gray', 3: 'brown', 4: 'gray', 5: 'brown' };
+
+  // Tìm slot ưu tiên khớp màu
+  const slots = document.querySelectorAll('.tower-slot:not(.filled)');
+  let chosen = null;
+  for (let s of slots) {
+    const layer = s.closest('.tower-layer')?.dataset.layer;
+    if (layerTargetColor[layer] === color) {
+      chosen = s;
+      break;
+    }
+  }
+  if (!chosen && slots.length > 0) chosen = slots[0];
+
+  if (chosen) {
+    snd('step');
+    chosen.classList.add('filled');
+    chosen.style.padding = '0';
+    chosen.innerHTML = `<img src="${brickEl.src}" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`;
+    brickEl.style.opacity = '0.2';
+    brickEl.style.pointerEvents = 'none';
+
+    // Đếm số lượng đã xếp
+    checkTowerProgress();
   }
 }
 
-function finishChallenge() {
-  const stars = Math.min(5, g7.score);
-  const msgs = [
-    'Con cố gắng thêm nhé! Cô Cú thông thái tin con sẽ làm được!',
-    'Tốt lắm! Con đã cố gắng rồi!',
-    'Khá giỏi đó con! Cô Cú thông thái khen!',
-    'Xuất sắc! Con trả lời rất tốt!',
-    'Hoàn hảo! Con đúng hết tất cả! Cô Cú thông thái tự hào lắm!',
-    'Siêu giỏi! Con là ngôi sao sáng nhất!'
-  ];
+function autoStackTower() {
+  const layerColors = {
+    1: ['brown'],
+    2: ['gray', 'gray'],
+    3: ['brown', 'brown', 'brown'],
+    4: ['gray', 'gray', 'gray', 'gray'],
+    5: ['brown', 'brown', 'brown', 'brown', 'brown']
+  };
 
-  showResult(8, stars, `Con trả lời đúng ${g7.score}/${g7.total} câu! ${msgs[Math.min(g7.score, 5)]}`);
+  for (let l = 1; l <= 5; l++) {
+    const colors = layerColors[l];
+    colors.forEach((c, idx) => {
+      const slot = document.getElementById(`slot-${l}-${idx + 1}`);
+      if (slot) {
+        slot.classList.add('filled');
+        slot.style.padding = '0';
+        slot.innerHTML = `<img src="/assets/brick-${c}.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`;
+      }
+    });
+  }
+
+  document.querySelectorAll('.brick-item').forEach(b => {
+    b.style.opacity = '0.2';
+    b.style.pointerEvents = 'none';
+  });
+
+  setChat('Toà tháp 5 tầng đã được xếp hoàn thành! Giờ con hãy đếm số viên gạch màu nâu và màu xám rồi điền vào ô trống nhé!');
+}
+
+function checkTowerProgress() {
+  const filled = document.querySelectorAll('.tower-slot.filled').length;
+  if (filled === 15) {
+    snd('correct');
+    setChat('Tuyệt vời! Con đã xếp đủ 5 tầng toà tháp với 15 viên gạch! Giờ hãy đếm số viên gạch nâu và xám rồi điền vào ô trống nhé!');
+  }
+}
+
+function checkTowerAnswer() {
+  const bVal = Number(document.getElementById('inputBrown')?.value);
+  const gVal = Number(document.getElementById('inputGray')?.value);
+  const fb = document.getElementById('towerFeedback');
+
+  if (bVal === 9 && gVal === 6) {
+    snd('correct');
+    confetti(50);
+    g7.done.push(3);
+    if (fb) {
+      fb.innerHTML = `
+        <div style="background:#d1fae5;border-radius:14px;padding:14px;font-weight:800;color:#065f46;text-align:center">
+          ✅ Hoàn toàn chính xác! Em đã dùng 9 viên gạch màu nâu và 6 viên gạch màu xám để xếp toà tháp 5 tầng!
+        </div>
+      `;
+    }
+    setChat('Tuyệt đỉnh! Con đã đếm rất chính xác: 9 viên gạch nâu và 6 viên gạch xám, tổng cộng 15 viên gạch!', true, () => {
+      setTimeout(() => loadPart(4), 1400);
+    });
+  } else {
+    snd('wrong');
+    let hint = '';
+    if (bVal !== 9 && gVal !== 6) hint = 'Con đếm lại cả hai màu nhé: Tầng 1, 3, 5 là gạch nâu (1 + 3 + 5), Tầng 2, 4 là gạch xám (2 + 4)!';
+    else if (bVal !== 9) hint = 'Số gạch màu nâu chưa đúng rồi. Tầng 1 có 1 viên, tầng 3 có 3 viên, tầng 5 có 5 viên: 1 + 3 + 5 = mấy nhỉ?';
+    else hint = 'Số gạch màu xám chưa đúng rồi. Tầng 2 có 2 viên, tầng 4 có 4 viên: 2 + 4 = mấy nhỉ?';
+
+    if (fb) {
+      fb.innerHTML = `<div style="background:#fee2e2;border-radius:14px;padding:12px;font-weight:700;color:#991b1b;text-align:center">❌ ${hint}</div>`;
+    }
+    setChat(hint);
+  }
+}
+
+/* ---------- PHẦN 4: BÀI 2 — ĐẾM KHỐI TOÀ LÂU ĐÀI & KẾT THÚC HỒ GƯƠM ---------- */
+function loadCastleTask() {
+  const a = document.getElementById('g7area');
+
+  a.innerHTML = `
+    <div class="prompt-box">
+      🏰 <b>Bài 2:</b> Quan sát bức tranh toà lâu đài kì diệu và đếm số lượng các khối hình:
+    </div>
+
+    <div class="castle-inspect-wrap">
+      <!-- Ảnh toà lâu đài đồ chơi chuẩn docx -->
+      <div class="castle-img-card">
+        <img src="/assets/castle-blocks.jpg" alt="Toà lâu đài đồ chơi hình khối">
+      </div>
+
+      <!-- Khung trả lời câu hỏi -->
+      <div class="castle-quiz-card">
+        <div class="brick-inputs-box" style="font-size:1.1rem">
+          <div style="margin-bottom:12px;color:#1e3a8a;font-size:1.2rem">🏰 <b>Toà lâu đài có:</b></div>
+          <div style="margin-bottom:14px">
+            Có: <input type="number" id="inputCube" class="number-input-field" min="0" max="30" placeholder="?"> <b>khối lập phương</b>.
+          </div>
+          <div style="margin-bottom:16px">
+            Có: <input type="number" id="inputBox" class="number-input-field" min="0" max="30" placeholder="?"> <b>khối hộp chữ nhật</b>.
+          </div>
+          <div style="text-align:center">
+            <button class="action-btn btn-green" id="btnCheckCastle" style="padding:10px 24px;font-size:1.05rem">
+              ✅ Kiểm tra & Hoàn thành
+            </button>
+          </div>
+        </div>
+        <div class="note-sm" style="background:#eff6ff;padding:10px;border-radius:10px;border:1px solid #bfdbfe;color:#1e40af">
+          💡 <b>Gợi ý của Thần Kim Quy:</b><br>
+          - Khối lập phương là các khối vuông ở các tháp 2 bên và cột giữa.<br>
+          - Khối hộp chữ nhật là các khối cam nằm ngang ở chân và trụ cổng đứng màu đỏ.
+        </div>
+      </div>
+    </div>
+    <div id="castleFeedback" style="margin-top:12px"></div>
+  `;
+
+  document.getElementById('btnCheckCastle')?.addEventListener('click', checkCastleAnswer);
+
+  setChat('Bài 2: Con hãy quan sát thật kỹ bức tranh lâu đài kì diệu, đếm xem có bao nhiêu khối lập phương và khối hộp chữ nhật nhé!');
+
+  renderSubNav('navRow7', {
+    onBack: () => loadPart(3),
+    onNext: null,
+    canBack: true,
+    canNext: false
+  });
+}
+
+function checkCastleAnswer() {
+  const cubeVal = Number(document.getElementById('inputCube')?.value);
+  const boxVal = Number(document.getElementById('inputBox')?.value);
+  const fb = document.getElementById('castleFeedback');
+
+  // Khối lập phương: 12 đến 14 khối đều được chấp nhận linh hoạt cho học sinh lớp 1
+  // Khối hộp chữ nhật: 4 đến 5 khối (2 cam nằm ngang + 2 đỏ dựng đứng ở cổng + 1 xanh ngang)
+  const isCubeGood = (cubeVal >= 12 && cubeVal <= 14);
+  const isBoxGood = (boxVal >= 4 && boxVal <= 6);
+
+  if (isCubeGood && isBoxGood) {
+    snd('win');
+    confetti(120);
+    g7.done.push(4);
+
+    if (fb) {
+      fb.innerHTML = `
+        <div style="background:#d1fae5;border-radius:14px;padding:16px;font-weight:800;color:#065f46;text-align:center;font-size:1.15rem">
+          🎉 XUẤT SẮC! Dũng sĩ đã đếm rất chính xác: Có ${cubeVal} khối lập phương và ${boxVal} khối hộp chữ nhật trong toà lâu đài!
+        </div>
+      `;
+    }
+
+    setChat('Xuất sắc vô cùng! Dũng sĩ đã vượt qua Thử thách cuối cùng: Chinh phục đỉnh cao! Cả 7 điều kì diệu của Vương quốc Toán học đã được mở ra!', true, () => {
+      setTimeout(() => {
+        showResult(7, 5, 'Chúc mừng dũng sĩ đã xuất sắc chinh phục toàn bộ 7 thử thách trong Vương quốc Toán học!');
+        // Tự động mở Slide Kết Thúc Hồ Gươm sau 1.5 giây
+        setTimeout(() => {
+          openOutroModal();
+        }, 1500);
+      }, 1200);
+    });
+  } else {
+    snd('wrong');
+    let msg = '';
+    if (!isCubeGood && !isBoxGood) {
+      msg = 'Con đếm lại cả hai loại khối nhé: Toà lâu đài có khoảng 12 đến 13 khối lập phương vuông, và 4 đến 5 khối hộp chữ nhật!';
+    } else if (!isCubeGood) {
+      msg = 'Số khối lập phương chưa đúng. Con đếm các khối vuông ở tháp trái (3 khối), tháp phải (3-4 khối), cột giữa (6 khối): khoảng 12-13 khối nhé!';
+    } else {
+      msg = 'Số khối hộp chữ nhật chưa đúng. Con đếm 2 khối cam nằm ngang ở chân đế và 2 khối đỏ dựng đứng ở cổng: khoảng 4-5 khối nhé!';
+    }
+
+    if (fb) {
+      fb.innerHTML = `<div style="background:#fef3c7;border-radius:14px;padding:12px;font-weight:700;color:#92400e;text-align:center">💡 ${msg}</div>`;
+    }
+    setChat(msg);
+  }
 }

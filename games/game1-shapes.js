@@ -2,7 +2,7 @@
    GAME 1: KHU VƯỜN HÌNH HỌC
    Nhận dạng hình phẳng — Lưới 3x4 (12 ô) rõ ràng, hình ảnh chuẩn xác, nhãn gọn gàng
    ================================================================ */
-import { setChat, snd, makePills, showResult } from '../main.js';
+import { setChat, snd, makePills, showResult, renderSubNav } from '../main.js';
 
 const SHAPES = {
   circle: { name: 'hình tròn', color: '#ffd166', desc: 'Đồ vật tròn xoe, không có cạnh nào nên là hình tròn.' },
@@ -246,7 +246,14 @@ function loadRound(r) {
     forest.appendChild(d);
   });
 
-  setChat(`Hãy nhìn thật kỹ và chạm vào tất cả các ${shapeName} trong khu vườn nhé con!`);
+  setChat(`Hãy nhìn thật kỹ và chạm vào tất cả các ${shapeName} trong khu vườn nhé các dũng sĩ!`);
+
+  renderSubNav('navRow1', {
+    onBack: () => { if (g1.round > 1) { g1.round--; loadRound(g1.round); } },
+    onNext: () => { if (g1.round < g1.totalRounds) { g1.round++; loadRound(g1.round); } },
+    canBack: g1.round > 1,
+    canNext: g1.round < g1.totalRounds
+  });
 }
 
 function handleClick(obj, el, cfg) {
@@ -273,7 +280,7 @@ function handleClick(obj, el, cfg) {
 
 function allFound() {
   snd('win');
-  setChat(`Con giỏi quá! Con đã tìm đủ các ${SHAPES[g1.target].name}! Bây giờ cô hỏi con nhé: Vì sao con biết đây là ${SHAPES[g1.target].name}?`);
+  setChat(`Con giỏi quá! Con đã tìm đủ các ${SHAPES[g1.target].name}! Bây giờ Thần Kim Quy hỏi con nhé: Vì sao con biết đây là ${SHAPES[g1.target].name}?`);
 
   const a = document.getElementById('g1area');
   a.innerHTML += `
@@ -302,19 +309,19 @@ function handleReason(btn, opt) {
     btn.classList.add('wrong');
     snd('wrong');
     setTimeout(() => btn.classList.remove('wrong'), 600);
-    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Trông nó tròn hay thẳng? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con sửa lại lần nữa xem nào!`);
+    setChat(`Con thử nhìn kỹ hình này nhé: nó có mấy cạnh? Trông nó tròn hay thẳng? Hãy so sánh với ${SHAPES[g1.target].name} con vừa tìm được – giống hay khác? Con chọn lại lần nữa xem nào!`);
   }
 }
 
 function verify() {
   const desc = SHAPES[g1.target].desc;
-  setChat(`Chính xác! ${desc} Con giỏi quá!`, true, () => {
+  setChat(`Chính xác! ${desc} Dũng sĩ giỏi quá!`, true, () => {
     setTimeout(() => {
       if (g1.round < g1.totalRounds) {
         g1.round++;
         loadRound(g1.round);
       } else {
-        showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn! Cô Cú thông thái tự hào quá!');
+        showResult(1, 4, 'Con đã tìm được tất cả các hình trong khu vườn hình học! Thần Rùa Kim Quy rất tự hào!');
       }
     }, 1500);
   });

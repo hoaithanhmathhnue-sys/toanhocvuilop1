@@ -104,8 +104,27 @@ header {
   box-shadow: var(--glass-shadow);
   border: 1px solid var(--glass-border);
 }
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand-icon { font-size: 2rem; animation: bob 2s ease-in-out infinite; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-avatar {
+  width: 48px; height: 48px; object-fit: cover; border-radius: 50%;
+  border: 2px solid #fbbf24; box-shadow: 0 3px 8px rgba(245,158,11,0.3);
+  animation: bob 2.5s ease-in-out infinite;
+}
+.story-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff; border: none; font-weight: 800; font-size: 0.9rem;
+  padding: 8px 14px; border-radius: var(--radius-xl);
+  box-shadow: 0 3px 0 #b45309; cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.story-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #b45309; }
+.story-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #b45309; }
+.outro-btn {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  box-shadow: 0 3px 0 #5b21b6;
+}
+.outro-btn:hover { box-shadow: 0 5px 0 #5b21b6; }
+.outro-btn:active { box-shadow: 0 1px 0 #5b21b6; }
 @keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
 .brand-title { font-weight: 800; font-size: clamp(0.9rem, 2.5vw, 1.15rem); color: var(--purple-700); }
 .brand-sub { font-size: 0.65rem; color: var(--purple-400); font-weight: 600; }
@@ -138,8 +157,13 @@ header {
   position: relative; z-index: 10;
 }
 .chat-bubble.show { display: flex; }
-.chat-owl { width: 64px; height: 64px; flex-shrink: 0; }
-.owl-svg { width: 100%; height: 100%; }
+.chat-avatar-wrap {
+  width: 68px; height: 68px; flex-shrink: 0; border-radius: 50%;
+  border: 3px solid #fbbf24; overflow: hidden; background: #fff;
+  box-shadow: 0 4px 10px rgba(245,158,11,0.25);
+}
+.chat-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.chat-actions { display: flex; gap: 8px; align-items: center; }
 .chat-body { flex: 1; }
 .chat-name { font-weight: 800; color: var(--purple-700); font-size: 0.8rem; }
 .chat-text { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-top: 4px; line-height: 1.5; }
@@ -153,7 +177,21 @@ header {
 
 /* ---------- HERO (HOME) ---------- */
 .hero { text-align: center; padding: 10px 0 8px; }
-.hero-owl { animation: bob 2.5s ease-in-out infinite; display: inline-block; }
+.hero-character { animation: bob 2.5s ease-in-out infinite; display: inline-block; }
+.hero-kimquy {
+  width: 140px; height: 140px; object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(217,119,6,0.25));
+}
+.hero-actions { margin-top: 14px; }
+.hero-btn-intro {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: #fff; border: none; font-size: 1.05rem; font-weight: 800;
+  padding: 12px 24px; border-radius: var(--radius-xl);
+  box-shadow: 0 4px 14px rgba(234,88,12,0.35); cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.hero-btn-intro:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(234,88,12,0.45); }
+.hero-btn-intro:active { transform: translateY(0); }
 .hero-title {
   font-size: clamp(1.5rem, 5vw, 2.6rem); color: var(--purple-700);
   text-shadow: 0 3px 0 var(--purple-200); margin: 8px 0; line-height: 1.1;
@@ -681,4 +719,258 @@ header {
 @media (max-width: 380px) {
   .game-grid { grid-template-columns: 1fr; }
   .hero-title { font-size: 1.4rem; }
+}
+
+
+/* ================================================================
+   NEW STYLES: THẦN RÙA KIM QUY & 7 THỬ THÁCH NÂNG CẤP
+   ================================================================ */
+
+/* ---------- GỢI Ý CÁCH CHƠI (GÓC MÀN HÌNH) ---------- */
+.guide-corner {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(254, 243, 199, 0.85); border: 2px solid #f59e0b;
+  border-radius: var(--radius-xl); padding: 4px 12px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+}
+.guide-audio-btn {
+  background: #f59e0b; color: #fff; border: none;
+  font-size: 0.85rem; font-weight: 800; border-radius: var(--radius-xl);
+  padding: 5px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+  box-shadow: 0 2px 0 #b45309; transition: transform 0.1s;
+}
+.guide-audio-btn:hover { transform: scale(1.04); background: #d97706; }
+.guide-audio-btn:active { transform: scale(0.98); }
+.guide-text-snip {
+  font-size: 0.8rem; font-weight: 700; color: #92400e;
+}
+@media (max-width: 680px) {
+  .guide-text-snip { display: none; }
+}
+
+/* ---------- NÚT TIẾP TỤC & QUAY LẠI TỪNG MỤC TRÒ NHỎ ---------- */
+.nav-subrow {
+  display: flex; justify-content: space-between; align-items: center;
+  margin: 18px auto 8px; max-width: 580px; padding: 0 10px;
+}
+.nav-subbtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 1rem; font-weight: 800; padding: 10px 20px;
+  border-radius: var(--radius-md); border: none; cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  user-select: none;
+}
+.nav-btn-back {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  color: #334155; box-shadow: 0 4px 0 #94a3b8;
+}
+.nav-btn-back:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0 #94a3b8; }
+.nav-btn-back:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 1px 0 #94a3b8; }
+
+.nav-btn-next {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff; box-shadow: 0 4px 0 #047857;
+}
+.nav-btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0 #047857; }
+.nav-btn-next:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 1px 0 #047857; }
+
+.nav-subbtn:disabled {
+  opacity: 0.45; cursor: not-allowed; box-shadow: none !important; transform: none !important;
+}
+
+/* ---------- MODAL SLIDE MỞ ĐẦU & KẾT THÚC (HỒ GƯƠM) ---------- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px);
+  display: none; justify-content: center; align-items: center;
+  z-index: 99999; padding: 16px; animation: modalFade 0.25s ease-out;
+}
+.modal-overlay.show { display: flex; }
+@keyframes modalFade { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-card {
+  background: #ffffff; border-radius: var(--radius-lg);
+  max-width: 820px; width: 100%; max-height: 92vh; overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  border: 4px solid #f59e0b; padding: 20px 24px;
+  position: relative; animation: modalSlide 0.3s ease-out;
+}
+@keyframes modalSlide { from { transform: translateY(30px) scale(0.96); } to { transform: translateY(0) scale(1); } }
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 2px solid #fef3c7; padding-bottom: 10px; margin-bottom: 14px;
+}
+.modal-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff; font-size: 0.8rem; font-weight: 800;
+  padding: 4px 12px; border-radius: var(--radius-xl); letter-spacing: 0.5px;
+}
+.modal-title {
+  margin: 0; font-size: 1.35rem; color: #78350f; font-weight: 800; text-align: center; flex: 1;
+}
+.modal-close {
+  background: #fee2e2; color: #dc2626; border: none; font-size: 1.2rem;
+  font-weight: 900; width: 36px; height: 36px; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: transform 0.1s, background 0.1s;
+}
+.modal-close:hover { background: #fca5a5; transform: scale(1.1); }
+
+.modal-media-wrap {
+  width: 100%; border-radius: var(--radius-md); overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15); margin-bottom: 16px;
+  max-height: 380px; display: flex; justify-content: center; background: #000;
+}
+.modal-img {
+  width: 100%; height: auto; object-fit: cover; max-height: 380px; display: block;
+}
+
+.modal-speech-box {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 2px solid #fbbf24; border-radius: var(--radius-md);
+  padding: 16px 20px; position: relative; margin-bottom: 18px;
+}
+.speech-quote-mark {
+  position: absolute; top: -10px; left: 14px; font-size: 3rem;
+  color: #f59e0b; line-height: 1; opacity: 0.4; font-family: serif;
+}
+.modal-speech-text {
+  margin: 0; font-size: 1.12rem; line-height: 1.6; color: #451a03;
+  font-weight: 600; text-align: justify;
+}
+
+.modal-actions {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+}
+
+/* ---------- TRÒ 3: ROBOT BỐ CỤC NGANG (KHÔNG CUỘN MÀN HÌNH) ---------- */
+.robot-landscape {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 24px; margin: 12px auto; max-width: 920px;
+}
+.robot-col-grid {
+  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+}
+.robot-col-controls {
+  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+}
+.robot-col-question {
+  flex: 1 1 300px; max-width: 360px;
+  background: rgba(255,255,255,0.7); border: 2px solid #93c5fd;
+  border-radius: var(--radius-md); padding: 14px 16px;
+}
+
+/* ---------- TRÒ 2: BỐ CỤC KHỐI MỞ BUNG DỊCH SANG TRÁI, ĐÁP ÁN BÊN CẠNH ---------- */
+.cube-net-split {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 28px; margin: 16px auto; max-width: 860px;
+}
+.cube-net-left {
+  flex: 0 0 auto;
+}
+.cube-net-right {
+  flex: 1 1 320px; max-width: 400px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ---------- TRÒ 4: THƯỚC KẺ THỪA 2 ĐẦU, VẠCH 0 & 15 THỤT VÀO TRONG ---------- */
+.ruler-modern {
+  position: absolute; top: 110px; height: 74px;
+  background: linear-gradient(180deg, #fffbeb, #fde68a);
+  border: 3px solid #d97706; border-radius: 10px;
+  cursor: grab; touch-action: none; user-select: none;
+  box-shadow: 0 6px 18px rgba(180, 100, 0, 0.25);
+  z-index: 3;
+}
+.ruler-modern:active { cursor: grabbing; }
+
+/* ---------- TRÒ 6: GHÉP MẢNH PHÉP MÀU (GIẤY TRẮNG SÁNG TẠO) ---------- */
+.creative-canvas-area {
+  display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
+  align-items: flex-start; margin: 14px 0;
+}
+.creative-paper {
+  width: 460px; height: 380px; max-width: 95vw;
+  background: #ffffff; border-radius: var(--radius-md);
+  border: 3px solid #cbd5e1; position: relative; overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08), inset 0 0 20px rgba(0,0,0,0.02);
+}
+.creative-sidebar {
+  flex: 1 1 260px; max-width: 320px; display: flex; flex-direction: column; gap: 14px;
+}
+.sample-picker {
+  background: #f8fafc; border: 2px dashed #94a3b8; border-radius: var(--radius-md);
+  padding: 12px; display: flex; flex-direction: column; gap: 8px;
+}
+.sample-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.sample-tab-btn {
+  background: #e2e8f0; border: none; border-radius: var(--radius-sm);
+  padding: 6px 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+  transition: all 0.15s;
+}
+.sample-tab-btn.active { background: #3b82f6; color: #fff; }
+.sample-preview-box {
+  height: 110px; background: #fff; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0;
+}
+
+/* ---------- TRÒ 7: XẾP THÁP GẠCH 5 TẦNG & ĐẾM KHỐI LÂU ĐÀI ---------- */
+.tower-game-wrap {
+  display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;
+  align-items: flex-start; margin: 16px 0;
+}
+.tower-build-zone {
+  width: 420px; max-width: 95vw; background: rgba(255,255,255,0.85);
+  border: 3px solid #f59e0b; border-radius: var(--radius-md);
+  padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  box-shadow: 0 8px 24px rgba(245,158,11,0.15);
+}
+.tower-layer {
+  display: flex; gap: 6px; justify-content: center; align-items: center; min-height: 48px;
+}
+.tower-slot {
+  width: 68px; height: 44px; border: 2px dashed #cbd5e1; border-radius: 6px;
+  background: rgba(241, 245, 249, 0.6); display: flex; align-items: center;
+  justify-content: center; transition: all 0.2s; position: relative;
+}
+.tower-slot.over { border-color: #f59e0b; background: #fef3c7; }
+.tower-slot.filled { border-style: solid; border-color: transparent; }
+
+.brick-tray-zone {
+  flex: 1 1 280px; max-width: 360px; display: flex; flex-direction: column; gap: 14px;
+}
+.brick-palette {
+  background: #f8fafc; border: 2px solid #e2e8f0; border-radius: var(--radius-md);
+  padding: 14px;
+}
+.brick-item {
+  width: 66px; height: 40px; border-radius: 6px; cursor: grab;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); user-select: none; touch-action: none;
+  display: inline-block; object-fit: cover;
+}
+.brick-item:active { cursor: grabbing; transform: scale(1.06); }
+
+.brick-inputs-box {
+  background: #fffbeb; border: 2px solid #fcd34d; border-radius: var(--radius-md);
+  padding: 14px 16px; font-weight: 700; color: #78350f; font-size: 1.05rem;
+}
+.number-input-field {
+  width: 64px; font-size: 1.25rem; font-weight: 900; text-align: center;
+  border: 2px solid #f59e0b; border-radius: 8px; padding: 4px;
+  background: #fff; color: #b45309; outline: none; margin: 0 4px;
+}
+
+/* Lâu đài đồ chơi */
+.castle-inspect-wrap {
+  display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
+  align-items: center; margin: 14px 0;
+}
+.castle-img-card {
+  max-width: 520px; width: 100%; border-radius: var(--radius-md);
+  overflow: hidden; border: 3px solid #60a5fa; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.castle-img-card img { width: 100%; height: auto; display: block; }
+.castle-quiz-card {
+  flex: 1 1 280px; max-width: 360px; display: flex; flex-direction: column; gap: 12px;
 }
