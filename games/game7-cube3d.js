@@ -807,8 +807,8 @@ function loadCastleTask() {
         </div>
         <div class="note-sm" style="background:#eff6ff;padding:10px;border-radius:10px;border:1px solid #bfdbfe;color:#1e40af">
           💡 <b>Gợi ý của Thần Kim Quy:</b><br>
-          - Khối lập phương là các khối vuông ở các tháp 2 bên và cột giữa.<br>
-          - Khối hộp chữ nhật là các khối cam nằm ngang ở chân và trụ cổng đứng màu đỏ.
+          - Khối lập phương là các khối vuông (xanh lá, xanh lam, tím mỗi bên 3 khối + 1 vàng ở cột cờ).<br>
+          - Khối hộp chữ nhật là các khối đỏ, cam nằm ngang (2 mỗi bên = 4) + 2 cột đứng + 1 xanh lam nằm.
         </div>
       </div>
     </div>
@@ -832,10 +832,10 @@ function checkCastleAnswer() {
   const boxVal = Number(document.getElementById('inputBox')?.value);
   const fb = document.getElementById('castleFeedback');
 
-  // Khối lập phương: 12 đến 14 khối đều được chấp nhận linh hoạt cho học sinh lớp 1
-  // Khối hộp chữ nhật: 4 đến 5 khối (2 cam nằm ngang + 2 đỏ dựng đứng ở cổng + 1 xanh ngang)
-  const isCubeGood = (cubeVal >= 12 && cubeVal <= 14);
-  const isBoxGood = (boxVal >= 4 && boxVal <= 6);
+  // Khối lập phương: 7 khối (xanh lá + xanh lam + tím: 3 mỗi bên = 6, + 1 vàng cột cờ = 7)
+  // Khối hộp chữ nhật: 7 khối (đỏ + cam nằm: 2 mỗi bên = 4, + 2 cột đứng + 1 xanh lam nằm = 7)
+  const isCubeGood = (cubeVal === 7);
+  const isBoxGood = (boxVal === 7);
 
   if (isCubeGood && isBoxGood) {
     snd('win');
@@ -863,11 +863,11 @@ function checkCastleAnswer() {
     snd('wrong');
     let msg = '';
     if (!isCubeGood && !isBoxGood) {
-      msg = 'Con đếm lại cả hai loại khối nhé: Toà lâu đài có khoảng 12 đến 13 khối lập phương vuông, và 4 đến 5 khối hộp chữ nhật!';
+      msg = 'Con đếm lại cả hai loại khối nhé: Toà lâu đài có 7 khối lập phương và 7 khối hộp chữ nhật!';
     } else if (!isCubeGood) {
-      msg = 'Số khối lập phương chưa đúng. Con đếm các khối vuông ở tháp trái (3 khối), tháp phải (3-4 khối), cột giữa (6 khối): khoảng 12-13 khối nhé!';
+      msg = 'Số khối lập phương chưa đúng. Con đếm lại nhé: xanh lá + xanh lam + tím mỗi bên 3 khối = 6, cộng 1 khối vàng ở cột cờ = 7 khối!';
     } else {
-      msg = 'Số khối hộp chữ nhật chưa đúng. Con đếm 2 khối cam nằm ngang ở chân đế và 2 khối đỏ dựng đứng ở cổng: khoảng 4-5 khối nhé!';
+      msg = 'Số khối hộp chữ nhật chưa đúng. Con đếm lại nhé: đỏ + cam nằm ngang 2 mỗi bên = 4, cộng 2 cột đứng + 1 xanh lam nằm = 7 khối!';
     }
 
     if (fb) {
